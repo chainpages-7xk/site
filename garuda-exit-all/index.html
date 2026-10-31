@@ -198,6 +198,12 @@
      claim_rewards execute on these contracts.)
    - Redeem a matured unstake (real txs):
      {"redeem":{"id":"<id string from the unstake list>"}}.
+   - The stake query ERRORS ("Stake data not found") for an
+     address with no stake record in the pool — the page maps
+     exactly that error to a zero position.
+   - Fees are PER ACTION, measured in a live test-wallet run:
+     the unstake pair used 460,540 gas (gas limit 600,000);
+     claim used 237,675 and redeem 221,260 (limit 300,000).
    ============================================================ */
 (function(){
   'use strict';
@@ -265,22 +271,36 @@
   function smart(contract, obj){
     var q = btoa(JSON.stringify(obj));
     return fetch(LCD + '/cosmwasm/wasm/v1/contract/' + contract + '/smart/' + q)
-      .then(function(r){ if (!r.ok) throw new Error('LCD ' + r.status); return r.json(); })
+      .then(function(r){
+        if (!r.ok) return r.json().catch(function(){ return null; }).then(function(j){
+          throw new Error('LCD ' + r.status + (j && j.message ? ' — ' + String(j.message).slice(0, 120) : ''));
+        });
+        return r.json();
+      })
       .then(function(j){ return j && j.data; });
   }
   window.EXIT.smart = smart;
 
   function poolMap(items, n, fn){
+    /* Resolves only when EVERY item has settled — counting
+       completions, not just dispatch. (An earlier version keyed
+       resolution off the dispatch index and could resolve with
+       up to n-1 items still in flight.) */
     return new Promise(function(resolve){
-      var idx = 0;
+      var idx = 0, finished = 0;
+      if (!items.length) return resolve();
+      function step(){
+        finished++;
+        if (finished >= items.length) return resolve();
+        worker();
+      }
       function worker(){
-        if (idx >= items.length) return resolve();
+        if (idx >= items.length) return;
         var it = items[idx++];
         Promise.resolve().then(function(){ return fn(it); })
-          .then(worker, worker);
+          .then(step, step);
       }
       var k = Math.min(n, items.length);
-      if (!k) return resolve();
       for (var j = 0; j < k; j++) worker();
     });
   }
@@ -354,11 +374,25 @@
   window.EXIT.readPoolMeta = readPoolMeta;
   window.EXIT.readPool = readPoolMeta;
 
+  /* The stake query ERRORS ("Stake data not found") for an
+     address that has never staked in the pool — that is a zero
+     position, not a read failure. Map exactly that error to a
+     zero record; genuine LCD failures still propagate. */
+  function stakeJob(P, a){
+    return smart(P.addr, { stake: { staker: a } })
+      .then(function(d){ P.stake = d && d.stake ? d.stake : { amount: '0' }; })
+      .catch(function(e){
+        if (e && /not found/i.test(e.message || '')){ P.stake = { amount: '0' }; return; }
+        throw e;
+      });
+  }
+  window.EXIT.stakeJob = stakeJob;
+
   function readStakeOnly(P){
     var a = state.connected;
     if (!a) return Promise.resolve(P);
     return Promise.all([
-      smart(P.addr, { stake: { staker: a } }).then(function(d){ P.stake = d && d.stake ? d.stake : { amount: '0' }; }),
+      stakeJob(P, a),
       smart(P.addr, { unstake: { staker: a } }).then(function(d){ P.unstakes = d && Array.isArray(d.unstake) ? d.unstake : []; })
     ]).then(function(){ P.scanned = true; renderCard(P); return P; })
       .catch(function(){ P.scanned = false; renderCard(P); return P; });
@@ -372,7 +406,7 @@
       /* fall through — the full read includes stake + unstakes */
     }
     var jobs = [
-      smart(P.addr, { stake: { staker: a } }).then(function(d){ P.stake = d && d.stake ? d.stake : { amount: '0' }; }),
+      stakeJob(P, a),
       smart(P.addr, { unstake: { staker: a } }).then(function(d){ P.unstakes = d && Array.isArray(d.unstake) ? d.unstake : []; }),
       smart(P.addr, { reward: { staker: a } }).then(function(d){ P.reward = d ? String(d.reward) : '0'; })
     ];
@@ -384,7 +418,10 @@
       P.scanned = true; P.userReadOk = true; P.loaded = true;
       renderCard(P); return P;
     }).catch(function(){
-      P.userReadOk = false; renderCard(P); return P;
+      /* a full read was attempted: mark loaded so the card says
+         "could not read" instead of looping on the pre-read copy
+         (matters most for pools whose queries are dead) */
+      P.loaded = true; P.userReadOk = false; renderCard(P); return P;
     });
   }
   window.EXIT.readUser = readUser;
@@ -791,10 +828,17 @@
         your.appendChild(P.el);
       });
       renderCounts();
+      var finish = function(){
+        /* a card the user opened BEFORE connecting should load
+           their position too, not sit on the pre-connect copy */
+        var open = state.pools.filter(function(P){ return P.expanded && !P.pinned && !P.loaded; });
+        if (!open.length) return Promise.resolve();
+        return poolMap(open, 4, function(P){ return readUser(P); });
+      };
       if (!pins.length){
         status.textContent = 'No stake or pending unstakes found for this wallet in any Garuda regular pool.';
         state.pools.forEach(renderCard);
-        return;
+        return finish();
       }
       status.textContent = 'You are in ' + pins.length + (pins.length === 1 ? ' pool' : ' pools') +
         ' — loading your full position' + (pins.length === 1 ? '' : 's') + '…';
@@ -802,6 +846,7 @@
         status.textContent = 'You are in ' + pins.length + (pins.length === 1 ? ' pool' : ' pools') +
           '. Your exit controls are ready below.';
         pins.forEach(renderCard);
+        return finish();
       });
     });
   };

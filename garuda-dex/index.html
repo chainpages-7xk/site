@@ -13,24 +13,13 @@
     --cyan:#22e6ff; --pink:#ff2e9a; --green:#3dff8e; --gold:#ffd76a; --red:#ff4d5e; --amber:#ffb74d;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;color:var(--txt);
     background:radial-gradient(1200px 600px at 50% -10%,#0b1440 0%,var(--bg) 55%) fixed,var(--bg);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     -webkit-text-size-adjust:100%}
-  .wrap{max-width:640px;margin:0 auto;padding:16px 14px 44px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 14px 44px}
   a{color:var(--cyan);word-break:break-all}
-  .hero{text-align:center;padding:22px 6px 4px}
-  .eagle{font-size:46px;filter:drop-shadow(0 0 14px rgba(34,230,255,.75))}
-  .wordmark{font-size:44px;font-weight:900;letter-spacing:.22em;margin:4px 0 0 10px;color:#eaf7ff;
-    text-shadow:0 0 6px rgba(34,230,255,.9),0 0 22px rgba(34,230,255,.65),0 0 46px rgba(34,230,255,.4)}
-  .dexline{font-size:21px;font-weight:800;letter-spacing:.5em;margin:2px 0 0 12px;color:#ffe3f4;
-    text-shadow:0 0 6px rgba(255,46,154,.9),0 0 22px rgba(255,46,154,.65),0 0 46px rgba(255,46,154,.4)}
-  .tagline{color:var(--dim);font-size:14.5px;line-height:1.55;margin:12px auto 2px;max-width:520px}
-  .card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
-    border-radius:16px;padding:16px 14px;margin:14px 0 0;box-shadow:0 0 24px rgba(10,30,90,.35)}
-  .card h2{font-size:17.5px;margin:0 0 10px;letter-spacing:.02em}
-  .card h2 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:#123a6e;color:#fff;
-    font-weight:800;font-size:13px;align-items:center;justify-content:center;margin-right:8px;vertical-align:2px}
   .dim{color:var(--dim)} .small{font-size:13px;line-height:1.55}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
   .addr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;word-break:break-all;line-height:1.5}
@@ -38,54 +27,176 @@
   .lbl:first-child{margin-top:0}
   .val{font-size:16px;font-weight:700}
   .note{color:var(--dim);font-size:13.5px;line-height:1.5}
-  .danger{background:#1c0714;border:1px solid var(--pink);border-radius:14px;padding:14px;margin:14px 0 0;
-    box-shadow:0 0 18px rgba(255,46,154,.18)}
-  .danger h2{color:#ff9ecb;font-size:16px;margin:0 0 8px}
-  .danger p,.danger li{font-size:14px;line-height:1.55}
-  .danger ul{margin:6px 0 2px;padding-left:20px}
-  .log{background:#060a18;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:10px;
-    font-size:12.5px;line-height:1.6;color:var(--dim);max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+  /* ---------- top bar (original Garuda DEX arrangement, 2.0 polish) ---------- */
+  .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;
+    margin:0 -14px;padding:10px 16px;background:rgba(5,8,18,.94);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.45)}
+  .brand{display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .brand .eagle{font-size:25px;filter:drop-shadow(0 0 10px rgba(34,230,255,.75))}
+  .brand .wm{font-size:20px;font-weight:900;letter-spacing:.2em;color:#eaf7ff;
+    text-shadow:0 0 6px rgba(34,230,255,.9),0 0 20px rgba(34,230,255,.55)}
+  .brand .dx{font-size:20px;font-weight:900;letter-spacing:.2em;color:#ffe3f4;
+    text-shadow:0 0 6px rgba(255,46,154,.9),0 0 20px rgba(255,46,154,.55)}
+  .tb-nav{display:flex;gap:2px;flex-wrap:wrap}
+  .tb-nav a{color:var(--dim);text-decoration:none;font-weight:700;font-size:14.5px;padding:8px 11px;border-radius:9px}
+  .tb-nav a:hover{color:var(--cyan);background:#0a1128}
+  .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .netpill{border:1px solid rgba(61,255,142,.5);border-radius:999px;padding:7px 13px;font-size:12.5px;
+    color:var(--green);font-weight:800;background:rgba(61,255,142,.07);white-space:nowrap}
+  .tb-wallet{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tb-wallet #walletList{display:flex;gap:8px;flex-wrap:wrap}
+  .tb-wallet #walletList .note{margin:0;font-size:12.5px}
+  .tb-wallet .connbox{margin:0}
+  /* wallet buttons (engine-rendered) */
   .wbtn{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;background:#0a1128;
     border:1px solid var(--line2);border-radius:12px;color:var(--txt);font:inherit;font-size:16px;font-weight:700;
     padding:10px 14px;margin:0 0 10px;cursor:pointer;text-align:left}
   .wbtn img{width:30px;height:30px;border-radius:8px}
   .wbtn .wreg{display:block;font-size:11.5px;color:var(--dim);font-weight:600}
+  .tb-wallet .wbtn{width:auto;min-height:38px;margin:0;padding:6px 13px;font-size:13.5px;border-radius:999px;gap:8px}
+  .tb-wallet .wbtn img{width:18px;height:18px;border-radius:5px}
+  .tb-wallet .wbtn .wreg{display:none}
   .ghostbtn{background:transparent;border:1px solid var(--line2);color:var(--dim);border-radius:9px;
     font:inherit;font-size:13px;font-weight:700;padding:7px 12px;cursor:pointer;margin-top:8px}
   .connbox{display:none;border:1px solid var(--line2);border-radius:12px;padding:12px;background:#070d20;margin-top:6px}
   .connbox.show{display:block}
-  #pairBox{display:none;border:1px solid var(--gold);border-radius:12px;padding:12px;background:#171106;margin-top:6px}
+  .tb-wallet .connbox.show{display:flex;align-items:center;gap:9px;padding:6px 8px 6px 13px;border-radius:999px}
+  .tb-wallet .connbox .lbl{display:none}
+  .tb-wallet .connbox .addr{font-size:11.5px;max-width:168px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tb-wallet .connbox .ghostbtn{margin:0;padding:4px 10px;border-radius:999px}
+  #pairBox{display:none;border:1px solid var(--gold);border-radius:12px;padding:12px;background:#171106;margin-top:10px}
   #pairBox.show{display:block}
-  /* pools */
-  .pool{display:block;width:100%;text-align:left;background:#070d20;border:1px solid var(--line2);border-radius:12px;
-    padding:12px 13px;margin:0 0 9px;cursor:pointer;color:var(--txt);font:inherit}
+  .warnbanner{display:none;background:#3d0a12;border:1px solid var(--red);border-radius:12px;padding:12px 13px;
+    font-size:14px;line-height:1.55;margin-top:10px;color:#ffd7db}
+  .warnbanner.show{display:block}
+  .log{background:#060a18;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:10px;
+    font-size:12.5px;line-height:1.6;color:var(--dim);max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+  .log:empty{display:none}
+  /* ---------- live strip (the original's trending strip, our words) ---------- */
+  .strip{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;font-size:13.5px;line-height:1.55;color:var(--dim)}
+  .strip .tab{flex:0 0 auto;color:#04140a;background:var(--green);font-weight:900;font-size:11.5px;
+    letter-spacing:.08em;border-radius:7px;padding:3px 9px;margin-top:1px;box-shadow:0 0 14px rgba(61,255,142,.45)}
+  .strip b{color:var(--txt)}
+  /* ---------- danger notice ---------- */
+  .danger{background:#1c0714;border:1px solid var(--pink);border-radius:14px;padding:14px 16px;margin:12px 0 0;
+    box-shadow:0 0 18px rgba(255,46,154,.18)}
+  .danger h2{color:#ff9ecb;font-size:16px;margin:0 0 8px}
+  .danger p,.danger li{font-size:14px;line-height:1.55}
+  .danger ul{margin:6px 0 2px;padding-left:20px}
+  @media (min-width:900px){ .danger ul{columns:2;column-gap:34px} .danger li{break-inside:avoid} }
+  /* ---------- stage grid ---------- */
+  .stage{display:grid;gap:14px;margin-top:14px;align-items:start;
+    grid-template-columns:minmax(0,1fr) 388px;
+    grid-template-areas:"pair trade" "markets trade" "positions positions" "shield shield"}
+  #tradeCard{grid-area:trade;position:sticky;top:118px}
+  #pairPanel{grid-area:pair}
+  #marketsCard{grid-area:markets}
+  #portCard{grid-area:positions}
+  #shieldCard{grid-area:shield}
+  @media (max-width:920px){
+    .stage{grid-template-columns:minmax(0,1fr);
+      grid-template-areas:"trade" "pair" "markets" "positions" "shield"}
+    #tradeCard{position:static}
+    .topbar{position:static}
+    .wrap{display:flex;flex-direction:column}
+    .stage{order:1;width:100%}
+    .strip{order:2}
+    .danger{order:3}
+  }
+  .card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+    border-radius:16px;padding:16px 14px;box-shadow:0 0 24px rgba(10,30,90,.35)}
+  .card h2{font-size:17.5px;margin:0 0 10px;letter-spacing:.02em}
+  .card h2 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:#123a6e;color:#fff;
+    font-weight:800;font-size:13px;align-items:center;justify-content:center;margin-right:8px;vertical-align:2px}
+  /* ---------- pair panel (selected market, original's pair header) ---------- */
+  .pp-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .pp-name{font-size:23px;font-weight:900;letter-spacing:.01em}
+  .chainpill{border:1px solid rgba(61,255,142,.5);color:var(--green);background:rgba(61,255,142,.07);
+    font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px}
+  .pp-price{font-size:19px;font-weight:800;color:var(--gold);margin-top:10px;line-height:1.4}
+  .pp-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:13px}
+  .pp-stat{background:#070d20;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .pp-stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);font-weight:800}
+  .pp-stat .v{font-size:14.5px;font-weight:700;margin-top:4px;line-height:1.45}
+  /* ---------- markets table ---------- */
+  .mhead{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.25fr);gap:6px 14px;padding:2px 13px 8px;
+    font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
+  .pool{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.25fr);gap:6px 14px;align-items:center;width:100%;
+    text-align:left;background:#070d20;border:1px solid var(--line2);border-radius:12px;
+    padding:11px 13px;margin:0 0 8px;cursor:pointer;color:var(--txt);font:inherit}
+  .pool:hover{border-color:var(--cyan)}
   .pool.sel{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,230,255,.25)}
-  .pool.blocked{opacity:.75;border-color:var(--red);cursor:not-allowed}
-  .pool .nm{font-size:16.5px;font-weight:800}
-  .pool .rs{font-size:13px;color:var(--dim);margin-top:3px;line-height:1.5}
+  .pool.blocked{opacity:.8;border-color:var(--red);cursor:not-allowed}
+  .pool .nm{font-size:16px;font-weight:800;overflow-wrap:anywhere}
+  .pool .rs{display:block;font-size:12px;color:var(--dim);margin-top:3px;line-height:1.5}
+  .pool .price{font-size:13.5px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+  .pool .res{font-size:13px;color:var(--dim);line-height:1.55;overflow-wrap:anywhere}
   .badge{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:2.5px 9px;margin-left:7px;vertical-align:2px;letter-spacing:.02em}
   .badge.g{background:rgba(61,255,142,.13);color:var(--green);border:1px solid rgba(61,255,142,.45)}
   .badge.a{background:rgba(255,183,77,.12);color:var(--amber);border:1px solid rgba(255,183,77,.45)}
   .badge.r{background:rgba(255,77,94,.14);color:#ff8b96;border:1px solid rgba(255,77,94,.55)}
-  /* swap */
-  .seg{display:flex;gap:8px;margin:4px 0 10px}
-  .seg button{flex:1;min-height:46px;border-radius:11px;border:1px solid var(--line2);background:#0a1128;color:var(--txt);
-    font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+  @media (max-width:640px){
+    .mhead{display:none}
+    .pool{grid-template-columns:minmax(0,1fr) minmax(0,auto)}
+    .pool .res{grid-column:1/-1}
+    .pool .price{text-align:right}
+  }
+  /* ---------- trade card / swap ---------- */
+  .tabs{display:flex;gap:4px;background:#060a18;border:1px solid var(--line2);border-radius:12px;padding:4px;margin:2px 0 12px}
+  .tabs button{flex:1;min-height:42px;border-radius:9px;border:0;background:transparent;color:var(--dim);
+    font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+  .tabs button.on{color:#04140a;background:linear-gradient(90deg,#2fe07c,#19b8a6);box-shadow:0 0 14px rgba(61,255,142,.35)}
+  .pooline{font-size:12.5px;color:var(--dim);margin:0 0 8px;line-height:1.5;word-break:break-all}
+  .pooline b{color:var(--txt)}
+  .seg{display:flex;gap:6px;margin:0 0 12px}
+  .seg button{flex:1;min-height:38px;border-radius:9px;border:1px solid var(--line2);background:#0a1128;color:var(--dim);
+    font:inherit;font-size:13px;font-weight:800;cursor:pointer;padding:4px 6px}
   .seg button.on{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(34,230,255,.25)}
+  .panel{background:#060a18;border:1px solid var(--line2);border-radius:14px;padding:12px 13px}
+  .panel:focus-within{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,230,255,.22)}
+  .panel .pl{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
+  .prow{display:flex;gap:10px;align-items:center;margin-top:6px}
+  .prow input{flex:1;min-width:0;width:100%;background:transparent;border:0;color:var(--txt);
+    font:inherit;font-size:24px;font-weight:800;padding:6px 2px;min-height:46px}
+  .prow input:focus{outline:none}
+  .prow input[readonly]{color:var(--gold)}
+  .tokbtn{flex:0 0 auto;background:#0d1730;border:1px solid var(--line2);color:var(--txt);border-radius:999px;
+    padding:9px 15px;font:inherit;font-size:16px;font-weight:800;cursor:pointer;white-space:nowrap}
+  .tokbtn:hover{border-color:var(--cyan)}
+  .bal{font-size:12.5px;color:var(--dim);margin-top:6px}
+  .bal button{background:none;border:0;color:var(--cyan);font:inherit;font-weight:800;cursor:pointer;padding:0}
+  .chips{display:flex;gap:6px;margin-top:9px}
+  .chips button{flex:1;background:#0a1128;border:1px solid var(--line2);color:var(--dim);border-radius:8px;
+    padding:6px 0;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+  .chips button:hover{color:var(--cyan);border-color:var(--cyan)}
+  .flipwrap{display:flex;align-items:center;gap:12px;margin:11px 2px}
+  .flipline{flex:1;height:1px;background:var(--line2)}
+  #flipBtn{width:38px;height:38px;flex:0 0 auto;border-radius:50%;border:1px solid var(--cyan);background:#0a1128;
+    color:var(--cyan);font-size:17px;cursor:pointer;box-shadow:0 0 12px rgba(34,230,255,.35);line-height:1}
+  .rateline{font-size:13.5px;color:var(--dim);margin-top:9px;min-height:18px}
+  .sliprow{display:flex;align-items:center;gap:7px;margin-top:12px;flex-wrap:wrap}
+  .sliprow .sl{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-right:2px}
+  .slipchip{background:#0a1128;border:1px solid var(--line2);color:var(--dim);border-radius:8px;
+    padding:7px 11px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+  .slipchip:hover{color:var(--cyan);border-color:var(--cyan)}
+  .sliprow input[type=text]{width:70px;min-height:36px;background:#060a18;border:1px solid var(--line2);
+    border-radius:9px;color:var(--txt);font:inherit;font-size:14px;padding:6px 9px}
   label.fl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin:12px 0 5px}
   input[type=text],input[type=number]{width:100%;min-height:52px;background:#060a18;border:1px solid var(--line2);
     border-radius:12px;color:var(--txt);font:inherit;font-size:16px;padding:10px 12px}
   input:focus{outline:2px solid var(--cyan);outline-offset:0}
-  .bal{font-size:12.5px;color:var(--dim);margin-top:5px}
-  .bal button{background:none;border:0;color:var(--cyan);font:inherit;font-weight:800;cursor:pointer;padding:0}
+  .prow input:focus{outline:none}
   .quote{background:#070d20;border:1px solid var(--line2);border-radius:12px;padding:12px;margin-top:12px;font-size:14.5px;line-height:1.65}
   .quote .row{display:flex;justify-content:space-between;gap:10px}
   .quote .row span:last-child{font-weight:700;text-align:right}
   .bigbtn{display:block;width:100%;min-height:56px;border:0;border-radius:12px;margin-top:14px;cursor:pointer;
-    background:linear-gradient(90deg,#0891b2,#2563eb);color:#fff;font:inherit;font-size:17px;font-weight:800;
-    letter-spacing:.03em;box-shadow:0 0 18px rgba(34,230,255,.35)}
+    background:linear-gradient(90deg,#14b86a,#0e9aa7);color:#fff;font:inherit;font-size:17px;font-weight:800;
+    letter-spacing:.03em;box-shadow:0 0 18px rgba(61,255,142,.3)}
   .bigbtn:disabled{background:#26314d;color:#7d8db0;box-shadow:none;cursor:not-allowed}
   .bigbtn.pink{background:linear-gradient(90deg,#b2086b,#7c3aed);box-shadow:0 0 18px rgba(255,46,154,.3)}
+  .liqgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:560px){ .liqgrid{grid-template-columns:1fr} }
+  .liqcol h3{font-size:15px;margin:2px 0 4px}
   /* shield */
   .verdict{border-radius:12px;padding:13px 14px;font-size:15px;line-height:1.55;margin-top:4px;border:1px solid var(--line2);background:#070d20}
   .verdict.g{border-color:rgba(61,255,142,.55);background:rgba(20,60,35,.25)}
@@ -96,31 +207,57 @@
   .chk .ic{flex:0 0 20px;text-align:center}
   .chk .tx b{display:block;font-size:13.5px}
   .chk .tx span{color:var(--dim);font-size:12.5px}
-  .warnbanner{display:none;background:#3d0a12;border:1px solid var(--red);border-radius:12px;padding:12px 13px;
-    font-size:14px;line-height:1.55;margin-top:12px;color:#ffd7db}
-  .warnbanner.show{display:block}
-  .tabs{display:flex;gap:8px;margin-top:12px}
-  .tabs button{flex:1;min-height:44px;border-radius:11px;border:1px solid var(--line2);background:#0a1128;color:var(--dim);
-    font:inherit;font-size:14.5px;font-weight:800;cursor:pointer}
-  .tabs button.on{color:var(--cyan);border-color:var(--cyan)}
-  .posrow{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;background:#070d20;font-size:14px;line-height:1.6}
+  /* positions */
+  #portBody{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:9px}
+  #portBody>p{grid-column:1/-1;margin:0}
+  .posrow{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#070d20;font-size:14px;line-height:1.6}
   .disclaimer{margin:26px auto 6px;padding:12px 16px;font-size:12px;line-height:1.55;color:#8a97a5;
-    text-align:center;border-top:1px solid #2a3440;max-width:640px}
+    text-align:center;border-top:1px solid #2a3440;max-width:1180px}
   .txresult{margin-top:12px;font-size:14px;line-height:1.6}
 </style>
+
 </head>
 <body>
 <div id="official-warning" style="background:#7a0d0d;color:#ffffff;padding:12px 14px;text-align:center;font-family:system-ui,sans-serif;font-size:14px;line-height:1.55;border-bottom:3px solid #ff3b30;position:relative;z-index:9999;"><strong>⚠️ BEWARE OF FAKE COPIES</strong> — the only real home for these tools is <strong>chainpages-7xk.github.io/site</strong>. Bookmark this page. <strong>This page NEVER asks for your seed phrase or password</strong> — if any page or person asks for them, it is a scam: close it. Signing happens only inside your own wallet.</div>
 
 <div class="wrap">
 
-  <div class="hero">
-    <div class="eagle">🦅</div>
-    <div class="wordmark">GARUDA</div>
-    <div class="dexline">DEX</div>
-    <p class="tagline">The Garuda pools never closed — only the old website did. This page trades
-      <b>directly on the same live pool contracts</b> on Luna Classic, and <b>Garuda Shield</b> — an automated
-      security engine — re-checks the pool, the token, and the sell side on-chain before any swap can be signed.</p>
+  <header class="topbar">
+    <div class="brand"><span class="eagle">🦅</span><span class="wm">GARUDA</span><span class="dx">DEX</span></div>
+    <nav class="tb-nav">
+      <a href="#marketsCard">Markets</a>
+      <a href="#tradeCard">Swap</a>
+      <a href="#portCard">Positions</a>
+      <a href="#shieldCard">🛡️ Shield</a>
+    </nav>
+    <div class="tb-right">
+      <span class="netpill">Terra Classic</span>
+      <div class="tb-wallet">
+        <div id="walletList"><p class="note">Loading the wallet list…</p></div>
+        <div class="connbox" id="connBox">
+          <div class="lbl">Connected wallet</div>
+          <div class="addr" id="connAddr">—</div>
+          <button type="button" class="ghostbtn" id="disconnectBtn">Disconnect</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="pairBox">
+    <div class="lbl" style="margin-top:0">Pairing link ready</div>
+    <p class="note" style="margin:4px 0 8px">Approve the connection in your wallet app. If nothing opened, tap the link:</p>
+    <a id="pairLink" href="#" class="mono">open wallet app ↗</a>
+  </div>
+  <div class="warnbanner" id="grantBanner"></div>
+  <div class="log" id="wlog"></div>
+
+  <div class="strip">
+    <span class="tab">LIVE</span>
+    <span>The Garuda pools never closed — only the old website did. This is the trading floor rebuilt:
+      the same live pool contracts on Luna Classic, the familiar Garuda layout, upgraded — and
+      <b>Garuda Shield</b>, an automated security engine, re-checks the pool, the token, and the sell
+      side on-chain before any swap can be signed. You can browse markets and quotes without
+      connecting — connecting is only needed to sign a trade and to see your own balances.</span>
   </div>
 
   <div class="danger">
@@ -136,54 +273,53 @@
     </ul>
   </div>
 
-  <div class="card">
-    <h2><span class="n">1</span>Connect your wallet</h2>
-    <p class="note" style="margin-top:0">Connect the wallet you want to trade from (Keplr or LUNCDash).
-      You can browse pools and quotes without connecting — connecting is only needed to sign a trade
-      and to see your own balances and positions.</p>
-    <div id="walletList"><p class="note">Loading the wallet list…</p></div>
-    <div id="pairBox">
-      <div class="lbl" style="margin-top:0">Pairing link ready</div>
-      <p class="note" style="margin:4px 0 8px">Approve the connection in your wallet app. If nothing opened, tap the link:</p>
-      <a id="pairLink" href="#" class="mono">open wallet app ↗</a>
-    </div>
-    <div class="connbox" id="connBox">
-      <div class="lbl">Connected wallet</div>
-      <div class="addr" id="connAddr">—</div>
-      <button type="button" class="ghostbtn" id="disconnectBtn">Disconnect</button>
-    </div>
-    <div class="warnbanner" id="grantBanner"></div>
-    <div class="log" id="wlog"></div>
-  </div>
-
-  <div class="card">
-    <h2>🏊 Pools — live on-chain</h2>
-    <p class="note" style="margin-top:0">Every Garuda pair contract found on-chain, read live. The badge is
-      Garuda Shield's pool verdict: <span class="badge g">VERIFIED CODE</span> means the contract code and admin
-      match the verified record right now. Tap a pool to trade it.</p>
-    <div id="poolList"><p class="note">Reading the pools from the chain…</p></div>
-    <p class="small dim" id="poolCount" style="margin-top:10px"></p>
-  </div>
+  <div class="stage">
 
   <div class="card" id="tradeCard">
-    <h2><span class="n">2</span>Trade</h2>
     <div class="tabs">
       <button type="button" id="tabSwap" class="on">Swap</button>
       <button type="button" id="tabLiq">Liquidity</button>
     </div>
 
     <div id="swapPane">
-      <p class="note">Pool: <b id="swapPoolName">— pick a pool above —</b></p>
+      <p class="pooline">Pool: <b id="swapPoolName">— pick a market below —</b></p>
       <div class="seg">
         <button type="button" id="dirA">—</button>
         <button type="button" id="dirB">—</button>
       </div>
-      <label class="fl" for="swapAmt">You pay</label>
-      <input type="text" id="swapAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
-      <div class="bal" id="swapBal"></div>
+      <div class="panel">
+        <span class="pl">From</span>
+        <div class="prow">
+          <input type="text" id="swapAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
+          <button type="button" class="tokbtn" id="payTok">—</button>
+        </div>
+        <div class="bal" id="swapBal"></div>
+        <div class="chips">
+          <button type="button" class="chip" data-pct="10">10%</button>
+          <button type="button" class="chip" data-pct="25">25%</button>
+          <button type="button" class="chip" data-pct="50">50%</button>
+          <button type="button" class="chip" data-pct="100">MAX</button>
+        </div>
+      </div>
+      <div class="flipwrap"><div class="flipline"></div><button type="button" id="flipBtn" aria-label="Flip direction">⇅</button></div>
+      <div class="panel">
+        <span class="pl">To</span>
+        <div class="prow">
+          <input type="text" id="recvAmt" placeholder="0.0" readonly tabindex="-1">
+          <button type="button" class="tokbtn" id="recvTok">—</button>
+        </div>
+        <div class="bal" id="recvBal"></div>
+      </div>
+      <div class="rateline" id="rateLine"></div>
       <div class="quote" id="quoteBox" style="display:none"></div>
-      <label class="fl" for="slipIn">Slippage tolerance (%)</label>
-      <input type="text" id="slipIn" inputmode="decimal" value="1" autocomplete="off">
+      <div class="sliprow">
+        <span class="sl">Slippage</span>
+        <button type="button" class="slipchip" data-slip="0.5">0.5%</button>
+        <button type="button" class="slipchip" data-slip="1">1%</button>
+        <button type="button" class="slipchip" data-slip="3">3%</button>
+        <input type="text" id="slipIn" inputmode="decimal" value="1" autocomplete="off">
+        <span class="dim small">%</span>
+      </div>
       <div style="margin-top:16px">
         <div class="lbl">🛡️ Garuda Shield — automated checks, run live before this trade</div>
         <div class="verdict" id="verdict">Pick a pool to run the checks.</div>
@@ -194,30 +330,63 @@
     </div>
 
     <div id="liqPane" style="display:none">
-      <p class="note">Pool: <b id="liqPoolName">— pick a pool above —</b></p>
+      <p class="pooline">Pool: <b id="liqPoolName">— pick a market below —</b></p>
       <div id="liqPos" class="quote" style="display:none"></div>
-      <label class="fl" for="addAmt">Add — amount of <span id="addSym1">asset 1</span></label>
-      <input type="text" id="addAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
-      <div class="quote" id="addQuote" style="display:none"></div>
-      <button type="button" class="bigbtn" id="addBtn" disabled>Add liquidity</button>
-      <div class="txresult" id="addResult"></div>
-      <label class="fl" for="rmAmt">Remove — LP tokens to burn</label>
-      <input type="text" id="rmAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
-      <div class="bal" id="rmBal"></div>
-      <div class="quote" id="rmQuote" style="display:none"></div>
-      <button type="button" class="bigbtn pink" id="rmBtn" disabled>Remove liquidity</button>
-      <div class="txresult" id="rmResult"></div>
+      <div class="liqgrid">
+        <div class="liqcol">
+          <h3>Add liquidity</h3>
+          <label class="fl" for="addAmt">Amount of <span id="addSym1">asset 1</span></label>
+          <input type="text" id="addAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
+          <div class="quote" id="addQuote" style="display:none"></div>
+          <button type="button" class="bigbtn" id="addBtn" disabled>Add liquidity</button>
+          <div class="txresult" id="addResult"></div>
+        </div>
+        <div class="liqcol">
+          <h3>Remove liquidity</h3>
+          <label class="fl" for="rmAmt">LP tokens to burn</label>
+          <input type="text" id="rmAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
+          <div class="bal" id="rmBal"></div>
+          <div class="quote" id="rmQuote" style="display:none"></div>
+          <button type="button" class="bigbtn pink" id="rmBtn" disabled>Remove liquidity</button>
+          <div class="txresult" id="rmResult"></div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <div class="card" id="pairPanel">
+    <div class="pp-head">
+      <span class="pp-name" id="ppName">Pick a market to trade</span>
+      <span class="chainpill">Terra Classic</span>
+      <span id="ppBadge"></span>
+    </div>
+    <div class="pp-price" id="ppPrice">—</div>
+    <div class="pp-stats">
+      <div class="pp-stat"><div class="k">Pooled</div><div class="v" id="ppRes1">—</div></div>
+      <div class="pp-stat"><div class="k">Pooled</div><div class="v" id="ppRes2">—</div></div>
+      <div class="pp-stat"><div class="k">Pool</div><div class="v mono" id="ppPool">—</div></div>
+      <div class="pp-stat"><div class="k">LP token</div><div class="v mono" id="ppLp">—</div></div>
+    </div>
+  </div>
+
+  <div class="card" id="marketsCard">
+    <h2>📊 Markets — live on-chain</h2>
+    <p class="note" style="margin-top:0">Every Garuda pair contract found on-chain, read live. The badge is
+      Garuda Shield's pool verdict: <span class="badge g">VERIFIED CODE</span> means the contract code and admin
+      match the verified record right now. Tap a market to load it into the trade card.</p>
+    <div class="mhead"><span>Pair</span><span>Price</span><span>Reserves</span></div>
+    <div id="poolList"><p class="note">Reading the pools from the chain…</p></div>
+    <p class="small dim" id="poolCount" style="margin-top:10px"></p>
+  </div>
+
   <div class="card" id="portCard">
-    <h2>💼 Your wallet on these pools</h2>
+    <h2>💼 My positions</h2>
     <p class="note" style="margin-top:0">Your balances of the pool tokens and your LP positions,
       read live from the chain. Connect a wallet to load this.</p>
     <div id="portBody"><p class="note">Not connected yet.</p></div>
   </div>
 
-  <div class="card">
+  <div class="card" id="shieldCard">
     <h2>🛡️ How Garuda Shield decides</h2>
     <p class="small" style="line-height:1.65">Shield is an automated security engine — a fixed set of on-chain
       checks that run in your browser before a trade can be signed. It is not a person and it does not guess:
@@ -238,9 +407,12 @@
       banner the pool here, and trace any moved funds to the exchanges. That is why the checks run <i>before</i> you sign.</p>
   </div>
 
+  </div><!-- /stage -->
+
 </div>
 
 <div class="disclaimer">Unofficial community help tool — not affiliated with Garuda DeFi or any project listed. Provided free, as-is, with no warranties. Use at your own risk: the providers of this tool are not responsible for any losses or outcomes. This page never holds your keys or your funds — signing happens only inside your own wallet. Always verify every transaction in your wallet before you sign.</div>
+
 
 <script>
 var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8ashfnuk43zs8uf25d","liquidity_token":"terra1je55s6rg8wwv5f5r8g4s9l8u7scdncejawhunqvlg0hm9tg24dnqad93jr","sides":[{"kind":"native","denom":"ibc/F52112392095A6D6D1B17EF1FE19BE0B39B2A79B8A2B2F55CD721FC7DBF5081F","symbol":"ibc/F52112392095A6D6D1B17EF1FE19BE0B39B2A79B8A2B2F55CD721FC7DBF5081F","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra12rr28v7nfvldlk3ymrhhykkuarpsjcqmy3kma74y0ypzalmm6npq266p3x","liquidity_token":"terra1zl7xwdx5css08qkkzfaud3j5n5vslhml3p80hhzrk5njdak4r9rqvgfp4t","sides":[{"kind":"cw20","contract":"terra122eam0kf6mnhptpjx2ur8wxcyk527nfw57hwshwac45vr8eeeneqhsgk5p","symbol":"MARZ","name":"MARZ","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1cf0fxnvhcmsqnw8levj3vrhrq3nxgfmc86w9d6pxyeghqyrkgj2spgqarl","liquidity_token":"terra1d7h84jt5evt3mte8u29htjcpqmnxpjv0dnetcwq4l2vyfd6xu9wqhnujvr","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1lhpvlec34lda370cwnf78fyapud7d4f8hjwuzjgljf4dt5vt2m5q4qzw7t","liquidity_token":"terra1mh0dgqpexfr8rkmjlcsgtphsvda4txx3av6vu85vtl9ecsr8k4wqjnu7g7","sides":[{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1lv87fcs5hy75aeul0mp66eu6ns63fmz9utsvkxun6p5dzaazzw3qqqyv3l","liquidity_token":"terra1zemyp2sazykn26rvjcwfgrs72w3xfcr3cy4792r3k7s5mqtaqkjqln3ul7","sides":[{"kind":"cw20","contract":"terra1wwrg00jczxf4czy4jr4wc2nvgpl4un4g8fjvm2zy54neel7ygqgsmlhhvp","symbol":"LTRN","name":"Lunctron","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1j2ag3rgjnjnp7fwdxs8ugxx73j0prq86e4rgnaj45n5l8l4pr6kqh9aq3d","liquidity_token":"terra18xqzxwllql28ar7f0e2r03dxd5zw3828p3glxle8s6rcmm2wz86qfvez94","sides":[{"kind":"cw20","contract":"terra1e4lxe4fq6k9652pyu7fyrexsns3r8tlqrdky3z03ky2ptejzdajsh0xvzt","symbol":"ZANKA","name":"Zanka","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1pz3zf7a0jwnly739z02y88njw7at4xg69na693fph4uj7zvpee2qhuygnx","liquidity_token":"terra1tvsu9xd4jclymltdqct67whzw76mc9ufd45ek4jewz9984vnsduqpnn3n5","sides":[{"kind":"cw20","contract":"terra1f6z0ylpshz9j0ytjcqlmyl3fmf8v7uwa7k7ar6craz247lum3wwq6jwh3u","symbol":"ART","name":"ARTEMIS","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra174euun47r0xhwkslza67avnm5r4gtxnckfeeuud39c0ahtu5hryq57vel3","liquidity_token":"terra1xp9u0x8mvrfu9anday773mjl5mk46krhjzkzq5che6cth0u6y4ks0vj0w7","sides":[{"kind":"cw20","contract":"terra1ctvrh09s3q2tgxm88vt6zexle8wcf22qwhxe5qa2wchc9e2ynw3qhvksyl","symbol":"BENANCE","name":"Benance Governance Token","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1a7vjhp0nf3nnspu6m92asr64zmtjyagwx7anv76yephzuncs980s4gvfsm","liquidity_token":"terra1mq7w3f0y7z82rys2md5hqtanylm9mlpnvmdtrjvnlv3mu880qacs08rhsl","sides":[{"kind":"cw20","contract":"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a","symbol":"LTK","name":"Lunctoken","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1lc4t00z4kgpjtny0q2asxy8gfqwvjkjcwuzz54thnxsj2n9hla8qg2kamm","liquidity_token":"terra1avhr6csrhzjs76yd3eqs8zjumkruxvkcuz6dm286j7kaps4rzmrsekwlnf","sides":[{"kind":"cw20","contract":"terra15juucad3k2npsj53crl6qhra9f65s9jkas9nzpqypj38en4ht32qczde4a","symbol":"NHera","name":"HERA","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra12xzuds30s5pjl2rw0cxm5x2pz04l7td9w0za7ns5pdmfjs8ufkrsmjt35h","liquidity_token":"terra1ctfemhzrgdtp9p03h2v46tvcp5laeavlr8rk9htlzzq4z927hves7jvffh","sides":[{"kind":"cw20","contract":"terra1zra7m9w59sxwxqy8lqs3yeqleedrvtgg2qf938nk2wf8pq2ejkqsn0heln","symbol":"LCM","name":"LuncMoon","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra162hq9hpj3mawrhxpzchtpm32hfss7ynv6pgynu8m7kj4lyjqp8aqzf3ptr","liquidity_token":"terra1c55le5jc5s8v9z2x6u0f7malaaqt8n4uaaxyr7zvc3tex660252q734sjt","sides":[{"kind":"cw20","contract":"terra15gjgmln8xj72rf69tx2zlrtcjzzvkcrdvrvfnmxja6kacz07pg0ssflecz","symbol":"FOOD","name":"Food Token","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra13nk3znj8s74ugzycaqsaxtdex54fnxmeazsv8nnk9rycjg7peykq7s3hud","liquidity_token":"terra1kvajnjmzdq5j2lk447nrely4gl96zr6rzsp6qex9wr8rrzsupgfqf0kwry","sides":[{"kind":"cw20","contract":"terra16hzl7lge3jjnlazvut2ypt7upk68z5dycc9rwy608fah8q0y3fuslkenzc","symbol":"GDEX","name":"Garuda DEX","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1mhm0z8hu0m6qt7j2qy8zsawmznvxwh0shu56hvjh4tkrsq3rnu5qeh4cug","liquidity_token":"terra1kqezmsvru9r6cgjq0a0ef2n9w2lxf7hhv65n9vpuvwgctfk8pjpqx9q36p","sides":[{"kind":"cw20","contract":"terra10svrvgrj6jsumvyj039unkmrr7mhx7mqcdhf344mdxxj2s3sfa9qd4nyn5","symbol":"iGold","name":"DoGold","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1pn54qfes4usf4q9z2gtu2tt2ku47trq2qkgvh8hcwnf0lvkkxcds6dhzuy","liquidity_token":"terra1a4m5k2q4p0jm5j9edcxzzp0xf8au88649yswayjn4z2vdkhgjcgqnp78dq","sides":[{"kind":"cw20","contract":"terra1pkhx09w725qw0tyzgd0f7chmqd036vkylrknx2g3yjdkg7ddyxgsd8f7v2","symbol":"LMC","name":"Lunc Market Cap","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1l0sny96yzkwx6lyympccasn7xt7jfwkwegrvr48ey9zpypsl0nusvg5sxg","liquidity_token":"terra18svrv4lcu0wm373plgry62vjkzcmpds06xn8834jzmkyuj2d8s3su30gxz","sides":[{"kind":"cw20","contract":"terra1genyaw32qah4544m0sfgmchegf7emft77u7hug63cc6a72mvpntsfupzmd","symbol":"KNEEL","name":"KNEEL","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra17w4q8g2jgf3rm5n2eanp2xsyzvgn96sxqner4urtdrkd7cv5u2yqqwg9nf","liquidity_token":"terra15ucxjcryzm3nlxe5kh3h9lezmh5z0eauzgzffpfazckpnx86cegs2yj4xw","sides":[{"kind":"cw20","contract":"terra1le9l8gpwl2f48xluphnwkqrnhwxqt27xhducfzqvncmsh9swavlqjpy7c9","symbol":"FUN","name":"FUNTOKEN","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1qhzhgwqea45e92ltzjua3rhx3zsrs0tqh6pr8x2ts2kmu2qvnwds2qszmg","liquidity_token":"terra1z9z4qm23ht723sch0v5mppa03kdrdyrgm0xwg5atm0vlu9w9mf0sj87clj","sides":[{"kind":"cw20","contract":"terra1jk858n7t29llucje6c8dhwslrz9x424u2l6mw3hxjfljt65pcf3s9q2vzm","symbol":"IDEV","name":"iDev","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1hrvvsern58gwnsphz0nrypng8r89ukd39la4ts2s8le8y5sfgl3qtkeh82","liquidity_token":"terra12u6fx4z5l3k7rx2tpguphsa68espv4hqpyyls32hrz6vfjxfyzfq7e9262","sides":[{"kind":"cw20","contract":"terra14nfst294yvtdhrt4hk0njyszyh08q7e0g8rwknht7gyvw24ceyeqw42npg","symbol":"HOTL","name":"HOT Lady Original ","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1mml68fp36vcap75d4dat9fglsh9ars4r88fy98lgk37zsqlt5skqa2rkkh","liquidity_token":"terra1dfwx2gzsmqv788cn0sfazvkhr4sf0ktqcpx8u2d90f4s8w2d3h0qjheltm","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1l9yfq5rtxylm9z8ghe6uk4su26hqalm067mqf5zska9nvca4n0zsnu4g59","liquidity_token":"terra1mgz55hav3mvamhlrcp0weml4p05ythx6dk9ghdp37pvhtgdls4zsm6xngp","sides":[{"kind":"cw20","contract":"terra1a8rmymsc58p9jg45p8ghy2ueqhmmhsxgd2tvuxma0pxa3g40tw8s0tjg82","symbol":"ORBIT","name":"Orbit Wire","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1r4prhs84y9mzkcfdaaaum49jvyhh3q80lp7djfeja7x3q2ssfsss4cwna8","liquidity_token":"terra19xmhcf9764rchkqyxvlnaavh9jfm4r3ll7yv0aktr76ausxwjy7sznlctk","sides":[{"kind":"cw20","contract":"terra12ckccpalj2y9h54syyst4lpqp79duc9cpxfsyvne409rjw93s8qs2eneh3","symbol":"BAKED","name":"BAKED","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1ceu39929df0pu3cz086ynsw0xlvxq2nsrehfnr5m73anqc0r4fuqfgwg98","liquidity_token":"terra1hkzdv0xgymc3vuqqsuxv92jhd2drj0whqdttfcwrq0fskupn3f7swysyqf","sides":[{"kind":"cw20","contract":"terra1kgx73l7akz83755ex76m90mlsphle6y5yd7f7xmee34lr8zc57mqm29esv","symbol":"UwU","name":"U will Understand","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1la65ytnfm6z35ankaa658em3ndrrtv0stcq7mad3ndz3nre6agwq0vgsye","liquidity_token":"terra1295jhcm4m9vwnlmf7mqnpf3zjej3y0je9lw8cmpmecas2pk8hwdqdpvfjj","sides":[{"kind":"cw20","contract":"terra192dmx27220vvw2e90vcpseu90evgpu90z0l730hy4xjh60ctx9sqe9cm9m","symbol":"BURNIX","name":"Burnix","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1jwxm2ussa7rhccwzlhsggx07dtqq056dnfmva587yhy8pmy5vmzsjtxwh2","liquidity_token":"terra1nezpd80790f6zkler50uvx2r2kxe0vn9c6x5paq2jkxnwultjnls84z8cp","sides":[{"kind":"cw20","contract":"terra1acyudc64qy06d42kkrh2z7v5333y0c2svs24ntxy7xazhamkykdswes2g7","symbol":"TEAI","name":"TerraAI","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1gd8gk9u5n69hg7j7t9vzdrn340cv0dgck6csssme25k23wznaq4qakj9l9","liquidity_token":"terra14qdpp6v3w85sf5ad4a4v9xjx2djwxq2n833e96dmtacyl4flf3gs53xp6j","sides":[{"kind":"cw20","contract":"terra1rc4ef7s6pzuf9pkg8ymnw29pjz2yfm3tjg0kleu4348c2e6upkxqdfdj5u","symbol":"SMT","name":"SMarioToken","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1jkkm7gvt82vgmxlqpvlu5jnqcrnpy62lxp6ed0509jcmg7376p3szppd7j","liquidity_token":"terra1qg7g9w58zv5ecaug0eju4hurpp8tz9uml77c0eusykzpu3t7hmdqdm7dd9","sides":[{"kind":"cw20","contract":"terra1ftp7z26px8l7tf4c02g54ekpnzsgtt8dl7tx2dy4072plzqemjvqtlkq3l","symbol":"CZY","name":"CZ Yield-Bearing Token","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1caddxqc9xp643eyng6c3v24z6qz4pfns7hp3x393kjy0e40ltcfs22algv","liquidity_token":"terra138h2k85ngtha5wy2fdgllac8delxctxqyhvtqk86mymmtqrzwwfs6mg7jy","sides":[{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1q4fndxdyz7tkuqkc2u2yy8urfp5c395d5fknxu4pgzwte3zef7cqn3yvdt","liquidity_token":"terra1rv5yj8sa58xqjw4xqhew6aljrhexeq70439wmtjpve4cjsd79jsszegx95","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1psmjwthenna0ezp3gknmlgsejwk9v9kqpjr5zmpptmeaskdcy30sshvpf9","liquidity_token":"terra1vsul3jhjp5hhwugvxme82fpf4t5e8y3jtg7n2qg3nawn2h0t7dsq9talwy","sides":[{"kind":"cw20","contract":"terra1x2w89mnpzpy072azpf0g8muccnvahlewdpq0kkpf4qdhx3c6y9qqeppwyd","symbol":"Gary","name":"Gary","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1ckeru77z5tpfndkhkmjpe07uru6rlrzllmga5aerfa9kyunx7a5s4zszfe","liquidity_token":"terra1x65kt9gzpgrsqq6nz3m3vtlq0hhuzg6rya04g4lc0ne8zasjsytq56rymj","sides":[{"kind":"cw20","contract":"terra19fufgpaec6c85nrw9j2a40rshdgcm9rhn6hlj2zmx03utpqkh2ls8jnxkz","symbol":"LUPEPE","name":"LUNCPEPE","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1f7pyutdhhgw2u7r8jqsca20ud8vu5590zjuthxmtu0hjsmqkwdjsxt9jql","liquidity_token":"terra1vm4tzjd85z88nauagyd5n2gzzr62ep0c4u3ett7thpatvylhnqjs9vvan0","sides":[{"kind":"cw20","contract":"terra15ut7fz0xu8x5crj6tx7p23pz0ejdlt3vnc2h4evqhj5vj8rlelhsvez6p6","symbol":"CREMATR","name":"CREMATV2","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1pej3dypfcujcguqja24yu0kv4guc3ma7xne6cqaqwcr9fxt42l6qu2tknu","liquidity_token":"terra1xsrgzklz2wsz8gsqn9w7pm3ys4m455z9w4ja756pstfyzy8dtmwqklwuaw","sides":[{"kind":"cw20","contract":"terra1wx48f5g06l9qxw8k4gn3200lmseu85vkgangwyn9xdu66mtfsfxq60hkdt","symbol":"LCW","name":"Luna Classic World","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra106ssxefutyz8hghsxdx5zsunk203r9q3nludja6m9ztq7mwdp8hqkswluc","liquidity_token":"terra1aaq4l523h8wdtr5yl725k926utuhfdkjrwa4y85c806npn26nvnq4gk2wf","sides":[{"kind":"cw20","contract":"terra1sjs7rvuj0h7uk40vv3wlhdn0we5mhx0957z4g5900shn7865vwcsh7medu","symbol":"JEFF","name":"JEFF","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra12q9ae4lp3c30gnvyyx9zepgde7qplz57m84saseq0sua9psus8aqthhs6y","liquidity_token":"terra1n2urtyku2v6k4lfh4exehehrdplhkq7ag77nganc32hl2ehpr84qr49m2q","sides":[{"kind":"cw20","contract":"terra1ldxkxrtpd85wyfstenjzt8vgyv8vdjgd3t0nwu38sqh4wx6h2wksh9ule8","symbol":"TNEWS","name":"TerraNewsEN","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra16e043q2mns73e6rk9szxjvh8m89ylj72k2lq72jp2clm9ec7ay9sxmn2s5","liquidity_token":"terra18hlupkjflt4nc0qf5j5qxqqk5pqvuwcn788pr9ldkfzwupetuf2sfyp4ng","sides":[{"kind":"cw20","contract":"terra1rdxr2nhqlhw7jq0ved7srvwwuvk98g28e97s5c0seyrcel4364rsrdapge","symbol":"PoG","name":"Poor Guy","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra18s5fdvzcshnr0dw2fm2zcm8pp3hr0mxz76makrrr5gp4jm4nampsdqwnvl","liquidity_token":"terra1fsfenrs6s8twuwsrnuv2vqnk4453s43x26a6gmf8np52e3l9rqrsfw5qz8","sides":[{"kind":"cw20","contract":"terra1wh02gp5f57kgtvnt8hv595xcmqcgg79sm38v6wz8ve7zarwge2vq3e8z8d","symbol":"CRYSTAL","name":"Crystalball","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1hlx999lvueha9tclgtw7t5pfsc25kyanccu82vujrs0sp9vp7lvsjftxaq","liquidity_token":"terra1smaxau9s3y0f5mq0e0julsr48w2q4p8p7u63k3ztx386qgnyfmkst70vr3","sides":[{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6},{"kind":"cw20","contract":"terra1ps34wcgyjjp93hf2wvmt3t7v9ky9xm43yhzf6anq8kyp777egsdq0eua67","symbol":"KENA","name":"Kenalinu","decimals":6}]},{"pair":"terra1fv03h0r2ze2ukhp99audckt432tgqc7yszyxhvu7g3lxshuw8u0snrd55f","liquidity_token":"terra1umqyrxa4wlrykw8x3x9gkrx9snwdnk3zge63fdj3ywaelgc08wpqdpceg7","sides":[{"kind":"cw20","contract":"terra1lz6lnuk64hrcx8t2qgs2ktyzqaxyd4vl76ga47c9fhd6w4erv4cqrjafjl","symbol":"LCPIE","name":"LuncPrime","decimals":5},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1825xm6k20tcjtsp026z3jexkpnkh575f0l4ym7nk3ug8l4rw84zq43pd9w","liquidity_token":"terra10at92n6dhyx0zwujjrznwrhlavevelswce4txuvxlsvvj56ettsqegxsnu","sides":[{"kind":"native","denom":"ibc/5D80D31FFB77E3BF4C77FDE0FE559CD8902504D4D817EF94271DC1D59D3F84B5","symbol":"ibc/5D80D31FFB77E3BF4C77FDE0FE559CD8902504D4D817EF94271DC1D59D3F84B5","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1edrsemq90ve40hxnv5afpw5yydpwnxykhn4yus7ytghzv3m3m9ysgwzsqc","liquidity_token":"terra1q79d029q33preqhhy5209u0j94tuty6ne4n4lwn7jcmp077x5qpssruy43","sides":[{"kind":"cw20","contract":"terra1hadtla8984k9arfnjf5yf2zghn3h593tcn5auvdvk6ymm65wtd0sxmyah0","symbol":"KENNY","name":"KENNY","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1f6pxjjtemwhrypv8y52yv2j98d8j0jlwkp455q0fu8qenlctpy8qh6h74l","liquidity_token":"terra16zpncgs4v8mvadxfphwmfyuu6ctgk6jkdssvs8dj3l4k9vfv22dsgekrmc","sides":[{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1636sv2zfzz20wtevuuqj7zfnk4uuqhj74ahm6sh89dtwlad8eq5q9r98yz","liquidity_token":"terra1r3r55zfj5qa0s0khkfk520p9yszxn9dt7lnqn0lzncfa3cvyz9ws9x3dkh","sides":[{"kind":"cw20","contract":"terra1zmsv8khmsrz2xj8zuhu7r7yruf5dfsyhtqyqf5lf92f2uvz6lf9sx5sr79","symbol":"QUID","name":"Liquid ","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1h7s7sykdxlcxmqgmwefjx7yzjsd42wrpqtvrjjdqxqt3sen9p8ns0clnhu","liquidity_token":"terra12jy9hhu7jdk2flxreq64l2auz6hluvt8pwa78q7s6a5qql8xcdjqyrx8dv","sides":[{"kind":"cw20","contract":"terra1m58hc296srr6xygrrfyu6u0e32pl8d459nfs55pmegke8zlv94rqsjz882","symbol":"CatWifHat","name":"Cat Wif Hat","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra13akzeap8jfslyy6elgfzlr20upwg0etr9lhg5y54xhhs5nlzkrast7jhvn","liquidity_token":"terra1mhfu2m8cj6w6tyy6aq03jqwyxtx3rcsznqnqc75nxpeyagwtulusa7dm5s","sides":[{"kind":"cw20","contract":"terra1t9s9y7jurjjcaxu8jf64cv709d5pld0ktq7km798jz7cvpagdf4q2edsgz","symbol":"SMF","name":"SUMURFETTE","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1ay4s6k2dmn07qwqjaymstm7hnvgv2ajjxkl7q4n5v3wa8g9pz5fs2hhkav","liquidity_token":"terra1e5vkvx6d6s4m7x58a5uhmmcmh5qf3vn895cf3tvmt3jn53zffwsqef2l2g","sides":[{"kind":"cw20","contract":"terra1uqc9evnugyewtuaztmg40muzp6e2f5vludjs8y3xxl8qljwktz3szal6yu","symbol":"LUFFY","name":"luffy the pirates","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1aw97xvkkg8snucj5nukhmkgg78e86xuvlp4z262txdkxc8rtzd3sa6g3sj","liquidity_token":"terra1qc902u9dlxwhvxax0qlat7lxj6283u2e9tf5gxevj73h9a7uc5kq6c7c29","sides":[{"kind":"cw20","contract":"terra14rfnhc2aru7jp304lht3yf903necsnrt4cxd464cftsfcksw0rtsgundnt","symbol":"FRG","name":"FRG Universe","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra1jnk55gcch3q969637u7mm35szjsfhgjvdtp82awlkmwp50ck5tcqhtjsjl","liquidity_token":"terra1jakf55lwl4qjuzxm6ke0cxy97r8v7evepvrqlgfm40l7xsl3ljaqx20f0z","sides":[{"kind":"cw20","contract":"terra1h3xd7qd5w4ne43ddtdnun050yp45eahk0a7wcx0gc3flhuq0m53s3ngtnk","symbol":"TEST","name":"TAX","decimals":6},{"kind":"native","denom":"uluna","symbol":"LUNC","decimals":6}]},{"pair":"terra12y2m3x3yy7rmdnyvn02dtfu84xp0gl6eeqm45zcfst756rmcsdyq4rplqn","liquidity_token":"terra1pwh6903e0gcel0knz0763rphq72wjwm6weaffnla46lkz36s75zqvx5xt4","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1e4lxe4fq6k9652pyu7fyrexsns3r8tlqrdky3z03ky2ptejzdajsh0xvzt","symbol":"ZANKA","name":"Zanka","decimals":6}]},{"pair":"terra122jydhet2jlnq7hf05eg74sjrdx5ujnuyappgst3gsulrlw2j7xq8mlte9","liquidity_token":"terra17lf7cy65tds3qy50tyg8h0kny8y65laj8z50vysfem86ff8lmsjssauwt7","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1f6z0ylpshz9j0ytjcqlmyl3fmf8v7uwa7k7ar6craz247lum3wwq6jwh3u","symbol":"ART","name":"ARTEMIS","decimals":6}]},{"pair":"terra12a2kcuexm4hjnshedjunnjhg8s6h840m4fput3kulsegy9nczm5s5un8fs","liquidity_token":"terra1rswaa4z7x946pzq9ykacd7javx7depyxgus9kk65u7xnh57rl5nsdxwgzu","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"cw20","contract":"terra192dmx27220vvw2e90vcpseu90evgpu90z0l730hy4xjh60ctx9sqe9cm9m","symbol":"BURNIX","name":"Burnix","decimals":6}]},{"pair":"terra12ldfwkn3e8nrgd0jg4flaxpx2ac2ndqhjfa7cem57m2tdmunvgkqxd4as5","liquidity_token":"terra17dg6468jnemnkfgu0gndczdc6t8cylwa9gp53rxc5q0222y4x2lq0kwp8y","sides":[{"kind":"cw20","contract":"terra192dmx27220vvw2e90vcpseu90evgpu90z0l730hy4xjh60ctx9sqe9cm9m","symbol":"BURNIX","name":"Burnix","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra13zsghxvu2cr5xf5ruglg7sxth5c0euc29a9rarpyxrfwk6wcgmhqpxa6au","liquidity_token":"terra1wf0pj2q60l47arqzaja82kv7xu2r8yc0kgfemz8fe02qj7eludgqxdhns3","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra138fgu9zd7zr80zj448tfyssd4yjx57mfdfa7ths4xjg442lrpykq8e8ann","liquidity_token":"terra1mdxqwzkw2kzsv7khhadydswd2dadfqukxgn60fxet88h4gym5v5spka9de","sides":[{"kind":"cw20","contract":"terra1nv36kq4dpxf4d00w4mv4w095ek8kv48f54v46qduruy4fwd2dtzq2uk70j","symbol":"TKMN","name":"TUTAN KHAMUN","decimals":6},{"kind":"cw20","contract":"terra1t9s9y7jurjjcaxu8jf64cv709d5pld0ktq7km798jz7cvpagdf4q2edsgz","symbol":"SMF","name":"SUMURFETTE","decimals":6}]},{"pair":"terra13dageenj3uwqghg5cl0sru0j8psyhxq9q6n6rvpcr2j3x6458tkqn5uzgw","liquidity_token":"terra1s4xncmctafm4np7y2jzdkztmh96rtt5kxnqya5nu04tp0m8vfhfqurpxm6","sides":[{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6},{"kind":"cw20","contract":"terra1pkhx09w725qw0tyzgd0f7chmqd036vkylrknx2g3yjdkg7ddyxgsd8f7v2","symbol":"LMC","name":"Lunc Market Cap","decimals":6}]},{"pair":"terra15rv2h3hyx43w8h2nn044r4gfa6738x32lt8tq0nrtrtg5d33ek9qs0268c","liquidity_token":"terra1wx4jmyk7kpeq6tac4eycznqs3a0s9w067j7d4nuduvzzhpcfgypshht6t5","sides":[{"kind":"cw20","contract":"terra1zmsv8khmsrz2xj8zuhu7r7yruf5dfsyhtqyqf5lf92f2uvz6lf9sx5sr79","symbol":"QUID","name":"Liquid ","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra14wk0xpf5qmsjklezq83ywcxwpajdj3etv3v9s2hknxskknadnvhsv4fw76","liquidity_token":"terra13hh3z4z40gmplke3u8yzevum2sjlu539q028cfy6vsjjyeywc3xsclmkud","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"cw20","contract":"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj","symbol":"SKI","name":"Ski Freee","decimals":6}]},{"pair":"terra14mwaykq2k2z77xlqwn78x782mp5x37f556ywr4ydvm8urspgazaqqcpyh8","liquidity_token":"terra1rr28c3pru9q2tsjkh7zyulzp8ajqjc4rc5ckw50cmsu42m4ky76s5cztjr","sides":[{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6},{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6}]},{"pair":"terra19dhy2wden3eczqg2uj8edvywvn8eunsk7jde2y0uv43sgmtf9qgq6c5d3w","liquidity_token":"terra1l97t5y433cc7cxqcgvws7rt6kcccs0dgsfhgwqkkpq4y7efrkghs4a5dlp","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6}]},{"pair":"terra1823hker00sq8t3a4kde3a55xl7ltptjrc90uzf9eez3nc36uecnsw373mv","liquidity_token":"terra1q2uwzt7zk9hktpaw5gfpuafhqz33r0n6d2p0mdjty9mpn7k2chfs3fhsgc","sides":[{"kind":"cw20","contract":"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj","symbol":"SKI","name":"Ski Freee","decimals":6},{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6}]},{"pair":"terra18cqyle2q9h83y7p8h4nukwffd56cgsvut520556uk8eyngct6zpqpq2735","liquidity_token":"terra1kghzeftgxrxa2fc44cep0wpfjzuv36pdl9cvw47papgu9lylze7qlnyywl","sides":[{"kind":"cw20","contract":"terra14nfst294yvtdhrt4hk0njyszyh08q7e0g8rwknht7gyvw24ceyeqw42npg","symbol":"HOTL","name":"HOT Lady Original ","decimals":6},{"kind":"cw20","contract":"terra1j9q30fspe7tn0nrxpjfnzzdha4xfkyznluwnqrgxshtyv2tfe5kswnrj6c","symbol":"LUNW","name":"LUNC Warriors Token","decimals":6}]},{"pair":"terra18ucws3qvcck3fvg79gpxa0kgus5sf4dme8uz6lh28fxsdv2vrf2qw2h6k6","liquidity_token":"terra1hdwke9p2x5ns9zemwdd4ffl5yj92x9l7pz9gp9nttypx58uy8uaq4sf6pm","sides":[{"kind":"cw20","contract":"terra1ex0hjv3wurhj4wgup4jzlzaqj4av6xqd8le4etml7rg9rs207y4s8cdvrp","symbol":"TERRA","name":"Terraport","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra17j8zt8fhz7cwc5fhrtwxfsx8dnrmnuvxrk9932cf64fwtndq2ulqav5kmu","liquidity_token":"terra1wad6kd2qjt30nr93ja7w65vjlx38m5yrtzu9zlmcmgmh0hjdc7ss3ucxxv","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"cw20","contract":"terra1m58hc296srr6xygrrfyu6u0e32pl8d459nfs55pmegke8zlv94rqsjz882","symbol":"CatWifHat","name":"Cat Wif Hat","decimals":6}]},{"pair":"terra17mggcalxy8lf85k39ffz0xy5ptja529e607emh9cpsh9dc88yjss6wkh8q","liquidity_token":"terra1stqqlzq2qs8st6jsaw8jcjdfun48nakzewf5a4lsvttw70u8ehrqxf8860","sides":[{"kind":"cw20","contract":"terra1vzhhsddfe558ug43kn5ct5d3aqj48wnvavlaue4d279eltsp9nnql6q549","symbol":"ampCWH","name":"Amplified CatWifHat","decimals":6},{"kind":"cw20","contract":"terra1m58hc296srr6xygrrfyu6u0e32pl8d459nfs55pmegke8zlv94rqsjz882","symbol":"CatWifHat","name":"Cat Wif Hat","decimals":6}]},{"pair":"terra1dpca2k3ejx3pvl4jpkp7t6lxcljh9256nunkck8e39k3d6r3gpysppghr4","liquidity_token":"terra12cp4sef75lxvlc4m8wf430zh7yc0tswtgjw83v2j24qqxlgpzz4qkna6qf","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1dtwhsmdhpzz2d6k099q0d5rvjwatpy8aqmp6p2azxcyutz4mrzzqpt76qh","liquidity_token":"terra14pz99qrshvryyu7g5r32c256xxdah0qtggq8lmjdrpfef7g6302ql6e6gz","sides":[{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6},{"kind":"cw20","contract":"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj","symbol":"SKI","name":"Ski Freee","decimals":6}]},{"pair":"terra1dnd3k27k2xe9rxeyfwpduj4lklsnvl4sx3vrwn2vu0zu5ge74avqdxszuc","liquidity_token":"terra17uaekcj80f4vrv3nsdej58kt2hafvwr63keh6zfs3a7pdyete98qsp9hp8","sides":[{"kind":"cw20","contract":"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj","symbol":"SKI","name":"Ski Freee","decimals":6},{"kind":"cw20","contract":"terra19eytmx0yd3m5udlv7rh6u429g6ddjm2cndwv5cxndcymrztx4krqz9p4t6","symbol":"COFFEE","name":"Coffee LUNC","decimals":6}]},{"pair":"terra1cynajzu7c5ulqddakpc2tlsfakhqutx9362f3m407pvw8dzfaqxq7sgmkz","liquidity_token":"terra1zlp5lm8cjaxzgyx44kcagl4y55665k7d4fkl8ealeepq89f0ur6sh0du9j","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"cw20","contract":"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a","symbol":"LTK","name":"Lunctoken","decimals":6}]},{"pair":"terra1cfhh3urm6p2nmxewasung6cwtsny9av6vsl4w08pnr48m0t6zcaq79uc0e","liquidity_token":"terra12t0mfu09drexv5sfstg42vshffmzyfzawedkfjld087aaasmlqfszsncsc","sides":[{"kind":"cw20","contract":"terra1jk858n7t29llucje6c8dhwslrz9x424u2l6mw3hxjfljt65pcf3s9q2vzm","symbol":"IDEV","name":"iDev","decimals":6},{"kind":"cw20","contract":"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a","symbol":"LTK","name":"Lunctoken","decimals":6}]},{"pair":"terra1epp8ggjj0gnx9mf5tyjlwpxlmrup2hfkw4hhla2l8pqkjzd7urgs7twtva","liquidity_token":"terra1a0n6gx92k50zfcm7ajddwrkp6scpyfh3gm53ul7pfdm5j85z75hs7djk0k","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra14exvtapxa3s3aw3kua8f8rfttwlfqx6xh0ccsu42z78srmphsrksrdfx9f","symbol":"THC","name":"LUNC 420","decimals":6}]},{"pair":"terra1eepf89nvg8yp4pwp756x0e6up9vhxgpdjrk4fu40gwlsk93y63squvmxpg","liquidity_token":"terra1290rvexy6lzcwysgrk5hs79a5a362wheksmcusq7np7c889z5r8q0ck060","sides":[{"kind":"cw20","contract":"terra1rk57qhszgdxt7vp6f7xhuqq5k7kdrqz5cevee4jfvyw7rgga6snqv4tj6m","symbol":"Futureflare","name":"Futureflare ","decimals":6},{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6}]},{"pair":"terra1emu0su4tqlj7p35tr0aecn9zakkpm7e4juvusva2gzvk0f96f96sfwdkyj","liquidity_token":"terra1e9gtyx9rccqsajftnw0s5n5rc38n2r96wmrymsevme9c5myd5dzsr3lg99","sides":[{"kind":"cw20","contract":"terra1e4lxe4fq6k9652pyu7fyrexsns3r8tlqrdky3z03ky2ptejzdajsh0xvzt","symbol":"ZANKA","name":"Zanka","decimals":6},{"kind":"cw20","contract":"terra1j9q30fspe7tn0nrxpjfnzzdha4xfkyznluwnqrgxshtyv2tfe5kswnrj6c","symbol":"LUNW","name":"LUNC Warriors Token","decimals":6}]},{"pair":"terra1el4unulnuwjghmv56jeu8y5ut2g725q5raq27k5jlphcy6vjzpjqcr4hdc","liquidity_token":"terra1n06qjhema3z5mmyhurq6cakq7dx0yy2ak8wje7mj3kfu0wrw2h7saqmc0v","sides":[{"kind":"cw20","contract":"terra1jk858n7t29llucje6c8dhwslrz9x424u2l6mw3hxjfljt65pcf3s9q2vzm","symbol":"IDEV","name":"iDev","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1aw8sgcxcrn5w8t8yuuawdn9lzpduk3kfjfr39hu3augmwsrdrrjs2q07pk","liquidity_token":"terra19rtjefg0a7srgxrp7aghad0slgfmqjkedp5jky0hwpy4jhpg03zs4fh0l3","sides":[{"kind":"native","denom":"ibc/0BB9D8513E8E8E9AE6A9D211D9136E6DA42288DDE6CFAA453A150A4566054DC5","symbol":"ibc/0BB9D8513E8E8E9AE6A9D211D9136E6DA42288DDE6CFAA453A150A4566054DC5","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1aspew0u78taps9v0gu4dj3qujfn6k52dvnqky8yhff0ju5qhr7xqe67h77","liquidity_token":"terra1n5t244zvp3dd3jwqr5q6yqqxycanqmhhpr9gt82j48mlqng8nzssqu4q50","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1zmsv8khmsrz2xj8zuhu7r7yruf5dfsyhtqyqf5lf92f2uvz6lf9sx5sr79","symbol":"QUID","name":"Liquid ","decimals":6}]},{"pair":"terra1g72zg0jzhlnkgvgzduw5xueuyz98nvpgpglhv6lycx76wyx7p2lqdduqsh","liquidity_token":"terra1lkjt7vnsk6hx5dd6mz4gwvg45zzyn4csn87q96w2tqyj4erls3csqerf70","sides":[{"kind":"cw20","contract":"terra1sl0cgtanapyy449h0hlmt77s8hak7caktvky8t4ct7a7kvjtyyvqzg8rv6","symbol":"BULL","name":"BULL LUNC","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1fdukh5x2wj5aeltp45fpzqe3hptmnmwjcl8ka0lj9th0hcyjm25slud3xs","liquidity_token":"terra1fxcz4vvd4c9uwdn88a2vhvxx435q6tfdukz8em2skum40f7uejmqw3sv50","sides":[{"kind":"cw20","contract":"terra192dmx27220vvw2e90vcpseu90evgpu90z0l730hy4xjh60ctx9sqe9cm9m","symbol":"BURNIX","name":"Burnix","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1f77lhxthe990yuk8t4eqmfpv7e3z68l4dejp52knhemx6ldg4mzqpu6pmz","liquidity_token":"terra14vfy9zzqwvvpgmyr8n4mwexvceyyy5k9lle23z5h262sx9ajqt2s6vxlk0","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1jk858n7t29llucje6c8dhwslrz9x424u2l6mw3hxjfljt65pcf3s9q2vzm","symbol":"IDEV","name":"iDev","decimals":6}]},{"pair":"terra1flvf00jvf8psvtjxd3dy48r9j32t60zkldnxfy4ttwhx7uzvs3jqgeavn2","liquidity_token":"terra1lxnwllrya3jlwulvd5sytnelmh3vuezzy4v3s9uvthdk9cz6wjesvc5fu6","sides":[{"kind":"cw20","contract":"terra1f6z0ylpshz9j0ytjcqlmyl3fmf8v7uwa7k7ar6craz247lum3wwq6jwh3u","symbol":"ART","name":"ARTEMIS","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1fl0325wjhkecddfhzr0g9dutvvrcuhsz73f5d8ukusld6p60hxvsv0rq8t","liquidity_token":"terra1pglqul60y3xn2d2zrdx0jaqh9422kl5cq9snzckkpzs3ja24kshsr2p7y0","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"cw20","contract":"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a","symbol":"LTK","name":"Lunctoken","decimals":6}]},{"pair":"terra1j3l245y72r4amglftpzvkx20dzfgsnmd3zyyv8mkux7pk4x3ny4s7pjnyx","liquidity_token":"terra1eg7q5kpjujmse8rrdx0alrmuw2fj9au84jaz6qhh3w6fytk9nucsc2qd5a","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra10sfn80av99qkcx3rdpm4rt9hsguadyra5ewyxr","symbol":"SON","name":"Sonic Token","decimals":6}]},{"pair":"terra1h963xxescq58gar2s6g0y0f9ufglxasvkjz5sr95ls4aphv9gw8s7plpy7","liquidity_token":"terra1t47rgmmczq959tcruj0wwfpp5syqx5wfjn226lzv3t0s3k22duuq2nw9gr","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6}]},{"pair":"terra1hsy2luelwdyzw5fvqle85g6sdkyd0js0r24q6j4qsvxhvt0lp9nq3hj4t7","liquidity_token":"terra1dde8wvq7dq948yz6xctxslc8l6lkfcg7wx67hfu090z5l99sds7qtd9sd6","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"cw20","contract":"terra19eytmx0yd3m5udlv7rh6u429g6ddjm2cndwv5cxndcymrztx4krqz9p4t6","symbol":"COFFEE","name":"Coffee LUNC","decimals":6}]},{"pair":"terra1h4kxyzvgu9nyvvnv0u5lrr5frcaenxv2kmjejkggeelggu6m2j7shztxt7","liquidity_token":"terra1xcpgeexc265pcmhs6zy0fae3nrwsj8g5n2d53gf7694vmdhnhzksc60srs","sides":[{"kind":"cw20","contract":"terra1f6z0ylpshz9j0ytjcqlmyl3fmf8v7uwa7k7ar6craz247lum3wwq6jwh3u","symbol":"ART","name":"ARTEMIS","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1henl6k47mwzldndvp8ywysq7jssjqr06cc63p4g09qp36qv0dukqakkw92","liquidity_token":"terra10qazylmxm9hvus2eyy42e2e2hejgm6pl245hefkl34hjav7vdm2qmjegwy","sides":[{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1exa7wwr00j9y2lducx4arlz6z0lwt5mlel0tpvsfygrcxfdl9l5su2jpmv","liquidity_token":"terra19vaqdu60me32l4pnh97wxnzuq5tzql870yqwxcg3j2u00h753g6shu3930","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6}]},{"pair":"terra1jzn48cf3uftutm3kmsyw7pqsfun48xgp3yq2c2kqh78tugg65fpsphflfk","liquidity_token":"terra173h2flrw8kn08lycfsksrz04j7mcu9wna6fewnxx2t5fdqwzd0cspjctra","sides":[{"kind":"cw20","contract":"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a","symbol":"LTK","name":"Lunctoken","decimals":6},{"kind":"cw20","contract":"terra1e4lxe4fq6k9652pyu7fyrexsns3r8tlqrdky3z03ky2ptejzdajsh0xvzt","symbol":"ZANKA","name":"Zanka","decimals":6}]},{"pair":"terra1jcuyrefakdpmfxr4kz86qp4xkt2e2msttpv6felnl0cmll4wpavq0encwj","liquidity_token":"terra1dzxj2dzmm6w8c6hq7u3xmryeum9hgj538jrfel0ymxycl3g50xjqj53e78","sides":[{"kind":"cw20","contract":"terra12j3xuxx52cg045qk37ee4k4u4fsgvyuf8d89dh7c9mr706jvxdascahqej","symbol":"ROTTI","name":"Rottweiler","decimals":6},{"kind":"cw20","contract":"terra1cfmkp9eutxf0qp6vguyy4jyg8ua69236kxpevu7qew6m52glsg0sjkyfr8","symbol":"REXYZ","name":"REXYZ123","decimals":6}]},{"pair":"terra1kn7aw89q7509pp5hx52gkerfd3megmnprmcdh79slslvxj3qy9ysxvquym","liquidity_token":"terra1urgzccj9cv3hqhnryccfn7l6wszmjwrvsp7n3x32eavwpu32dexsjvdzhc","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra12j3xuxx52cg045qk37ee4k4u4fsgvyuf8d89dh7c9mr706jvxdascahqej","symbol":"ROTTI","name":"Rottweiler","decimals":6}]},{"pair":"terra1k4ay87zj0cfvkpm6kgplt4clgfdndzml38sgp6rjswm7m9gzcvyqsdd2re","liquidity_token":"terra1xazkfsytgsdwy8g285v0vsjjlcdwwtvc4xuf2lunf7yym09r30psdc40dp","sides":[{"kind":"cw20","contract":"terra1cwn6jgp4rzx8wkm275m2v9vjmfaglr484cdzs68ze6shwwa2tatsh58ukk","symbol":"TESTC","name":"Testx","decimals":18},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1kkrwna59jzpvsp7n4l3xdt72rmejcz5d2xaezxl29zvkssn7vvtqmtmemv","liquidity_token":"terra1dk7wjckt075fc6ql8hqfnxgntzvanvu5wzrjx43ul8maav6klgqsjjnu74","sides":[{"kind":"cw20","contract":"terra16wtml2q66g82fdkx66tap0qjkahqwp4lwq3ngtygacg5q0kzycgqvhpax3","symbol":"CL8Y-cb","name":"CeramicLiberty.com CL8Y.com/bridge","decimals":18},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1k6mnpkr0desvykuczh7m6unnluav62fd0dpkd7a0rm9r6vh4ksmqnm57pt","liquidity_token":"terra1f93js9lzz0affesl3u5rxaqcfw5e0k4dn8ssg7wtm7c57djhnsjsuf48az","sides":[{"kind":"cw20","contract":"terra1acyudc64qy06d42kkrh2z7v5333y0c2svs24ntxy7xazhamkykdswes2g7","symbol":"TEAI","name":"TerraAI","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1kura4gsqkfnkq7rcr50d9sv95k3dcrk9c6d4n829mk9mn8mtew3s62csmr","liquidity_token":"terra14d2wvmt5fhx9d84853nrrp4u80fuwk0f4jd7q0d8p0md0d5v3k6sc3l0yg","sides":[{"kind":"cw20","contract":"terra14nfst294yvtdhrt4hk0njyszyh08q7e0g8rwknht7gyvw24ceyeqw42npg","symbol":"HOTL","name":"HOT Lady Original ","decimals":6},{"kind":"cw20","contract":"terra17utj66xmtc05gdnkvzntpcfpryquzyuk4mcthnuldgqanjhvnzmqmfz53p","symbol":"AEVE","name":"AetherVerge Token","decimals":6}]},{"pair":"terra1mgjm20p9f2ncxklf7rpemap9c0d8rm5n8hshmcpv936zu4mmpfrswv39nq","liquidity_token":"terra1ajcdfqpdtlx5dg037zcw0d8ra8d9rt5wnfmy46wssm522naf6d0qrrmskp","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1mf84tce3jac9f7zelwm0ngvwmaxkyk5nz2a52cy59zl9f37kqw7syjwfh0","liquidity_token":"terra1zwra4gr8nxm9g9tf6xasas2yae9gevg4yzkrqlqmdqrh5g9al94sc60ky4","sides":[{"kind":"cw20","contract":"terra1jfm4mxtc8afqpnp556j97gsyhydel87cvm0lxvgv6l7f4kghdq7sq98xjk","symbol":"FLX","name":"FLEX","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1m45qvurghn87rzuwrcu0nzvnjxnn2nfassfeseqffek3ndykrzgq3enxma","liquidity_token":"terra1z9w2a6p2r0shc2zdp03es5vznqhj9ds09r43tpwlnhdy65zl23esmmfwkk","sides":[{"kind":"cw20","contract":"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4","symbol":"ELPACO","name":"EL PACO","decimals":6},{"kind":"cw20","contract":"terra1jk858n7t29llucje6c8dhwslrz9x424u2l6mw3hxjfljt65pcf3s9q2vzm","symbol":"IDEV","name":"iDev","decimals":6}]},{"pair":"terra1qwt4d288zx7wh4v2gmhzxdlttnnuhf55l9w6h6vda3zazp24dpfqswngnh","liquidity_token":"terra14m7d3ya2zkv5wqqtv7l7utdrldzfzxjeg2m2f058mpy2aea72whsax73wc","sides":[{"kind":"cw20","contract":"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj","symbol":"SKI","name":"Ski Freee","decimals":6},{"kind":"cw20","contract":"terra1pkhx09w725qw0tyzgd0f7chmqd036vkylrknx2g3yjdkg7ddyxgsd8f7v2","symbol":"LMC","name":"Lunc Market Cap","decimals":6}]},{"pair":"terra1q4248yy2lsjjfgtarxgznxqel8nkan2p4jdra2am94rpxzncetus7ev5pn","liquidity_token":"terra1zp2q4elynla6yexlkmh2uujuu6d8yhaz4j25n6nt40nhsgyy2sys6e0cyq","sides":[{"kind":"cw20","contract":"terra1gzs0926z2u6f2w9afk6ks4z9gkjpac00x60fy9yu903qjjz6nk9qmu5jx3","symbol":"Saiyan","name":"Saiyan Squad ","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1pkj2r0m75sn6swdq0r4y4dfdk39xdhpylaeq324tfm38ecfjszwqy24rfy","liquidity_token":"terra18l8hwmeq0vk5palum8jgddly4qa2edh4v5urxu6unvr37cuyhwxsqjp0jm","sides":[{"kind":"cw20","contract":"terra1ctvrh09s3q2tgxm88vt6zexle8wcf22qwhxe5qa2wchc9e2ynw3qhvksyl","symbol":"BENANCE","name":"Benance Governance Token","decimals":6},{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6}]},{"pair":"terra1pmgqnvmlsre4ewkztdwcsm2j6eu9ysny0247chzqu305e7vg4jtqsrhc4k","liquidity_token":"terra1xpq8yw0e4uem738dp4728kg2pk3pwufzrwnrf7qq3rp4fcsdnupsul4d2f","sides":[{"kind":"cw20","contract":"terra1sl0cgtanapyy449h0hlmt77s8hak7caktvky8t4ct7a7kvjtyyvqzg8rv6","symbol":"BULL","name":"BULL LUNC","decimals":6},{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6}]},{"pair":"terra1r3ax23fjhhc9c7z9ugsd34zqu4dylqwk8g4a6x4mmq946cem3lhsfs58k5","liquidity_token":"terra18gnyp3ut0yxdhan5dts9nrewavc4xcy3t0ja3zxtpylcs579rtdshu3elz","sides":[{"kind":"cw20","contract":"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt","symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6},{"kind":"cw20","contract":"terra1nhxvw723h4gss9uel3gknuayqxt20c2lcxqv9htghs45f3j9sz0srh67f5","symbol":"GCC","name":"Grumpy Catty Crypto","decimals":6}]},{"pair":"terra1r58plf0wv5k88qpvda9zxn4qcg4yxx5mn2dtrv2yc6tujarzd0ns7jgekd","liquidity_token":"terra19k8clv59m9cf6hq9u6hf5svpj8f2q4fxk83v6vftgy2yxmzy3egsq8ncw0","sides":[{"kind":"cw20","contract":"terra12j3xuxx52cg045qk37ee4k4u4fsgvyuf8d89dh7c9mr706jvxdascahqej","symbol":"ROTTI","name":"Rottweiler","decimals":6},{"kind":"cw20","contract":"terra1xuwhm227h520fx0zse5enze42as3n0sm2xlyctjwnh08m0kvt83ss0rmzw","symbol":"BLEEVE","name":"Bleeve In LUNC","decimals":6}]},{"pair":"terra1nyq8weuu58qv3k2zt88mx72wf29da49lv8j46eam0s6p0z6nm5hqqmkkl3","liquidity_token":"terra18n75w8d3vvlwzmydc47gxhvjrfaztu0utxwffen07spv6tg5scysgzt7ux","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"cw20","contract":"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2","symbol":"JURIS","name":"Juris Protocol","decimals":6}]},{"pair":"terra1nj60xmxp4yr5gjqsw63t66nfn470px2hkm3ej4yzkafkwclwmg6sxlxn30","liquidity_token":"terra1c2pqdxgsxmw9kdy4uu7gq2tsaw86x85e39zhwyqngk5fhcskurxqypw0kl","sides":[{"kind":"cw20","contract":"terra1c79hkx3e77u4pjxtp4m5z2kz9rqcx58l2zrnzygwjp2cxaukdxyqnxnjs7","symbol":"babyLENNYL","name":"babyLENNYL","decimals":6},{"kind":"cw20","contract":"terra1rk57qhszgdxt7vp6f7xhuqq5k7kdrqz5cevee4jfvyw7rgga6snqv4tj6m","symbol":"Futureflare","name":"Futureflare ","decimals":6}]},{"pair":"terra1n6msytme6ll49teh5hya5mfpewvfjwnje8mvvxgesne0f3yntvhsu6up73","liquidity_token":"terra1azq97rpt5s8knuv647uuccvz5es8z0hqefzx7sswcdfzxl06n55qtt7wez","sides":[{"kind":"cw20","contract":"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt","symbol":"LIX","name":"LuniX","decimals":6},{"kind":"cw20","contract":"terra1e4lxe4fq6k9652pyu7fyrexsns3r8tlqrdky3z03ky2ptejzdajsh0xvzt","symbol":"ZANKA","name":"Zanka","decimals":6}]},{"pair":"terra1mtjcs87s7vha679whrdc80rz8tel6tw5nzmjxv5q4jvmn6eug7wsh96p0w","liquidity_token":"terra1thf9wtg0knlhaxmah0yx6mn8smg47x0upwdwuk5f5tj5d67uzxdqumfdck","sides":[{"kind":"cw20","contract":"terra1nv36kq4dpxf4d00w4mv4w095ek8kv48f54v46qduruy4fwd2dtzq2uk70j","symbol":"TKMN","name":"TUTAN KHAMUN","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1ml2ktnvj4m5dev09339rlx2y2pvw8cx2dfym2tw0n3ucps2jnfaquun0w0","liquidity_token":"terra16uunne68f7vvmymm8x0lvxnx8fuw4xsu8d8jrfx5pdyedzjvcx0qd52kcn","sides":[{"kind":"cw20","contract":"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a","symbol":"LTK","name":"Lunctoken","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra18vgpydszhht5dydaa8qhz7qa5fdug2zqakz3cgdch0ufqf7vl8qs3e06h6","liquidity_token":"terra1yg4993reu8793wmqh04tuzja4vkdvxv3k5qzt7urjdw2s8e469xsj87eps","sides":[{"kind":"cw20","contract":"terra1wwrg00jczxf4czy4jr4wc2nvgpl4un4g8fjvm2zy54neel7ygqgsmlhhvp","symbol":"LTRN","name":"Lunctron","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra15d8pp5456339fdmvpfu8nz3t9ssu74c6cju5705ejnaxa9cc2vws8legg0","liquidity_token":"terra1t3lw7kpdfcjssx7sycngc9lpzqfj8g05vc3kwuzunu7exg6c0t7q7wsjjz","sides":[{"kind":"cw20","contract":"terra15uwstq6plhlxm3qcvh6js9sflp8vl9964f9l0mjhuv38dnjkulkq48rgfv","symbol":"LENNYR","name":"LennyV2","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1r95m2lrmtn9xym03hp5ga9c3xujxdysv5nmyvqd3tm098smjfshqp8c3pq","liquidity_token":"terra14grlc3yl8yydc9zgzzvw8dte4674qrek9xtfjjgenyqhmcj39g5qes8q0u","sides":[{"kind":"cw20","contract":"terra1x2w89mnpzpy072azpf0g8muccnvahlewdpq0kkpf4qdhx3c6y9qqeppwyd","symbol":"Gary","name":"Gary","decimals":6},{"kind":"native","denom":"uusd","symbol":"USTC","decimals":6}]},{"pair":"terra1kle4fxnmy84vkz0wg25qs9j4t9jegsdf9vpvgyde32c0z2uwwkyq0vy57q","liquidity_token":"terra1c03kvuhxghury578rxjwrp92t6rqzlv6dfjzldlwxksk3yn3laes5880md","sides":[{"kind":"cw20","contract":"terra12j3xuxx52cg045qk37ee4k4u4fsgvyuf8d89dh7c9mr706jvxdascahqej","symbol":"ROTTI","name":"Rottweiler","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1gu2cm3f2wuh8t7kzj9v7y2j89lxfj6zw6ds7vt9hmp9scj3sc6eqapel3c","liquidity_token":"terra1ymh68nqdk9qx8kh4jl56mk2u8ar6q62mz0qt0qwun4evdgmgqefse2v9ur","sides":[{"kind":"cw20","contract":"terra16hzl7lge3jjnlazvut2ypt7upk68z5dycc9rwy608fah8q0y3fuslkenzc","symbol":"GDEX","name":"Garuda DEX","decimals":6},{"kind":"cw20","contract":"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw","symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6}]},{"pair":"terra1m6st56stw025vyr4zh2wqk4s5d2kcxa8d7f2xkq7fvj2m3fzpmhsns5852","liquidity_token":"terra1aqpglysmjmttpk56s5urjupx7gjv7qkkduj3hdrg86ca5h2da2zsr7a8gy","sides":[{"kind":"cw20","contract":"terra16hzl7lge3jjnlazvut2ypt7upk68z5dycc9rwy608fah8q0y3fuslkenzc","symbol":"GDEX","name":"Garuda DEX","decimals":6},{"kind":"cw20","contract":"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj","symbol":"SKI","name":"Ski Freee","decimals":6}]},{"pair":"terra1gm3vvjkt9lu688gth3r492686ccjk9xlk9thv8d4rm2sygfup3aq3u8xzw","liquidity_token":"terra180mmwl4sr9nytwn6tnrnpvdh5ag75nxq4phlua5qlgez25mwef5qpajgwf","sides":[{"kind":"cw20","contract":"terra1nnmlzhgw92kwyk036r0m3j3u0ydt3enad4vtxlggly886cujq5csrs6k9u","symbol":"ampNIP","name":"Amplified Catnip","decimals":6},{"kind":"cw20","contract":"terra10quf590wyr8tuf3pp05hgwm94n3dgfnma377uwaynl3tj47df7nskwdxgs","symbol":"CNip","name":"Catnip","decimals":6}]},{"pair":"terra1ph8rzspkhvuavad5gv0lw4386lmlurzf2fqffl5sc4t5eyp8jfnq9xq2kt","liquidity_token":"terra1t0kflzq6mkrg85k7akkv6t87y3l3ctcd3urt4mw5pmxeqplpmklqaekfnh","sides":[{"kind":"cw20","contract":"terra12j3xuxx52cg045qk37ee4k4u4fsgvyuf8d89dh7c9mr706jvxdascahqej","symbol":"ROTTI","name":"Rottweiler","decimals":6},{"kind":"cw20","contract":"terra16hzl7lge3jjnlazvut2ypt7upk68z5dycc9rwy608fah8q0y3fuslkenzc","symbol":"GDEX","name":"Garuda DEX","decimals":6}]}],"tokens":{"terra1ldxkxrtpd85wyfstenjzt8vgyv8vdjgd3t0nwu38sqh4wx6h2wksh9ule8":{"symbol":"TNEWS","name":"TerraNewsEN","decimals":6,"code":"8266","admin":"","minter":null},"terra122eam0kf6mnhptpjx2ur8wxcyk527nfw57hwshwac45vr8eeeneqhsgk5p":{"symbol":"MARZ","name":"MARZ","decimals":6,"code":"10029","admin":"terra1up38qe6ese8vhv2xfaarvqfva32ef24z8hn5ur","minter":null},"terra15p8su45k45axng8ue59rl6zph4at27s49u3agr6uqrx3dhcxpg3qt0ekdt":{"symbol":"DO","name":"Lunc Cookie Do Coin","decimals":6,"code":"10467","admin":"terra1dq4kjhtg0vjlkkrwdkm0hr6s32aujnyp5aa5wz","minter":null},"terra1e4lxe4fq6k9652pyu7fyrexsns3r8tlqrdky3z03ky2ptejzdajsh0xvzt":{"symbol":"ZANKA","name":"Zanka","decimals":6,"code":"8654","admin":"terra12mtcyt4e78rvha4lf8n8sztv36vpljwdgrahhs","minter":null},"terra1zra7m9w59sxwxqy8lqs3yeqleedrvtgg2qf938nk2wf8pq2ejkqsn0heln":{"symbol":"LCM","name":"LuncMoon","decimals":6,"code":"10029","admin":"terra1tzcrmjlhmat5sz2zc0ytlvw8jhzytnq89mjg90","minter":null},"terra1f6z0ylpshz9j0ytjcqlmyl3fmf8v7uwa7k7ar6craz247lum3wwq6jwh3u":{"symbol":"ART","name":"ARTEMIS","decimals":6,"code":"10097","admin":"terra1v7hjkavf888ek92p078q90am82scads9dt8ah6","minter":null},"terra1ljyvgw50u67r3ep7pp7qexgnsgy96fl57q0suut325ehed7eal8qwdtdq4":{"symbol":"ELPACO","name":"EL PACO","decimals":6,"code":"8654","admin":"terra1tvkrjc6p9upu4rhzk89ska6j7qwxrv88qls6t6","minter":null},"terra192dmx27220vvw2e90vcpseu90evgpu90z0l730hy4xjh60ctx9sqe9cm9m":{"symbol":"BURNIX","name":"Burnix","decimals":6,"code":"10334","admin":"terra1qnfnr9qn3ju5ky7dl77ctdxm5pu4vxrpgtu4w5kgk9r8vgwjtxtsj4fknd","minter":"terra128ezz4xm7sva25fhvyach3wy4m9y5cgr3e3u2hd8mjdz27ffmpwq4y4dfs"},"terra12f3f5fzfzxckc0qlv3rmwwkjfhzevpwmx77345n0zuu2678vxf0sm6vvcw":{"symbol":"GRDX","name":"GARUDAX TOKEN","decimals":6,"code":"6036","admin":"","minter":null},"terra1nv36kq4dpxf4d00w4mv4w095ek8kv48f54v46qduruy4fwd2dtzq2uk70j":{"symbol":"TKMN","name":"TUTAN KHAMUN","decimals":6,"code":"9064","admin":"terra1kjqpm44v5260rf8c827vl296nlztwgunzfyngc","minter":null},"terra1t9s9y7jurjjcaxu8jf64cv709d5pld0ktq7km798jz7cvpagdf4q2edsgz":{"symbol":"SMF","name":"SUMURFETTE","decimals":6,"code":"9788","admin":"terra1tluklhhakp72r9n94dss7xt8mlmk3a6cupvv5y","minter":null},"terra1pkhx09w725qw0tyzgd0f7chmqd036vkylrknx2g3yjdkg7ddyxgsd8f7v2":{"symbol":"LMC","name":"Lunc Market Cap","decimals":6,"code":"10029","admin":"terra1crmduy75eyhrehy062rzwn40vz4wguxewsx3p9","minter":null},"terra1zmsv8khmsrz2xj8zuhu7r7yruf5dfsyhtqyqf5lf92f2uvz6lf9sx5sr79":{"symbol":"QUID","name":"Liquid ","decimals":6,"code":"10464","admin":"terra1jcvmzxp03ypzc7zf55ueq03clue9hhefs9w0ev","minter":"terra1jcvmzxp03ypzc7zf55ueq03clue9hhefs9w0ev"},"terra16hl9mwp67l8xjy8hlhasmzldlmdpw963gmpj6e2em0g7xy4el2ys6kwtlt":{"symbol":"LIX","name":"LuniX","decimals":6,"code":"10152","admin":"terra1kdmdm495cce3rk7xhvdxkxf75y0f8gmqx3555u","minter":null},"terra1vs5xa8jr5ek5shxvqz3zyyvrexfxs0myd7gqhplmz46xldg7k7lscc8fyj":{"symbol":"SKI","name":"Ski Freee","decimals":6,"code":"10053","admin":"terra105j2p8l06r9jag2myhnmnn9xd3vdmclkw3vhkn","minter":null},"terra1vhgq25vwuhdhn9xjll0rhl2s67jzw78a4g2t78y5kz89q9lsdskq2pxcj2":{"symbol":"JURIS","name":"Juris Protocol","decimals":6,"code":"9257","admin":"","minter":null},"terra1wh02gp5f57kgtvnt8hv595xcmqcgg79sm38v6wz8ve7zarwge2vq3e8z8d":{"symbol":"CRYSTAL","name":"Crystalball","decimals":6,"code":"9788","admin":"terra12dd7qquut20rqxktcwy9kgvpym6lnrwecn0jez","minter":"terra12dd7qquut20rqxktcwy9kgvpym6lnrwecn0jez"},"terra14nfst294yvtdhrt4hk0njyszyh08q7e0g8rwknht7gyvw24ceyeqw42npg":{"symbol":"HOTL","name":"HOT Lady Original ","decimals":6,"code":"8654","admin":"terra1uzxxg98r3ccw05psfqtzmw9e7ff2udrssu3m3e","minter":"terra1uzxxg98r3ccw05psfqtzmw9e7ff2udrssu3m3e"},"terra1j9q30fspe7tn0nrxpjfnzzdha4xfkyznluwnqrgxshtyv2tfe5kswnrj6c":{"symbol":"LUNW","name":"LUNC Warriors Token","decimals":6,"code":"6036","admin":"","minter":null},"terra1ex0hjv3wurhj4wgup4jzlzaqj4av6xqd8le4etml7rg9rs207y4s8cdvrp":{"symbol":"TERRA","name":"Terraport","decimals":6,"code":"8266","admin":"terra1m67k3ak5d05k7tzukstkujxptw0tnwt8cmf5kcxm6vwd403l4teshm07ls","minter":"terra1m67k3ak5d05k7tzukstkujxptw0tnwt8cmf5kcxm6vwd403l4teshm07ls"},"terra15gjgmln8xj72rf69tx2zlrtcjzzvkcrdvrvfnmxja6kacz07pg0ssflecz":{"symbol":"FOOD","name":"Food Token","decimals":6,"code":"10029","admin":"terra129d6gg6dnlajp8ulsxs2lcxtas73wnhygm7kus","minter":null},"terra1rdxr2nhqlhw7jq0ved7srvwwuvk98g28e97s5c0seyrcel4364rsrdapge":{"symbol":"PoG","name":"Poor Guy","decimals":6,"code":"10029","admin":"terra1sk06e3dyexuq4shw77y3dsv480xv42mq73anxu","minter":"terra1zkafvp429ux9w80j7geh765hrlydwh7m97zr33"},"terra1le9l8gpwl2f48xluphnwkqrnhwxqt27xhducfzqvncmsh9swavlqjpy7c9":{"symbol":"FUN","name":"FUNTOKEN","decimals":6,"code":"8654","admin":"","minter":null},"terra1m58hc296srr6xygrrfyu6u0e32pl8d459nfs55pmegke8zlv94rqsjz882":{"symbol":"CatWifHat","name":"Cat Wif Hat","decimals":6,"code":"10029","admin":"terra17vya98uxt0jvn8lscz2kxv7jgztun7snqw7krz","minter":null},"terra1ctvrh09s3q2tgxm88vt6zexle8wcf22qwhxe5qa2wchc9e2ynw3qhvksyl":{"symbol":"BENANCE","name":"Benance Governance Token","decimals":6,"code":"10464","admin":"terra10v2ck5sywpz4nmwqkrm2cj3jl7zdudhxx67za6ydrc0w0cg6v56q7hdvzk","minter":null},"terra1vzhhsddfe558ug43kn5ct5d3aqj48wnvavlaue4d279eltsp9nnql6q549":{"symbol":"ampCWH","name":"Amplified CatWifHat","decimals":6,"code":"9912","admin":"terra1szpen6r7eqstv3qlyvgzkx9d54gzl03a70asdctnp2uz8wqzaymsrpq8ag","minter":"terra1szpen6r7eqstv3qlyvgzkx9d54gzl03a70asdctnp2uz8wqzaymsrpq8ag"},"terra19eytmx0yd3m5udlv7rh6u429g6ddjm2cndwv5cxndcymrztx4krqz9p4t6":{"symbol":"COFFEE","name":"Coffee LUNC","decimals":6,"code":"11723","admin":"terra1skvfy0waveqhtyhhf3tdgv4nhc9wynmcm3w4nx","minter":null},"terra1mm8tdp40r2slzwqxk8jsz66ayc4zp69muxeateq37x2xquttzsaqy7275a":{"symbol":"LTK","name":"Lunctoken","decimals":6,"code":"10352","admin":"terra1vtdxf9j82hr4ws453ugngge258zlccfxs3eye7","minter":null},"terra1jk858n7t29llucje6c8dhwslrz9x424u2l6mw3hxjfljt65pcf3s9q2vzm":{"symbol":"IDEV","name":"iDev","decimals":6,"code":"8654","admin":"terra1zypg5hktzgqrgdjsfkq9h6saz67ee9s9xjp6l0","minter":null},"terra19fufgpaec6c85nrw9j2a40rshdgcm9rhn6hlj2zmx03utpqkh2ls8jnxkz":{"symbol":"LUPEPE","name":"LUNCPEPE","decimals":6,"code":"8654","admin":"terra17ng8s6kftd75aryhzn6aa7nzmxuuurglc5st26","minter":null},"terra1kgx73l7akz83755ex76m90mlsphle6y5yd7f7xmee34lr8zc57mqm29esv":{"symbol":"UwU","name":"U will Understand","decimals":6,"code":"9788","admin":"terra13kxehht7mkmn5wc0xc4ptvafxrfc2ew3mh2cql","minter":null},"terra14exvtapxa3s3aw3kua8f8rfttwlfqx6xh0ccsu42z78srmphsrksrdfx9f":{"symbol":"THC","name":"LUNC 420","decimals":6,"code":"9664","admin":"terra1xufv5ms26kqkzp5kxtn207dsx6h57ph6ptks6p","minter":null},"terra1hadtla8984k9arfnjf5yf2zghn3h593tcn5auvdvk6ymm65wtd0sxmyah0":{"symbol":"KENNY","name":"KENNY","decimals":6,"code":"8994","admin":"terra1fuxskx3uxwlgxmsqpn7q59amjndvgtt08u8my9","minter":"terra1fuxskx3uxwlgxmsqpn7q59amjndvgtt08u8my9"},"terra1rk57qhszgdxt7vp6f7xhuqq5k7kdrqz5cevee4jfvyw7rgga6snqv4tj6m":{"symbol":"Futureflare","name":"Futureflare ","decimals":6,"code":"8266","admin":"terra1cpsqwgw0p6hg30s3nmpnd08mckcu5sc3gelng3ezs3z5sp2aqfpsckvca8","minter":null},"terra1uqc9evnugyewtuaztmg40muzp6e2f5vludjs8y3xxl8qljwktz3szal6yu":{"symbol":"LUFFY","name":"luffy the pirates","decimals":6,"code":"9788","admin":"terra13yex6xefup97382jq07se35at3vzrkrt8d7h5k","minter":null},"terra14rfnhc2aru7jp304lht3yf903necsnrt4cxd464cftsfcksw0rtsgundnt":{"symbol":"FRG","name":"FRG Universe","decimals":6,"code":"9494","admin":"terra1sk06e3dyexuq4shw77x3dsv480xv42mq7982q7","minter":null},"terra1rc4ef7s6pzuf9pkg8ymnw29pjz2yfm3tjg0kleu4348c2e6upkxqdfdj5u":{"symbol":"SMT","name":"SMarioToken","decimals":6,"code":"11756","admin":"terra1m692tf2hjp7ysrmrvm6x0jz39cgl3g3ecn9qh9","minter":"terra1m692tf2hjp7ysrmrvm6x0jz39cgl3g3ecn9qh9"},"terra1sl0cgtanapyy449h0hlmt77s8hak7caktvky8t4ct7a7kvjtyyvqzg8rv6":{"symbol":"BULL","name":"BULL LUNC","decimals":6,"code":"9938","admin":"terra1aj89lc0hrmxfsj40fxfwqjdwfr0zf7r55xxre8","minter":null},"terra1lz6lnuk64hrcx8t2qgs2ktyzqaxyd4vl76ga47c9fhd6w4erv4cqrjafjl":{"symbol":"LCPIE","name":"LuncPrime","decimals":5,"code":"9788","admin":"terra195ra2v8yx9zxzxcpxphz54e945m0lqks8awed7","minter":"terra195ra2v8yx9zxzxcpxphz54e945m0lqks8awed7"},"terra15ut7fz0xu8x5crj6tx7p23pz0ejdlt3vnc2h4evqhj5vj8rlelhsvez6p6":{"symbol":"CREMATR","name":"CREMATV2","decimals":6,"code":"10464","admin":"terra1tqw3k875256ywr9z4xfeppsc0fxduzxlc50ncv","minter":null},"terra10sfn80av99qkcx3rdpm4rt9hsguadyra5ewyxr":{"symbol":"SON","name":"Sonic Token","decimals":6,"code":"6687","admin":"terra16v7vtrzm29w55rjtujkdkzwfe0cv02wx95zhxx","minter":null},"terra1acyudc64qy06d42kkrh2z7v5333y0c2svs24ntxy7xazhamkykdswes2g7":{"symbol":"TEAI","name":"TerraAI","decimals":6,"code":"10259","admin":"terra1vfl3utdh7g5nzsn0wpu2pu467fuz5pmrxy07pr","minter":null},"terra1h3xd7qd5w4ne43ddtdnun050yp45eahk0a7wcx0gc3flhuq0m53s3ngtnk":{"symbol":"TEST","name":"TAX","decimals":6,"code":"9683","admin":"terra13yex6xefup97382jq07se35at3vzrkrt8d7h5k","minter":null},"terra12j3xuxx52cg045qk37ee4k4u4fsgvyuf8d89dh7c9mr706jvxdascahqej":{"symbol":"ROTTI","name":"Rottweiler","decimals":6,"code":"8654","admin":"","minter":null},"terra1cfmkp9eutxf0qp6vguyy4jyg8ua69236kxpevu7qew6m52glsg0sjkyfr8":{"symbol":"REXYZ","name":"REXYZ123","decimals":6,"code":"8266","admin":"","minter":null},"terra1cwn6jgp4rzx8wkm275m2v9vjmfaglr484cdzs68ze6shwwa2tatsh58ukk":{"symbol":"TESTC","name":"Testx","decimals":18,"code":"9788","admin":"terra13yex6xefup97382jq07se35at3vzrkrt8d7h5k","minter":null},"terra16wtml2q66g82fdkx66tap0qjkahqwp4lwq3ngtygacg5q0kzycgqvhpax3":{"symbol":"CL8Y-cb","name":"CeramicLiberty.com CL8Y.com/bridge","decimals":18,"code":"10184","admin":"terra1zlmv2xydxcusurtr6rl78wsvytdc6mfex6hep7","minter":"terra1zlmv2xydxcusurtr6rl78wsvytdc6mfex6hep7"},"terra17utj66xmtc05gdnkvzntpcfpryquzyuk4mcthnuldgqanjhvnzmqmfz53p":{"symbol":"AEVE","name":"AetherVerge Token","decimals":6,"code":"9257","admin":"terra1f6j6jcqjfk3gxg6kfd0v5ht782y625u349kqqz","minter":null},"terra1jfm4mxtc8afqpnp556j97gsyhydel87cvm0lxvgv6l7f4kghdq7sq98xjk":{"symbol":"FLX","name":"FLEX","decimals":6,"code":"8266","admin":"","minter":null},"terra1a8rmymsc58p9jg45p8ghy2ueqhmmhsxgd2tvuxma0pxa3g40tw8s0tjg82":{"symbol":"ORBIT","name":"Orbit Wire","decimals":6,"code":"11723","admin":"terra1usaxe75z6yezz5h7vql963p2gwdy2659hq0yhf","minter":null},"terra1wwrg00jczxf4czy4jr4wc2nvgpl4un4g8fjvm2zy54neel7ygqgsmlhhvp":{"symbol":"LTRN","name":"Lunctron","decimals":6,"code":"9788","admin":"terra148y9qpn69rcfaxxzwxh8ggjxlg97ptaykareve","minter":null},"terra1genyaw32qah4544m0sfgmchegf7emft77u7hug63cc6a72mvpntsfupzmd":{"symbol":"KNEEL","name":"KNEEL","decimals":6,"code":"10613","admin":"terra1ftz228yh337xdwk5gmj46vjkxk6mr2nyxfpt3y","minter":null},"terra15juucad3k2npsj53crl6qhra9f65s9jkas9nzpqypj38en4ht32qczde4a":{"symbol":"NHera","name":"HERA","decimals":6,"code":"9188","admin":"terra1rn0y76x9c2drz8g78wjzdsrezd056sjf6zx4pc","minter":null},"terra1gzs0926z2u6f2w9afk6ks4z9gkjpac00x60fy9yu903qjjz6nk9qmu5jx3":{"symbol":"Saiyan","name":"Saiyan Squad ","decimals":6,"code":"10464","admin":"terra1pf4r2sn427cxgllh5sccdv36w9xs9agmrzf2e5","minter":null},"terra1wx48f5g06l9qxw8k4gn3200lmseu85vkgangwyn9xdu66mtfsfxq60hkdt":{"symbol":"LCW","name":"Luna Classic World","decimals":6,"code":"8654","admin":"terra1p5wpwnrtng4lqnquutax5dnw74tsr5gejnpc5s","minter":null},"terra1nhxvw723h4gss9uel3gknuayqxt20c2lcxqv9htghs45f3j9sz0srh67f5":{"symbol":"GCC","name":"Grumpy Catty Crypto","decimals":6,"code":"8266","admin":"","minter":null},"terra1xuwhm227h520fx0zse5enze42as3n0sm2xlyctjwnh08m0kvt83ss0rmzw":{"symbol":"BLEEVE","name":"Bleeve In LUNC","decimals":6,"code":"8266","admin":"","minter":null},"terra12ckccpalj2y9h54syyst4lpqp79duc9cpxfsyvne409rjw93s8qs2eneh3":{"symbol":"BAKED","name":"BAKED","decimals":6,"code":"10339","admin":"terra1skvfy0waveqhtyhhf3tdgv4nhc9wynmcm3w4nx","minter":"terra18naxzqc2ucgaz4x0urfmkxthm3vddk239une4mav7cfew8gdh3fsv7k3l3"},"terra1c79hkx3e77u4pjxtp4m5z2kz9rqcx58l2zrnzygwjp2cxaukdxyqnxnjs7":{"symbol":"babyLENNYL","name":"babyLENNYL","decimals":6,"code":"8266","admin":"terra15zxvje7xe23ve9n7rc6xy7nsmxkteslql4vwud","minter":"terra15zxvje7xe23ve9n7rc6xy7nsmxkteslql4vwud"},"terra10svrvgrj6jsumvyj039unkmrr7mhx7mqcdhf344mdxxj2s3sfa9qd4nyn5":{"symbol":"iGold","name":"DoGold","decimals":6,"code":"10855","admin":"terra17f9ymjp7mpm6wuxdev4uagqxfhxv50pu3vezkj","minter":"terra1s3evz9jtexum6dn0d7vrlh86cw5gg5vezrq7r0"},"terra15uwstq6plhlxm3qcvh6js9sflp8vl9964f9l0mjhuv38dnjkulkq48rgfv":{"symbol":"LENNYR","name":"LennyV2","decimals":6,"code":"10464","admin":"terra1tqw3k875256ywr9z4xfeppsc0fxduzxlc50ncv","minter":null},"terra1x2w89mnpzpy072azpf0g8muccnvahlewdpq0kkpf4qdhx3c6y9qqeppwyd":{"symbol":"Gary","name":"Gary","decimals":6,"code":"9912","admin":"terra1szpen6r7eqstv3qlyvgzkx9d54gzl03a70asdctnp2uz8wqzaymsrpq8ag","minter":"terra1szpen6r7eqstv3qlyvgzkx9d54gzl03a70asdctnp2uz8wqzaymsrpq8ag"},"terra1sjs7rvuj0h7uk40vv3wlhdn0we5mhx0957z4g5900shn7865vwcsh7medu":{"symbol":"JEFF","name":"JEFF","decimals":6,"code":"8266","admin":"terra1rquuh9dcz0lmu0dmzddal7rq7mualn499f2wz8","minter":"terra1rquuh9dcz0lmu0dmzddal7rq7mualn499f2wz8"},"terra16hzl7lge3jjnlazvut2ypt7upk68z5dycc9rwy608fah8q0y3fuslkenzc":{"symbol":"GDEX","name":"Garuda DEX","decimals":6,"code":"11723","admin":"terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c","minter":"terra16hzl7lge3jjnlazvut2ypt7upk68z5dycc9rwy608fah8q0y3fuslkenzc"},"terra1ftp7z26px8l7tf4c02g54ekpnzsgtt8dl7tx2dy4072plzqemjvqtlkq3l":{"symbol":"CZY","name":"CZ Yield-Bearing Token","decimals":6,"code":"11501","admin":"terra1uqhvfquslpaaquzjth04uc3tm60zyw46dzcdkd","minter":"terra1erjh79gy2l5f575pc0v74lez2909h5uaqh739jj33pl7lxw3qmus6dysnn"},"terra1ps34wcgyjjp93hf2wvmt3t7v9ky9xm43yhzf6anq8kyp777egsdq0eua67":{"symbol":"KENA","name":"Kenalinu","decimals":6,"code":"11713","admin":"terra16j5u6ey7a84g40sr3gd94nzg5w5fm45046k9s2347qhfpwm5fr6sem3lr2","minter":null},"terra1nnmlzhgw92kwyk036r0m3j3u0ydt3enad4vtxlggly886cujq5csrs6k9u":{"symbol":"ampNIP","name":"Amplified Catnip","decimals":6,"code":"10029","admin":"terra19jlw4vfmyge47e3k307p4qee62zhcx3s5zegg5","minter":"terra19jlw4vfmyge47e3k307p4qee62zhcx3s5zegg5"},"terra10quf590wyr8tuf3pp05hgwm94n3dgfnma377uwaynl3tj47df7nskwdxgs":{"symbol":"CNip","name":"Catnip","decimals":6,"code":"10029","admin":"terra19jlw4vfmyge47e3k307p4qee62zhcx3s5zegg5","minter":null}}};
@@ -445,43 +617,87 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     if (p.blocked) return '<span class="badge r">⛔ BLOCKED</span>';
     return '<span class="badge g">🛡️ VERIFIED CODE</span>';
   }
+  function syncPairPanel(){
+    var p = state.sel;
+    if (!p){
+      $('ppName').textContent = 'Pick a market to trade';
+      $('ppPrice').textContent = '—';
+      $('ppBadge').innerHTML = '';
+      $('ppRes1').textContent = '—'; $('ppRes2').textContent = '—';
+      $('ppPool').textContent = '—'; $('ppLp').textContent = '—';
+      return;
+    }
+    $('ppName').textContent = pairName(p);
+    $('ppBadge').innerHTML = poolBadge(p);
+    $('ppPrice').textContent = p.live && spotLine(p) ? spotLine(p) : 'reading the pool…';
+    $('ppRes1').textContent = p.live ? fmt(p.sides[0].amount, sideDec(p.sides[0])) + ' ' + sideSym(p.sides[0]) : '—';
+    $('ppRes2').textContent = p.live ? fmt(p.sides[1].amount, sideDec(p.sides[1])) + ' ' + sideSym(p.sides[1]) : '—';
+    $('ppPool').innerHTML = '<a href="' + finderAddr(p.addr) + '" target="_blank" rel="noopener">' + esc(p.addr) + '</a>';
+    $('ppLp').innerHTML = '<a href="' + finderAddr(p.lp) + '" target="_blank" rel="noopener">' + esc(p.lp) + '</a>';
+  }
   function renderPools(){
     var el = $('poolList'); el.innerHTML = '';
     pairs.forEach(function(p){
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'pool' + (state.sel === p ? ' sel' : '') + (p.blocked ? ' blocked' : '');
-      var rs = p.live
-        ? fmt(p.sides[0].amount, sideDec(p.sides[0])) + ' ' + esc(sideSym(p.sides[0])) + ' · ' +
-          fmt(p.sides[1].amount, sideDec(p.sides[1])) + ' ' + esc(sideSym(p.sides[1])) +
-          (spotLine(p) ? '<br>' + esc(spotLine(p)) : '')
+      var res = p.live
+        ? fmt(p.sides[0].amount, sideDec(p.sides[0])) + ' ' + esc(sideSym(p.sides[0])) + '<br>' +
+          fmt(p.sides[1].amount, sideDec(p.sides[1])) + ' ' + esc(sideSym(p.sides[1]))
         : 'reading…';
-      if (p.blocked && p.blockReason) rs += '<br><span style="color:#ff8b96">⛔ ' + esc(p.blockReason) + '</span>';
-      b.innerHTML = '<span class="nm">' + esc(pairName(p)) + '</span>' + poolBadge(p) +
-        '<div class="rs">' + rs + '</div>' +
-        '<div class="rs mono">' + esc(p.addr) + '</div>';
+      if (p.blocked && p.blockReason) res += '<br><span style="color:#ff8b96">⛔ ' + esc(p.blockReason) + '</span>';
+      b.innerHTML = '<span class="mcell"><span class="nm">' + esc(pairName(p)) + '</span>' + poolBadge(p) +
+        '<span class="rs mono">' + esc(p.addr) + '</span></span>' +
+        '<span class="mcell price">' + (p.live && spotLine(p) ? esc(spotLine(p)) : '—') + '</span>' +
+        '<span class="mcell res">' + res + '</span>';
       b.addEventListener('click', function(){
         if (p.blocked){ wlog('That pool is blocked by Shield: ' + p.blockReason); return; }
         selectPair(p);
       });
       el.appendChild(b);
     });
+    syncPairPanel();
   }
   function selectPair(p){
     state.sel = p; state.dir = 0; state.quote = null; state.checks = null;
     $('swapPoolName').textContent = pairName(p) + ' — ' + p.addr;
     $('liqPoolName').textContent = pairName(p) + ' — ' + p.addr;
-    $('dirA').textContent = 'Pay ' + sideSym(p.sides[0]) + ' → get ' + sideSym(p.sides[1]);
-    $('dirB').textContent = 'Pay ' + sideSym(p.sides[1]) + ' → get ' + sideSym(p.sides[0]);
+    $('dirA').textContent = sideSym(p.sides[0]) + ' → ' + sideSym(p.sides[1]);
+    $('dirB').textContent = sideSym(p.sides[1]) + ' → ' + sideSym(p.sides[0]);
     $('addSym1').textContent = sideSym(p.sides[0]);
     renderPools(); renderDir(); refreshQuote(); refreshLiq();
   }
   function renderDir(){
     $('dirA').classList.toggle('on', state.dir === 0);
     $('dirB').classList.toggle('on', state.dir === 1);
+    var p = state.sel;
+    if (p){
+      $('payTok').textContent = sideSym(p.sides[state.dir]) + ' ▾';
+      $('recvTok').textContent = sideSym(p.sides[1 - state.dir]) + ' ▾';
+    }
   }
   $('dirA').addEventListener('click', function(){ state.dir = 0; renderDir(); refreshQuote(); });
   $('dirB').addEventListener('click', function(){ state.dir = 1; renderDir(); refreshQuote(); });
+  function flipDir(){ if (!state.sel) return; (state.dir === 0 ? $('dirB') : $('dirA')).click(); }
+  $('flipBtn').addEventListener('click', flipDir);
+  $('payTok').addEventListener('click', flipDir);
+  $('recvTok').addEventListener('click', flipDir);
+  document.querySelectorAll('.chip').forEach(function(ch){
+    ch.addEventListener('click', function(){
+      var p = state.sel; if (!p || !state.connected) return;
+      var offer = p.sides[state.dir];
+      var b = balOf(offer); if (b == null) return;
+      var amt = bi(b) * BigInt(ch.getAttribute('data-pct')) / 100n;
+      $('swapAmt').value = fmt(amt.toString(), sideDec(offer)).replace(/,/g, '');
+      refreshQuote();
+    });
+  });
+  document.querySelectorAll('.slipchip').forEach(function(ch){
+    ch.addEventListener('click', function(){
+      $('slipIn').value = ch.getAttribute('data-slip');
+      refreshQuote();
+    });
+  });
   $('tabSwap').addEventListener('click', function(){
     $('tabSwap').classList.add('on'); $('tabLiq').classList.remove('on');
     $('swapPane').style.display = ''; $('liqPane').style.display = 'none'; });
@@ -511,7 +727,7 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
   }
   function balOf(s){ var v = state.balances[sideKey(s)]; return v == null ? null : v; }
   function renderSwapBal(){
-    var p = state.sel; if (!p) { $('swapBal').textContent = ''; return; }
+    var p = state.sel; if (!p) { $('swapBal').textContent = ''; $('recvBal').textContent = ''; return; }
     var offer = p.sides[state.dir];
     var b = balOf(offer);
     $('swapBal').innerHTML = state.connected
@@ -521,6 +737,10 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     var mb = $('maxBtn');
     if (mb) mb.addEventListener('click', function(){
       if (b != null){ $('swapAmt').value = fmt(b, sideDec(offer)).replace(/,/g, ''); refreshQuote(); } });
+    var askS = p.sides[1 - state.dir], ab = balOf(askS);
+    $('recvBal').textContent = state.connected
+      ? 'Your balance: ' + (ab == null ? '…' : fmt(ab, sideDec(askS)) + ' ' + sideSym(askS))
+      : '';
   }
 
   /* ---------- Garuda Shield ---------- */
@@ -656,6 +876,7 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     var amt = parseAmt($('swapAmt').value, sideDec(offer));
     if (!amt || amt <= 0n){
       state.quote = null; $('quoteBox').style.display = 'none';
+      $('recvAmt').value = ''; $('rateLine').textContent = '';
       runShield().then(function(res){ if (seq === quoteSeq) renderShield(res); });
       btn.disabled = true; btn.textContent = 'Swap';
       return;
@@ -664,6 +885,12 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       .then(function(r){
         if (seq !== quoteSeq) return;
         state.quote = r;
+        $('recvAmt').value = fmt(r.return_amount, sideDec(ask));
+        var offN = Number(amt) / Math.pow(10, sideDec(offer));
+        var recN = Number(r.return_amount) / Math.pow(10, sideDec(ask));
+        $('rateLine').textContent = (offN > 0 && recN > 0)
+          ? '1 ' + sideSym(offer) + ' ≈ ' + (recN / offN).toPrecision(6) + ' ' + sideSym(ask) + ' — at this trade size, from the pool quote'
+          : '';
         var minRecv = bi(r.return_amount) * BigInt(Math.round((1 - slipFrac()) * 10000)) / 10000n;
         state.minRecv = minRecv;
         var imp = impactPct(r);
@@ -679,6 +906,7 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       .catch(function(){
         if (seq !== quoteSeq) return;
         state.quote = null;
+        $('recvAmt').value = ''; $('rateLine').textContent = '';
         $('quoteBox').style.display = '';
         $('quoteBox').innerHTML = '<span style="color:#ff8b96">The pool refused this quote — the amount may be too large for the pool, or the pool is not answering.</span>';
         runShield().then(function(res){ if (seq === quoteSeq) renderShield(res); });

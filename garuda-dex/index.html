@@ -894,12 +894,16 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
         var minRecv = bi(r.return_amount) * BigInt(Math.round((1 - slipFrac()) * 10000)) / 10000n;
         state.minRecv = minRecv;
         var imp = impactPct(r);
+        var taxNote = (ask.kind === 'native' && (ask.denom === 'uluna' || ask.denom === 'uusd'))
+          ? '<div class="small" style="margin-top:6px;color:#ffb74d">Payouts in LUNC/USTC are subject to the 1.5% Terra Classic transfer tax, withheld on payout — your wallet receives the shown amount minus the tax.</div>'
+          : '';
         $('quoteBox').style.display = '';
         $('quoteBox').innerHTML =
           '<div class="row"><span>You receive (pool quote)</span><span>' + fmt(r.return_amount, sideDec(ask)) + ' ' + esc(sideSym(ask)) + '</span></div>' +
           '<div class="row"><span>Pool fee</span><span>' + fmt(r.commission_amount, sideDec(offer)) + ' ' + esc(sideSym(offer)) + '</span></div>' +
           '<div class="row"><span>Price impact</span><span style="color:' + (imp > 15 ? '#ff8b96' : imp > 5 ? '#ffb74d' : '#3dff8e') + '">' + imp.toFixed(2) + '%</span></div>' +
           '<div class="row"><span>Minimum you will accept</span><span>' + fmt(minRecv.toString(), sideDec(ask)) + ' ' + esc(sideSym(ask)) + '</span></div>' +
+          taxNote +
           '<div class="small dim" style="margin-top:6px">Quoted by the pool contract itself just now — not estimated by this page.</div>';
         return runShield();
       }).then(function(res){ if (res && seq === quoteSeq) renderShield(res); })

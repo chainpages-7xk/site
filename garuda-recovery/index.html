@@ -6,89 +6,150 @@
 <title>Garuda Recovery — Find Your Losses &amp; Follow the Recovery Plan</title>
 <style>
   :root{
-    --bg:#04060e; --bg2:#070b1a; --card:#0a1020; --card2:#0d1430;
-    --line:#1c2a4a; --line2:#2a3f6e;
-    --txt:#eaf2ff; --dim:#9db4d8;
-    --cyan:#22e6ff; --pink:#ff2e9a; --green:#3dff8e; --gold:#ffd76a; --red:#ff4d5e;
+    /* Garuda DeFi brand palette — from garuda-defi.org (archived Apr 2025):
+       vivid green #01e801/#00ec00, teal #22b496, CTA gradient #00ff00 -> #095309,
+       near-black green-tinted surfaces, Geist type. */
+    --bg:#040604; --card:#101310; --card2:#151a15;
+    --line:#263026; --line2:#354a35;
+    --txt:#f2f5f2; --dim:#9aa79a;
+    --grn:#00e801; --grn2:#00c400; --mint:#3fef9a; --teal:#22b496;
+    --gold:#e8b93e; --red:#ff5147;
   }
   *{box-sizing:border-box}
   body{margin:0;color:var(--txt);
-    background:radial-gradient(1200px 600px at 50% -10%,#0b1440 0%,var(--bg) 55%) fixed,var(--bg);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:
+      radial-gradient(900px 480px at 8% -5%,rgba(6,56,7,.5) 0%,rgba(4,6,4,0) 60%),
+      radial-gradient(900px 480px at 92% -5%,rgba(0,105,125,.16) 0%,rgba(4,6,4,0) 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:"Geist",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     -webkit-text-size-adjust:100%}
   .wrap{max-width:640px;margin:0 auto;padding:16px 14px 44px}
-  a{color:var(--cyan);word-break:break-all}
+  a{color:var(--grn);word-break:break-all}
+  a:hover{color:var(--mint)}
+  /* ---------- top bar (Garuda app header feel) ---------- */
+  .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;
+    padding:10px 14px;background:rgba(4,6,4,.94);border-bottom:1px solid var(--line);
+    backdrop-filter:blur(6px)}
+  .topbar .emblem{width:34px;height:34px;flex:none}
+  .topbar .brand{font-size:19px;font-weight:900;letter-spacing:.08em;color:var(--grn);line-height:1}
+  .topbar .brand small{display:block;font-size:10px;font-weight:700;letter-spacing:.34em;color:var(--txt);margin-top:3px}
+  .topbar nav{margin-left:auto;display:flex;gap:14px;flex-wrap:wrap}
+  .topbar nav a{color:var(--txt);text-decoration:none;font-size:13.5px;font-weight:600}
+  .topbar nav a:hover{color:var(--grn)}
+  .chainpill{border:1px solid var(--grn2);color:var(--grn);border-radius:999px;padding:5px 11px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;background:rgba(1,232,1,.07)}
+  @media (max-width:560px){ .topbar nav{display:none} .topbar .chainpill{margin-left:auto} }
   /* ---------- hero ---------- */
-  .hero{text-align:center;padding:26px 6px 8px}
-  .eagle{font-size:52px;filter:drop-shadow(0 0 14px rgba(34,230,255,.75))}
-  .wordmark{font-size:52px;font-weight:900;letter-spacing:.22em;margin:6px 0 0 12px;color:#eaf7ff;
-    text-shadow:0 0 6px rgba(34,230,255,.9),0 0 22px rgba(34,230,255,.65),0 0 46px rgba(34,230,255,.4)}
-  .recov{font-size:27px;font-weight:800;letter-spacing:.58em;margin:2px 0 0 14px;color:#ffe3f4;
-    text-shadow:0 0 6px rgba(255,46,154,.9),0 0 22px rgba(255,46,154,.65),0 0 46px rgba(255,46,154,.4)}
+  .hero{text-align:center;padding:30px 6px 8px}
+  .emblem{display:block;margin:0 auto}
+  .hero .emblem{width:104px;height:104px}
+  .wordmark{font-size:56px;font-weight:900;letter-spacing:.05em;line-height:1.02;margin:10px 0 0;
+    background-image:
+      repeating-linear-gradient(180deg,rgba(4,10,4,0) 0 27px,rgba(4,10,4,.5) 27px 30px,rgba(4,10,4,0) 30px 56px),
+      linear-gradient(180deg,#00ff00 15%,#00c400 85%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  @supports not ((-webkit-background-clip:text) or (background-clip:text)){
+    .wordmark{color:var(--grn);background:none}}
+  .recov{display:flex;align-items:center;gap:12px;justify-content:center;margin:8px auto 0;max-width:440px;
+    font-size:24px;font-weight:800;letter-spacing:.52em;text-indent:.52em;color:#fff}
+  .recov::before,.recov::after{content:"";height:2px;flex:1}
+  .recov::before{background:linear-gradient(90deg,transparent,var(--grn))}
+  .recov::after{background:linear-gradient(90deg,var(--grn),transparent)}
   .tagline{color:var(--dim);font-size:15px;line-height:1.55;margin:14px auto 4px;max-width:520px}
   .stats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 4px}
-  .stat{border:1px solid var(--line2);border-radius:999px;padding:7px 13px;font-size:13px;color:var(--txt);
-    background:rgba(13,20,48,.7);box-shadow:0 0 12px rgba(34,230,255,.12) inset}
-  .stat b{color:var(--cyan)}
-  .stat.pk b{color:var(--pink)} .stat.gn b{color:var(--green)} .stat.gd b{color:var(--gold)}
+  .stat{border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:13px;color:var(--txt);
+    background:#0c100c}
+  .stat b{color:var(--grn)}
+  .stat.pk b{color:var(--grn)} .stat.gn b{color:var(--mint)} .stat.gd b{color:var(--teal)}
   /* ---------- cards ---------- */
   .card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
-    border-radius:16px;padding:18px 15px;margin:16px 0 0;box-shadow:0 0 24px rgba(10,30,90,.35)}
-  .card h2{font-size:19px;margin:0 0 10px;letter-spacing:.02em}
-  .card h2 .ic{margin-right:8px}
+    border-radius:16px;padding:18px 15px;margin:16px 0 0}
+  .card h2{font-size:19px;margin:0 0 10px;letter-spacing:.02em;display:flex;align-items:center}
+  .card h2 .ic{flex:none;width:5px;height:20px;border-radius:3px;margin-right:11px;
+    background:linear-gradient(180deg,#00ff00,#095309)}
   .card p,.card li{font-size:14.5px;line-height:1.6}
   .dim{color:var(--dim)} .small{font-size:13px;line-height:1.55}
   ul.tight{margin:6px 0;padding-left:20px} ul.tight li{margin-bottom:6px}
-  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
+  .mono{font-family:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
   /* ---------- lookup ---------- */
-  input[type=text]{width:100%;min-height:54px;background:#060a18;border:1px solid var(--line2);
+  input[type=text]{width:100%;min-height:54px;background:#080a08;border:1px solid var(--line2);
     border-radius:12px;color:var(--txt);font:inherit;font-size:15.5px;padding:10px 12px}
-  input[type=text]:focus{outline:2px solid var(--cyan);outline-offset:0}
-  .bigbtn{display:block;width:100%;min-height:56px;border:0;border-radius:12px;margin-top:12px;cursor:pointer;
-    background:linear-gradient(90deg,#0891b2,#2563eb);color:#fff;font:inherit;font-size:17px;font-weight:800;
-    letter-spacing:.03em;box-shadow:0 0 18px rgba(34,230,255,.35)}
+  input[type=text]:focus{outline:2px solid var(--grn);outline-offset:0}
+  .bigbtn{display:block;width:100%;min-height:56px;border:0;border-radius:14px;margin-top:12px;cursor:pointer;
+    background:linear-gradient(180deg,#00ff00,#095309);color:#fff;font:inherit;font-size:17px;font-weight:800;
+    letter-spacing:.03em;box-shadow:0 8px 26px rgba(0,232,0,.22)}
+  .bigbtn:hover{filter:brightness(1.07)}
   .err{display:none;color:#ffb3ba;font-size:14px;margin-top:10px;line-height:1.5}
   .err.show{display:block}
   .result{margin-top:14px}
   .walletline{font-size:13px;color:var(--dim);margin-bottom:4px}
-  .incident{border:1px solid var(--line2);border-radius:12px;padding:13px 12px;margin-top:10px;background:#070d20}
+  .incident{border:1px solid var(--line);border-radius:12px;padding:13px 12px;margin-top:10px;background:#0a0d0a}
   .incident h3{margin:0 0 8px;font-size:15.5px;color:#fff}
-  .incident h3 .dt{color:var(--pink);font-weight:800;margin-right:8px}
+  .incident h3 .dt{color:var(--grn);font-weight:800;margin-right:8px}
   table{width:100%;border-collapse:collapse;font-size:14px}
   td,th{padding:5px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
   td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   tr:last-child td{border-bottom:0}
-  .tot td{font-weight:800;color:var(--gold);border-top:1px solid var(--line2)}
+  .tot td{font-weight:800;color:var(--grn);border-top:1px solid var(--line2)}
   .chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
-  .chip{border:1px solid var(--line2);border-radius:8px;padding:3px 8px;font-size:12.5px;
-    font-family:ui-monospace,Menlo,Consolas,monospace;background:#0a1128;color:var(--txt)}
-  .notfound{border:1px solid var(--gold);border-radius:12px;padding:13px 12px;background:#171106;margin-top:12px}
+  .chip{border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:12.5px;
+    font-family:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;background:#12160f;color:var(--txt)}
+  .notfound{border:1px solid var(--gold);border-radius:12px;padding:13px 12px;background:#141106;margin-top:12px}
   .notfound p{margin:4px 0}
   /* ---------- scam box ---------- */
-  .danger{background:#1c0714;border:1px solid var(--pink);border-radius:14px;padding:14px;margin:16px 0 0;
-    box-shadow:0 0 18px rgba(255,46,154,.18)}
-  .danger h2{color:#ff9ecb;font-size:16px;margin:0 0 8px}
+  .danger{background:#170808;border:1px solid #6e1d1d;border-radius:14px;padding:14px;margin:16px 0 0}
+  .danger h2{color:#ff8a80;font-size:16px;margin:0 0 8px}
   .danger p,.danger li{font-size:14px;line-height:1.55}
   /* ---------- updates ---------- */
-  .upd{border-left:3px solid var(--cyan);padding:2px 0 2px 12px;margin:0 0 14px}
-  .upd .d{color:var(--cyan);font-weight:800;font-size:13.5px;letter-spacing:.04em}
+  .upd{border-left:3px solid var(--grn2);padding:2px 0 2px 12px;margin:0 0 14px}
+  .upd .d{color:var(--grn);font-weight:800;font-size:13.5px;letter-spacing:.04em}
   .upd p{margin:3px 0 0}
-  .linkrow{display:block;border:1px solid var(--line2);border-radius:12px;padding:13px 14px;margin-top:10px;
-    text-decoration:none;background:#070d20}
-  .linkrow .t{font-size:16px;font-weight:700;color:var(--cyan)}
+  .linkrow{display:block;border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-top:10px;
+    text-decoration:none;background:#0a0d0a}
+  .linkrow:hover{border-color:var(--grn2)}
+  .linkrow .t{font-size:16px;font-weight:700;color:var(--grn)}
   .linkrow .d{display:block;margin-top:3px;color:var(--dim);font-size:13.5px;line-height:1.5}
-  .disclaimer{margin:26px auto 6px;padding:12px 16px;font-size:12px;line-height:1.55;color:#8a97a5;
-    text-align:center;border-top:1px solid #2a3440;max-width:640px}
+  .footmark{margin:30px auto 0;text-align:center}
+  .footmark .emblem{width:40px;height:40px;opacity:.9}
+  .footmark .fm{margin-top:6px;font-size:12px;font-weight:800;letter-spacing:.4em;text-indent:.4em;color:#5f705f}
+  .disclaimer{margin:14px auto 6px;padding:12px 16px;font-size:12px;line-height:1.55;color:#7d8a7d;
+    text-align:center;border-top:1px solid var(--line);max-width:640px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="eg" viewBox="0 0 120 120">
+  <g stroke="#00e801" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 38 L60 18 L106 38"/>
+    <path d="M25 51 L60 33 L95 51"/>
+    <path d="M31 45 L45 65"/><path d="M89 45 L75 65"/>
+    <path d="M22 58 L13 88 L29 77"/><path d="M98 58 L107 88 L91 77"/>
+    <path d="M34 67 L28 101 L45 83"/><path d="M86 67 L92 101 L75 83"/>
+    <path d="M48 73 L46 109 L58 85"/><path d="M72 73 L74 109 L62 85"/>
+  </g>
+  <g stroke="#00e801" stroke-width="5" stroke-linecap="round">
+    <path d="M37 57 L51 61"/><path d="M83 57 L69 61"/>
+  </g>
+  <polygon points="52,60 68,60 60,84" fill="#00e801"/>
+</symbol>
+</defs></svg>
 <div id="official-warning" style="background:#7a0d0d;color:#ffffff;padding:12px 14px;text-align:center;font-family:system-ui,sans-serif;font-size:14px;line-height:1.55;border-bottom:3px solid #ff3b30;position:relative;z-index:9999;"><strong>⚠️ BEWARE OF FAKE COPIES</strong> — the only real home for these tools is <strong>chainpages-7xk.github.io/site</strong>. Bookmark this page. <strong>This page NEVER asks for your seed phrase or password</strong> — if any page or person asks for them, it is a scam: close it. Signing happens only inside your own wallet.</div>
+
+<div class="topbar">
+  <svg class="emblem"><use href="#eg"/></svg>
+  <div class="brand">GARUDA<small>RECOVERY</small></div>
+  <nav>
+    <a href="#lookup">Find Losses</a><a href="#plan">Recovery Plan</a><a href="#report">File a Report</a><a href="#tools">Tools</a><a href="#updates">Updates</a>
+  </nav>
+  <span class="chainpill">Terra Classic</span>
+</div>
 
 <div class="wrap">
 
   <!-- ============ HERO ============ -->
   <div class="hero">
-    <div class="eagle">🦅</div>
+    <svg class="emblem"><use href="#eg"/></svg>
     <div class="wordmark">GARUDA</div>
     <div class="recov">RECOVERY</div>
     <p class="tagline">The recovery-plan home for the October 2026 Garuda staking incidents.
@@ -103,7 +164,7 @@
 
   <!-- ============ FIND YOUR LOSSES ============ -->
   <div class="card" id="lookup">
-    <h2><span class="ic">🔎</span>Find your losses</h2>
+    <h2><span class="ic"></span>Find your losses</h2>
     <p>Type your Terra Classic wallet address. <b>This page never connects to a wallet and never asks you to
       sign anything</b> — your address is public, and the lookup runs entirely on your device against the
       verified loss ledgers. Nothing you type is sent anywhere.</p>
@@ -120,7 +181,7 @@
 
   <!-- ============ WHAT WAS LOST ============ -->
   <div class="card">
-    <h2><span class="ic">📋</span>What was lost</h2>
+    <h2><span class="ic"></span>What was lost</h2>
     <p><b>DO across all three incidents: 42,998,000,153,789.46 DO.</b></p>
     <p class="dim" style="margin-bottom:4px"><b style="color:var(--txt)">Oct 31 — DO regular staking pool.</b>
       42,266,455,695,066.14 DO was swept from the pool contract. Staker claims: 42,169,948,424,016.19 DO
@@ -152,8 +213,8 @@
   </div>
 
   <!-- ============ RECOVERY PLAN ============ -->
-  <div class="card">
-    <h2><span class="ic">🧭</span>The recovery plan</h2>
+  <div class="card" id="plan">
+    <h2><span class="ic"></span>The recovery plan</h2>
     <p>In all three incidents the attacker abused a contract-migration exploit to move Garuda staking
       contracts onto attacker-controlled code and sweep their contents. The contracts’ stake records
       survived on-chain — that is why every figure on this page can be proven, wallet by wallet.</p>
@@ -176,8 +237,8 @@
   </div>
 
   <!-- ============ FILE YOUR REPORT ============ -->
-  <div class="card">
-    <h2><span class="ic">📝</span>File your own report</h2>
+  <div class="card" id="report">
+    <h2><span class="ic"></span>File your own report</h2>
     <p><b>Step 1 — Find your exact loss.</b> Use the lookup at the top of this page. You need your wallet
       address and your amount.</p>
     <p><b>Step 2 — File with KuCoin</b> (DO pool losses). Open a support ticket at
@@ -205,8 +266,8 @@
   </div>
 
   <!-- ============ TOOLS & EVIDENCE ============ -->
-  <div class="card">
-    <h2><span class="ic">🧰</span>Tools &amp; evidence</h2>
+  <div class="card" id="tools">
+    <h2><span class="ic"></span>Tools &amp; evidence</h2>
     <a class="linkrow" href="../garuda-exit-all/"><span class="t">Exit Any Pool</span>
       <span class="d">Claim rewards and unstake from any of the 61 Garuda regular staking pools.</span></a>
     <a class="linkrow" href="../garuda-claims/"><span class="t">DO Claims &amp; Loss Report Builder</span>
@@ -219,7 +280,7 @@
 
   <!-- ============ UPDATES ============ -->
   <div class="card">
-    <h2><span class="ic">📣</span>Updates</h2>
+    <h2><span class="ic"></span>Updates</h2>
     <!-- UPDATES — newest first. To add an update, copy one <div class="upd"> block and paste it directly below this comment. -->
     <div id="updates">
       <div class="upd"><span class="d">NOV 1, 2026</span>
@@ -247,6 +308,8 @@
     the DO pool claims ledger (Oct 31), the cross-staking compensation ledger (Oct 21) and the NFT
     staking census (Oct 20–23). Figures reconcile to the drain transactions.</p>
 </div>
+
+<div class="footmark"><svg class="emblem"><use href="#eg"/></svg><div class="fm">GARUDA RECOVERY</div></div>
 
 <div class="disclaimer">Unofficial community help tool — not affiliated with Garuda DeFi or any project listed. Provided free, as-is, with no warranties. Use at your own risk: the providers of this tool are not responsible for any losses or outcomes. This page never holds your keys or your funds — signing happens only inside your own wallet. Always verify every transaction in your wallet before you sign.</div>
 

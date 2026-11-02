@@ -56,7 +56,7 @@
     <div class="opsline">DEX OPS</div>
     <p class="tagline">The operator's window on the Garuda DEX: live trades, pair integrity against the verified
       census, and basic activity stats. Read-only — this page signs nothing and moves nothing.</p>
-    <p class="stamp">Last checked: <b id="stamp">—</b> · auto-refreshes every 60 seconds · <button type="button" class="ghostbtn" id="refreshBtn">Refresh now</button></p>
+    <p class="stamp">Last checked: <b id="stamp">—</b> · pair integrity re-checks every 60 seconds · trades refresh in rotation (a slice of pairs every 5 minutes; Refresh now re-reads everything) · <button type="button" class="ghostbtn" id="refreshBtn">Refresh now</button></p>
   </div>
 
   <div class="card">
@@ -182,8 +182,13 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     return 6;
   }
 
+  function touchStamp(){ $('stamp').textContent = new Date().toLocaleString(); }
+
   /* ---------- integrity ---------- */
+  var integRunning = false;
   function checkIntegrity(){
+    if (integRunning) return Promise.resolve();
+    integRunning = true;
     var rows = {};
     return mapLimit(pairs, 6, function(p){
       return lcd('/cosmwasm/wasm/v1/contract/' + p.pair).then(function(j){
@@ -206,6 +211,8 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       h += '</table>';
       if (alarms) h = '<p class="bad" style="font-size:15px">⛔ ' + alarms + ' pair(s) differ from the verified census — the DEX has blocked them. Treat as an incident until explained.</p>' + h;
       $('integrity').innerHTML = h;
+      integRunning = false;
+      touchStamp();
     });
   }
 
@@ -246,22 +253,93 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     });
     return out;
   }
+  /* Trades data flow — deliberately a trickle, not a firehose.
+     The old build fetched FCD limit=100 for ALL 115 pairs on load and
+     every 60 s: ~300 MB of full transaction JSON per sweep, which
+     killed phone renderers (a "page goes black" report). Now:
+       - each pair fetch asks only for its 10 most recent txs
+         (FCD /v1/txs accepts limit=10 or 100 — nothing between);
+       - results are cached per pair and merged, so a pair's record
+         accumulates the trades seen while the page is open instead of
+         being rebuilt from scratch every cycle;
+       - the first load reads the busiest pairs first (census order is
+         LUNC-reserve descending) — 48 pairs ≈ 13 MB — staggered in
+         small chunks so first paint is never blocked;
+       - afterwards a round-robin slice of 20 pairs refreshes every
+         5 minutes (≈1.1 MB/min), covering all 115 pairs in ~30 min;
+       - a sweep never overlaps itself, and all polling pauses while
+         the tab is hidden. */
+  var TRADE_LIMIT = 10;
+  var BATCH = 20;                 /* pairs per rotation cycle */
+  var ROTATE_MS = 5 * 60 * 1000;  /* rotation cycle interval */
+  var INIT_PAIRS = 48;            /* initial pass size, see note above */
+  var CACHE_CAP = 60;             /* trades kept per pair, newest first */
+  var pairTrades = {};            /* pair addr -> { 'hash|pair': trade } */
   var allTrades = [];
-  function loadTrades(){
-    var found = [];
-    return mapLimit(pairs, 5, function(p){
-      return fcd('/v1/txs?account=' + p.pair + '&limit=100').then(function(j){
-        (j.txs || []).forEach(function(tx){
-          parseSwaps(p, tx).forEach(function(t){ found.push(t); });
-        });
-      }).catch(function(){});
-    }).then(function(){
-      var seen = {};
-      allTrades = found.filter(function(t){
-        var k = t.hash + '|' + t.pair.pair; if (seen[k]) return false; seen[k] = 1; return true; });
-      allTrades.sort(function(a, b){ return String(b.ts).localeCompare(String(a.ts)); });
-      renderFeed(); renderStats();
+  var tradesRunning = false;
+  var rrNext = 0;                 /* round-robin pointer into pairs[] */
+  function fetchPairTrades(p){
+    return fcd('/v1/txs?account=' + p.pair + '&limit=' + TRADE_LIMIT).then(function(j){
+      var cache = pairTrades[p.pair] || (pairTrades[p.pair] = {});
+      (j.txs || []).forEach(function(tx){
+        parseSwaps(p, tx).forEach(function(t){ cache[t.hash + '|' + t.pair.pair] = t; });
+      });
+    }).catch(function(){});
+  }
+  function rebuildTrades(){
+    allTrades = [];
+    Object.keys(pairTrades).forEach(function(addr){
+      var c = pairTrades[addr];
+      Object.keys(c).forEach(function(k){ allTrades.push(c[k]); });
     });
+    allTrades.sort(function(a, b){ return String(b.ts).localeCompare(String(a.ts)); });
+  }
+  function pruneCache(){
+    Object.keys(pairTrades).forEach(function(addr){
+      var c = pairTrades[addr];
+      var keys = Object.keys(c);
+      if (keys.length <= CACHE_CAP) return;
+      var arr = keys.map(function(k){ return c[k]; });
+      arr.sort(function(a, b){ return String(b.ts).localeCompare(String(a.ts)); });
+      var keep = {};
+      arr.slice(0, CACHE_CAP).forEach(function(t){ keep[t.hash + '|' + t.pair.pair] = t; });
+      pairTrades[addr] = keep;
+    });
+  }
+  /* Fetch a slice of pairs in chunks of 10 (concurrency 4), yielding
+     briefly between chunks so rendering stays responsive; the feed
+     re-renders after each chunk — trades appear as they arrive. */
+  function fetchSlice(slice){
+    var i = 0;
+    function next(){
+      if (i >= slice.length) return Promise.resolve();
+      var chunk = slice.slice(i, i + 10); i += chunk.length;
+      return mapLimit(chunk, 4, fetchPairTrades).then(function(){
+        rebuildTrades(); renderFeed();
+        return new Promise(function(r){ setTimeout(r, 120); }).then(next);
+      });
+    }
+    return next();
+  }
+  function tradesPass(slice){
+    if (tradesRunning) return Promise.resolve(false);
+    tradesRunning = true;
+    return fetchSlice(slice).then(function(){
+      pruneCache(); rebuildTrades(); renderFeed(); renderStats(); touchStamp();
+      tradesRunning = false; return true;
+    }, function(){ tradesRunning = false; return false; });
+  }
+  function initialTrades(){
+    return tradesPass(pairs.slice(0, INIT_PAIRS)).then(function(){
+      rrNext = Math.min(INIT_PAIRS, pairs.length) % pairs.length;
+    });
+  }
+  function rotateTrades(){
+    if (tradesRunning || !pairs.length) return;
+    var slice = [];
+    for (var i = 0; i < BATCH; i++) slice.push(pairs[(rrNext + i) % pairs.length]);
+    rrNext = (rrNext + BATCH) % pairs.length;
+    tradesPass(slice);
   }
   function renderFeed(){
     var el = $('feed');
@@ -300,13 +378,33 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     $('stats').innerHTML = any ? h : '<p class="small dim">No swaps in the last 24 hours on these pairs in the recent record.</p>';
   }
 
-  function refresh(){
-    $('stamp').textContent = new Date().toLocaleString();
-    checkIntegrity(); loadTrades();
+  /* Manual refresh: integrity plus one full trades pass (still only
+     10 recent txs per pair — the cache keeps everything already seen). */
+  function refreshAll(){
+    checkIntegrity();
+    tradesPass(pairs.slice());
   }
-  $('refreshBtn').addEventListener('click', refresh);
-  refresh();
-  setInterval(refresh, 60000);
+  $('refreshBtn').addEventListener('click', refreshAll);
+
+  var integTimer = null, rotTimer = null;
+  function startTimers(){
+    if (!integTimer) integTimer = setInterval(checkIntegrity, 60000);
+    if (!rotTimer) rotTimer = setInterval(rotateTrades, ROTATE_MS);
+  }
+  function stopTimers(){
+    if (integTimer){ clearInterval(integTimer); integTimer = null; }
+    if (rotTimer){ clearInterval(rotTimer); rotTimer = null; }
+  }
+  /* Polling pauses while the tab is hidden; on return it catches up
+     with an integrity check and the next rotation slice. */
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) stopTimers();
+    else { checkIntegrity(); rotateTrades(); startTimers(); }
+  });
+
+  checkIntegrity();
+  initialTrades();
+  startTimers();
 })();
 </script>
 </body>

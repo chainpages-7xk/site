@@ -6,20 +6,29 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Garuda DEX — Trade on the Live Garuda Pools, Checked Before You Sign</title>
 <style>
+  /* Garuda brand palette (from the project's own screens):
+     near-black green-tinted panels, vivid green #01e801/#00ff00,
+     CTA gradient #00ff00 -> #095309, teal #22b496 secondary. */
   :root{
-    --bg:#04060e; --bg2:#070b1a; --card:#0a1020; --card2:#0d1430;
-    --line:#1c2a4a; --line2:#2a3f6e;
-    --txt:#eaf2ff; --dim:#9db4d8;
-    --cyan:#22e6ff; --pink:#ff2e9a; --green:#3dff8e; --gold:#ffd76a; --red:#ff4d5e; --amber:#ffb74d;
+    --bg:#04070a; --bg2:#060a08;
+    --card:#131713; --card2:#171d18; --inset:#0b0f0c;
+    --line:#22301f; --line2:#2f4630;
+    --txt:#eef5ee; --dim:#93a893; --dim2:#7d8ea3;
+    --green:#00e801; --green2:#00ff00; --teal:#22b496;
+    --red:#ff5147; --redd:#8e2323; --amber:#ffb74d; --gold:#ffd76a;
+    --cta:linear-gradient(180deg,#00ff00,#095309);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;color:var(--txt);
-    background:radial-gradient(1200px 600px at 50% -10%,#0b1440 0%,var(--bg) 55%) fixed,var(--bg);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:
+      radial-gradient(900px 480px at 8% -6%,rgba(34,180,150,.13) 0%,transparent 55%),
+      radial-gradient(1000px 520px at 96% -8%,rgba(0,180,60,.12) 0%,transparent 55%),
+      radial-gradient(1200px 700px at 50% -12%,#0a1f10 0%,var(--bg) 60%) fixed,var(--bg);
+    font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;
     -webkit-text-size-adjust:100%}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 14px 44px}
-  a{color:var(--cyan);word-break:break-all}
+  .wrap{max-width:1460px;margin:0 auto;padding:0 14px 44px}
+  a{color:var(--teal);word-break:break-all}
   .dim{color:var(--dim)} .small{font-size:13px;line-height:1.55}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
   .addr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;word-break:break-all;line-height:1.5}
@@ -27,28 +36,39 @@
   .lbl:first-child{margin-top:0}
   .val{font-size:16px;font-weight:700}
   .note{color:var(--dim);font-size:13.5px;line-height:1.5}
-  /* ---------- top bar (original Garuda DEX arrangement, 2.0 polish) ---------- */
-  .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;
-    margin:0 -14px;padding:10px 16px;background:rgba(5,8,18,.94);backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.45)}
+  /* ---------- top bar (original Garuda app chrome) ---------- */
+  .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;
+    margin:0 -14px;padding:10px 16px;background:rgba(4,8,6,.95);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.5)}
   .brand{display:flex;align-items:center;gap:9px;white-space:nowrap}
-  .brand .eagle{font-size:25px;filter:drop-shadow(0 0 10px rgba(34,230,255,.75))}
-  .brand .wm{font-size:20px;font-weight:900;letter-spacing:.2em;color:#eaf7ff;
-    text-shadow:0 0 6px rgba(34,230,255,.9),0 0 20px rgba(34,230,255,.55)}
-  .brand .dx{font-size:20px;font-weight:900;letter-spacing:.2em;color:#ffe3f4;
-    text-shadow:0 0 6px rgba(255,46,154,.9),0 0 20px rgba(255,46,154,.55)}
-  .tb-nav{display:flex;gap:2px;flex-wrap:wrap}
-  .tb-nav a{color:var(--dim);text-decoration:none;font-weight:700;font-size:14.5px;padding:8px 11px;border-radius:9px}
-  .tb-nav a:hover{color:var(--cyan);background:#0a1128}
+  .brand .eagle{font-size:26px;filter:drop-shadow(0 0 9px rgba(0,232,1,.65))}
+  .brand .wm{font-size:21px;font-weight:900;letter-spacing:.14em;color:var(--green);
+    text-shadow:0 0 14px rgba(0,232,1,.45)}
+  .brand .dx{font-size:21px;font-weight:900;letter-spacing:.14em;color:#eaffea}
+  .tb-nav{display:flex;gap:4px;flex-wrap:wrap}
+  .tb-nav button{background:none;border:0;color:var(--txt);font:inherit;font-weight:600;font-size:15.5px;
+    padding:8px 12px;border-radius:9px;cursor:pointer}
+  .tb-nav button:hover{color:var(--green)}
+  .tb-nav button.on{color:var(--green);box-shadow:inset 0 -2px 0 var(--green)}
+  .tb-search{flex:1 1 220px;max-width:430px;margin:0 auto;display:flex;align-items:center;gap:8px;
+    background:var(--inset);border:1px solid var(--line2);border-radius:999px;padding:0 15px;min-height:40px}
+  .tb-search span{color:var(--dim);font-size:14px}
+  .tb-search input{flex:1;min-width:0;background:transparent;border:0;color:var(--txt);font:inherit;
+    font-size:14.5px;padding:9px 0;min-height:0;width:auto}
+  .tb-search input:focus{outline:none}
+  .tb-search:focus-within{border-color:var(--teal)}
   .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .netpill{border:1px solid rgba(61,255,142,.5);border-radius:999px;padding:7px 13px;font-size:12.5px;
-    color:var(--green);font-weight:800;background:rgba(61,255,142,.07);white-space:nowrap}
+  .netpill{border:1px solid rgba(0,232,1,.55);border-radius:999px;padding:8px 14px;font-size:13px;
+    color:var(--green);font-weight:700;background:rgba(0,232,1,.05);white-space:nowrap}
+  .balpill{display:none;border:1px solid var(--line2);border-radius:999px;padding:8px 13px;font-size:13px;
+    color:var(--txt);font-weight:700;background:#1a2418;white-space:nowrap}
+  .balpill.show{display:inline-block}
   .tb-wallet{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .tb-wallet #walletList{display:flex;gap:8px;flex-wrap:wrap}
   .tb-wallet #walletList .note{margin:0;font-size:12.5px}
   .tb-wallet .connbox{margin:0}
   /* wallet buttons (engine-rendered) */
-  .wbtn{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;background:#0a1128;
+  .wbtn{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;background:#131a14;
     border:1px solid var(--line2);border-radius:12px;color:var(--txt);font:inherit;font-size:16px;font-weight:700;
     padding:10px 14px;margin:0 0 10px;cursor:pointer;text-align:left}
   .wbtn img{width:30px;height:30px;border-radius:8px}
@@ -58,150 +78,192 @@
   .tb-wallet .wbtn .wreg{display:none}
   .ghostbtn{background:transparent;border:1px solid var(--line2);color:var(--dim);border-radius:9px;
     font:inherit;font-size:13px;font-weight:700;padding:7px 12px;cursor:pointer;margin-top:8px}
-  .connbox{display:none;border:1px solid var(--line2);border-radius:12px;padding:12px;background:#070d20;margin-top:6px}
+  .connbox{display:none;border:1px solid var(--line2);border-radius:12px;padding:12px;background:#0d120e;margin-top:6px}
   .connbox.show{display:block}
   .tb-wallet .connbox.show{display:flex;align-items:center;gap:9px;padding:6px 8px 6px 13px;border-radius:999px}
   .tb-wallet .connbox .lbl{display:none}
   .tb-wallet .connbox .addr{font-size:11.5px;max-width:168px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tb-wallet .connbox .addr a{color:var(--green)}
   .tb-wallet .connbox .ghostbtn{margin:0;padding:4px 10px;border-radius:999px}
   #pairBox{display:none;border:1px solid var(--gold);border-radius:12px;padding:12px;background:#171106;margin-top:10px}
   #pairBox.show{display:block}
   .warnbanner{display:none;background:#3d0a12;border:1px solid var(--red);border-radius:12px;padding:12px 13px;
     font-size:14px;line-height:1.55;margin-top:10px;color:#ffd7db}
   .warnbanner.show{display:block}
-  .log{background:#060a18;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:10px;
+  .log{background:#070a08;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:10px;
     font-size:12.5px;line-height:1.6;color:var(--dim);max-height:150px;overflow:auto;white-space:pre-wrap;word-break:break-word}
   .log:empty{display:none}
-  /* ---------- live strip (the original's trending strip, our words) ---------- */
+  /* ---------- live strip ---------- */
   .strip{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;font-size:13.5px;line-height:1.55;color:var(--dim)}
   .strip .tab{flex:0 0 auto;color:#04140a;background:var(--green);font-weight:900;font-size:11.5px;
-    letter-spacing:.08em;border-radius:7px;padding:3px 9px;margin-top:1px;box-shadow:0 0 14px rgba(61,255,142,.45)}
+    letter-spacing:.08em;border-radius:7px;padding:3px 9px;margin-top:1px;box-shadow:0 0 14px rgba(0,232,1,.35)}
   .strip b{color:var(--txt)}
   /* ---------- danger notice ---------- */
-  .danger{background:#1c0714;border:1px solid var(--pink);border-radius:14px;padding:14px 16px;margin:12px 0 0;
-    box-shadow:0 0 18px rgba(255,46,154,.18)}
+  .danger{background:#150d12;border:1px solid #5a2140;border-radius:14px;padding:14px 16px;margin:12px 0 0}
   .danger h2{color:#ff9ecb;font-size:16px;margin:0 0 8px}
   .danger p,.danger li{font-size:14px;line-height:1.55}
   .danger ul{margin:6px 0 2px;padding-left:20px}
   @media (min-width:900px){ .danger ul{columns:2;column-gap:34px} .danger li{break-inside:avoid} }
-  /* ---------- stage grid ---------- */
-  .stage{display:grid;gap:14px;margin-top:14px;align-items:start;
-    grid-template-columns:minmax(0,1fr) 388px;
-    grid-template-areas:"pair trade" "markets trade" "positions positions" "shield shield"}
-  #tradeCard{grid-area:trade;position:sticky;top:118px}
-  #pairPanel{grid-area:pair}
-  #marketsCard{grid-area:markets}
-  #portCard{grid-area:positions}
-  #shieldCard{grid-area:shield}
-  @media (max-width:920px){
-    .stage{grid-template-columns:minmax(0,1fr);
-      grid-template-areas:"trade" "pair" "markets" "positions" "shield"}
-    #tradeCard{position:static}
-    .topbar{position:static}
-    .wrap{display:flex;flex-direction:column}
-    .stage{order:1;width:100%}
-    .strip{order:2}
-    .danger{order:3}
-  }
+  /* ---------- cards ---------- */
   .card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
-    border-radius:16px;padding:16px 14px;box-shadow:0 0 24px rgba(10,30,90,.35)}
+    border-radius:14px;padding:16px 14px;box-shadow:0 10px 26px rgba(0,0,0,.35)}
   .card h2{font-size:17.5px;margin:0 0 10px;letter-spacing:.02em}
-  .card h2 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:#123a6e;color:#fff;
-    font-weight:800;font-size:13px;align-items:center;justify-content:center;margin-right:8px;vertical-align:2px}
-  /* ---------- pair panel (selected market, original's pair header) ---------- */
-  .pp-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .pp-name{font-size:23px;font-weight:900;letter-spacing:.01em}
-  .chainpill{border:1px solid rgba(61,255,142,.5);color:var(--green);background:rgba(61,255,142,.07);
-    font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px}
-  .pp-price{font-size:19px;font-weight:800;color:var(--gold);margin-top:10px;line-height:1.4}
-  .pp-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:13px}
-  .pp-stat{background:#070d20;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-  .pp-stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);font-weight:800}
-  .pp-stat .v{font-size:14.5px;font-weight:700;margin-top:4px;line-height:1.45}
+  /* ---------- market header strip ---------- */
+  .mkt-head{display:flex;align-items:center;gap:14px 22px;flex-wrap:wrap;margin-top:14px;
+    background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+  .ph-id{display:flex;align-items:center;gap:12px;min-width:0}
+  .glyphs{position:relative;width:52px;height:36px;flex:0 0 auto}
+  .glyphs i{position:absolute;top:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-style:normal;font-weight:900;font-size:16px;color:#04140a;border:2px solid #0a0f0a}
+  .glyphs i:first-child{left:0;z-index:1}
+  .glyphs i:last-child{left:17px}
+  .gly{display:inline-block;position:relative;width:34px;height:24px;vertical-align:-6px;margin-right:8px}
+  .gly i{position:absolute;top:0;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-style:normal;font-weight:900;font-size:11px;color:#04140a;border:2px solid #0b0f0c}
+  .gly i:first-child{left:0;z-index:1}
+  .gly i:last-child{left:13px}
+  .ph-name{font-size:22px;font-weight:800;letter-spacing:.01em}
+  .ph-sub{font-size:12.5px;color:var(--dim);margin-top:2px}
+  .ph-price{margin-left:6px}
+  .ph-price .pv{font-size:24px;font-weight:800}
+  .ph-price .pl2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);font-weight:700}
+  .badge{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:2.5px 9px;margin-left:7px;vertical-align:2px;letter-spacing:.02em}
+  .badge.g{background:rgba(0,232,1,.12);color:var(--green);border:1px solid rgba(0,232,1,.45)}
+  .badge.a{background:rgba(255,183,77,.12);color:var(--amber);border:1px solid rgba(255,183,77,.45)}
+  .badge.r{background:rgba(255,81,71,.13);color:#ff8b84;border:1px solid rgba(255,81,71,.55)}
+  .badge.t{background:rgba(34,180,150,.13);color:var(--teal);border:1px solid rgba(34,180,150,.5)}
+  .ph-stats{margin-left:auto;display:flex;gap:12px 26px;flex-wrap:wrap}
+  .ph-stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);font-weight:700}
+  .ph-stat .v{font-size:15px;font-weight:700;margin-top:3px;line-height:1.45}
+  .ph-stat .n{font-size:11.5px;color:var(--dim);margin-top:2px;line-height:1.4}
+  /* ---------- market grid: chart | trades | trade panel ---------- */
+  .mkt-grid{display:grid;gap:14px;margin-top:14px;align-items:start;
+    grid-template-columns:minmax(0,1fr) 330px 372px;
+    grid-template-areas:"chart trades slot"}
+  #chartCard{grid-area:chart}
+  #tradesCard{grid-area:trades}
+  #tradeSlotMkt{grid-area:slot;min-width:0}
+  @media (max-width:1180px){
+    .mkt-grid{grid-template-columns:minmax(0,1fr) 372px;grid-template-areas:"chart slot" "trades slot"}
+  }
+  @media (max-width:820px){
+    .mkt-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"slot" "chart" "trades"}
+    .topbar{position:static}
+    .tb-search{order:5;flex-basis:100%;max-width:none}
+  }
+  .chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .chead h3{font-size:15.5px;margin:0}
+  .chead .meta{font-size:12px;color:var(--dim);line-height:1.45}
+  #chartCv{display:block;width:100%;height:300px}
+  @media (max-width:820px){ #chartCv{height:230px} }
+  .chartmsg{font-size:13.5px;color:var(--dim);line-height:1.55;padding:12px 2px}
+  /* recent trades */
+  .trow{display:grid;grid-template-columns:86px 52px minmax(0,1fr);gap:4px 9px;align-items:center;
+    padding:7px 2px;border-bottom:1px solid var(--line);font-size:12.5px}
+  .trow:last-child{border-bottom:0}
+  .trow .tt{color:var(--dim);line-height:1.35}
+  .trow .ta{line-height:1.45;overflow-wrap:anywhere}
+  .trow .tx2{grid-column:1/-1;display:flex;gap:14px;font-size:11.5px;color:var(--dim);flex-wrap:wrap}
+  .side{font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px;text-align:center;letter-spacing:.04em}
+  .side.buy{background:rgba(0,232,1,.13);color:var(--green)}
+  .side.sell{background:rgba(255,81,71,.13);color:#ff8b84}
   /* ---------- markets table ---------- */
-  .mhead{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.25fr);gap:6px 14px;padding:2px 13px 8px;
-    font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
-  .pool{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.25fr);gap:6px 14px;align-items:center;width:100%;
-    text-align:left;background:#070d20;border:1px solid var(--line2);border-radius:12px;
-    padding:11px 13px;margin:0 0 8px;cursor:pointer;color:var(--txt);font:inherit}
-  .pool:hover{border-color:var(--cyan)}
-  .pool.sel{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,230,255,.25)}
-  .pool.blocked{opacity:.8;border-color:var(--red);cursor:not-allowed}
-  .pool .nm{font-size:16px;font-weight:800;overflow-wrap:anywhere}
-  .pool .rs{display:block;font-size:12px;color:var(--dim);margin-top:3px;line-height:1.5}
+  .mhead{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,.95fr) minmax(0,1.2fr) minmax(0,.72fr) 74px;
+    gap:6px 14px;padding:2px 13px 8px;font-size:11.5px;font-weight:800;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--dim)}
+  .pool{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,.95fr) minmax(0,1.2fr) minmax(0,.72fr) 74px;
+    gap:6px 14px;align-items:center;width:100%;text-align:left;background:var(--inset);
+    border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:0 0 8px;cursor:pointer;
+    color:var(--txt);font:inherit}
+  .pool:hover{border-color:var(--teal)}
+  .pool.sel{border-color:var(--green);box-shadow:0 0 14px rgba(0,232,1,.18)}
+  .pool.blocked{opacity:.85;border-color:var(--redd);cursor:not-allowed}
+  .pool .nm{font-size:15.5px;font-weight:800;overflow-wrap:anywhere}
+  .pool .rs{display:block;font-size:11.5px;color:var(--dim);margin-top:3px;line-height:1.5}
   .pool .price{font-size:13.5px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
   .pool .res{font-size:13px;color:var(--dim);line-height:1.55;overflow-wrap:anywhere}
-  .badge{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:2.5px 9px;margin-left:7px;vertical-align:2px;letter-spacing:.02em}
-  .badge.g{background:rgba(61,255,142,.13);color:var(--green);border:1px solid rgba(61,255,142,.45)}
-  .badge.a{background:rgba(255,183,77,.12);color:var(--amber);border:1px solid rgba(255,183,77,.45)}
-  .badge.r{background:rgba(255,77,94,.14);color:#ff8b96;border:1px solid rgba(255,77,94,.55)}
-  @media (max-width:640px){
+  .tradepill{justify-self:end;font-size:12.5px;font-weight:800;color:#04140a;background:var(--cta);
+    border-radius:999px;padding:6px 12px;white-space:nowrap}
+  .pool.blocked .tradepill{background:#2a3430;color:#93a893}
+  @media (max-width:820px){
     .mhead{display:none}
-    .pool{grid-template-columns:minmax(0,1fr) minmax(0,auto)}
+    .pool{grid-template-columns:minmax(0,1fr) auto}
     .pool .res{grid-column:1/-1}
-    .pool .price{text-align:right}
+    .pool .shcell{grid-column:1/-1}
   }
-  /* ---------- trade card / swap ---------- */
-  .tabs{display:flex;gap:4px;background:#060a18;border:1px solid var(--line2);border-radius:12px;padding:4px;margin:2px 0 12px}
-  .tabs button{flex:1;min-height:42px;border-radius:9px;border:0;background:transparent;color:var(--dim);
-    font:inherit;font-size:15px;font-weight:800;cursor:pointer}
-  .tabs button.on{color:#04140a;background:linear-gradient(90deg,#2fe07c,#19b8a6);box-shadow:0 0 14px rgba(61,255,142,.35)}
-  .pooline{font-size:12.5px;color:var(--dim);margin:0 0 8px;line-height:1.5;word-break:break-all}
-  .pooline b{color:var(--txt)}
+  /* ---------- trade card ---------- */
+  #tradeCard{padding:14px}
+  .tabs3{display:flex;gap:8px;margin:0 0 14px}
+  .tabs3 button{flex:1;min-height:42px;border-radius:10px;border:1px solid var(--line);
+    background:#0d110e;color:var(--dim);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+  .tabs3 button.on{background:#122b16;color:var(--green);border-color:rgba(0,232,1,.5)}
+  .pairsel{width:100%;min-height:46px;background:#0d140d;border:1px solid rgba(0,232,1,.4);border-radius:10px;
+    color:var(--green);font:inherit;font-size:16.5px;font-weight:800;padding:8px 12px;margin:0 0 12px;cursor:pointer}
+  .pairsel:focus{outline:2px solid var(--teal)}
+  .pooline{font-size:12px;color:var(--dim);margin:0 0 10px;line-height:1.5;word-break:break-all}
+  .bsseg{display:flex;gap:0;margin:0 0 12px;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+  .bsseg button{flex:1;min-height:42px;border:0;background:#0d110e;color:var(--dim);font:inherit;
+    font-size:15px;font-weight:800;cursor:pointer}
+  .bsseg button.on.buy{background:rgba(0,232,1,.16);color:var(--green);box-shadow:inset 0 -2px 0 var(--green)}
+  .bsseg button.on.sell{background:rgba(255,81,71,.16);color:#ff8b84;box-shadow:inset 0 -2px 0 var(--red)}
+  #tradeCard.inswap .bsseg{display:none}
   .seg{display:flex;gap:6px;margin:0 0 12px}
-  .seg button{flex:1;min-height:38px;border-radius:9px;border:1px solid var(--line2);background:#0a1128;color:var(--dim);
+  .seg button{flex:1;min-height:38px;border-radius:9px;border:1px solid var(--line2);background:#0d110e;color:var(--dim);
     font:inherit;font-size:13px;font-weight:800;cursor:pointer;padding:4px 6px}
-  .seg button.on{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(34,230,255,.25)}
-  .panel{background:#060a18;border:1px solid var(--line2);border-radius:14px;padding:12px 13px}
-  .panel:focus-within{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,230,255,.22)}
+  .seg button.on{border-color:var(--teal);color:var(--teal)}
+  .panel{background:var(--inset);border:1px solid var(--line2);border-radius:12px;padding:12px 13px}
+  .panel:focus-within{border-color:var(--teal)}
   .panel .pl{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
   .prow{display:flex;gap:10px;align-items:center;margin-top:6px}
   .prow input{flex:1;min-width:0;width:100%;background:transparent;border:0;color:var(--txt);
     font:inherit;font-size:24px;font-weight:800;padding:6px 2px;min-height:46px}
   .prow input:focus{outline:none}
   .prow input[readonly]{color:var(--gold)}
-  .tokbtn{flex:0 0 auto;background:#0d1730;border:1px solid var(--line2);color:var(--txt);border-radius:999px;
+  .tokbtn{flex:0 0 auto;background:#16211a;border:1px solid var(--line2);color:var(--txt);border-radius:999px;
     padding:9px 15px;font:inherit;font-size:16px;font-weight:800;cursor:pointer;white-space:nowrap}
-  .tokbtn:hover{border-color:var(--cyan)}
-  .bal{font-size:12.5px;color:var(--dim);margin-top:6px}
-  .bal button{background:none;border:0;color:var(--cyan);font:inherit;font-weight:800;cursor:pointer;padding:0}
+  .tokbtn:hover{border-color:var(--teal)}
+  .bal{font-size:12.5px;color:var(--dim2);margin-top:6px}
+  .bal button{background:none;border:0;color:var(--teal);font:inherit;font-weight:800;cursor:pointer;padding:0}
   .chips{display:flex;gap:6px;margin-top:9px}
-  .chips button{flex:1;background:#0a1128;border:1px solid var(--line2);color:var(--dim);border-radius:8px;
+  .chips button{flex:1;background:#131a14;border:1px solid var(--line2);color:var(--dim);border-radius:8px;
     padding:6px 0;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
-  .chips button:hover{color:var(--cyan);border-color:var(--cyan)}
-  .flipwrap{display:flex;align-items:center;gap:12px;margin:11px 2px}
-  .flipline{flex:1;height:1px;background:var(--line2)}
-  #flipBtn{width:38px;height:38px;flex:0 0 auto;border-radius:50%;border:1px solid var(--cyan);background:#0a1128;
-    color:var(--cyan);font-size:17px;cursor:pointer;box-shadow:0 0 12px rgba(34,230,255,.35);line-height:1}
+  .chips button:hover{color:var(--teal);border-color:var(--teal)}
+  .flipwrap{display:flex;align-items:center;gap:0;margin:0 2px}
+  .flipline{flex:1;height:2px;background:var(--teal);opacity:.55}
+  #flipBtn{width:38px;height:38px;flex:0 0 auto;border-radius:50%;border:0;background:var(--teal);
+    color:#04241c;font-size:19px;font-weight:900;cursor:pointer;line-height:1;margin:6px 0}
   .rateline{font-size:13.5px;color:var(--dim);margin-top:9px;min-height:18px}
+  .feesline{font-size:12.5px;color:var(--dim);margin-top:6px;min-height:16px}
   .sliprow{display:flex;align-items:center;gap:7px;margin-top:12px;flex-wrap:wrap}
   .sliprow .sl{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-right:2px}
-  .slipchip{background:#0a1128;border:1px solid var(--line2);color:var(--dim);border-radius:8px;
+  .slipchip{background:#131a14;border:1px solid var(--line2);color:var(--dim);border-radius:8px;
     padding:7px 11px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
-  .slipchip:hover{color:var(--cyan);border-color:var(--cyan)}
-  .sliprow input[type=text]{width:70px;min-height:36px;background:#060a18;border:1px solid var(--line2);
+  .slipchip:hover{color:var(--teal);border-color:var(--teal)}
+  .sliprow input[type=text]{width:70px;min-height:36px;background:var(--inset);border:1px solid var(--line2);
     border-radius:9px;color:var(--txt);font:inherit;font-size:14px;padding:6px 9px}
   label.fl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin:12px 0 5px}
-  input[type=text],input[type=number]{width:100%;min-height:52px;background:#060a18;border:1px solid var(--line2);
+  input[type=text],input[type=number]{width:100%;min-height:52px;background:var(--inset);border:1px solid var(--line2);
     border-radius:12px;color:var(--txt);font:inherit;font-size:16px;padding:10px 12px}
-  input:focus{outline:2px solid var(--cyan);outline-offset:0}
+  input:focus{outline:2px solid var(--teal);outline-offset:0}
   .prow input:focus{outline:none}
-  .quote{background:#070d20;border:1px solid var(--line2);border-radius:12px;padding:12px;margin-top:12px;font-size:14.5px;line-height:1.65}
+  .quote{background:#0d120e;border:1px solid var(--line2);border-radius:12px;padding:12px;margin-top:12px;font-size:14.5px;line-height:1.65}
   .quote .row{display:flex;justify-content:space-between;gap:10px}
   .quote .row span:last-child{font-weight:700;text-align:right}
-  .bigbtn{display:block;width:100%;min-height:56px;border:0;border-radius:12px;margin-top:14px;cursor:pointer;
-    background:linear-gradient(90deg,#14b86a,#0e9aa7);color:#fff;font:inherit;font-size:17px;font-weight:800;
-    letter-spacing:.03em;box-shadow:0 0 18px rgba(61,255,142,.3)}
-  .bigbtn:disabled{background:#26314d;color:#7d8db0;box-shadow:none;cursor:not-allowed}
-  .bigbtn.pink{background:linear-gradient(90deg,#b2086b,#7c3aed);box-shadow:0 0 18px rgba(255,46,154,.3)}
-  .liqgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media (max-width:560px){ .liqgrid{grid-template-columns:1fr} }
+  .bigbtn{display:block;width:100%;min-height:54px;border:0;border-radius:999px;margin-top:14px;cursor:pointer;
+    background:var(--cta);color:#fff;font:inherit;font-size:17px;font-weight:800;
+    letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,140,20,.35)}
+  .bigbtn:disabled{background:#26302a;color:#7d8db0;box-shadow:none;cursor:not-allowed}
+  .bigbtn.sell{background:linear-gradient(180deg,#d63a2f,#7c1710);box-shadow:0 6px 18px rgba(160,30,20,.35)}
+  .bigbtn.sell:disabled{background:#26302a;box-shadow:none}
+  .bigbtn.pink{background:linear-gradient(180deg,#d63a2f,#7c1710);box-shadow:0 6px 18px rgba(160,30,20,.35)}
   .liqcol h3{font-size:15px;margin:2px 0 4px}
+  .swapwrap{max-width:540px;margin:14px auto 0}
   /* shield */
-  .verdict{border-radius:12px;padding:13px 14px;font-size:15px;line-height:1.55;margin-top:4px;border:1px solid var(--line2);background:#070d20}
-  .verdict.g{border-color:rgba(61,255,142,.55);background:rgba(20,60,35,.25)}
+  .verdict{border-radius:12px;padding:13px 14px;font-size:15px;line-height:1.55;margin-top:4px;border:1px solid var(--line2);background:#0d120e}
+  .verdict.g{border-color:rgba(0,232,1,.5);background:rgba(0,90,30,.18)}
   .verdict.a{border-color:rgba(255,183,77,.55);background:rgba(70,48,8,.22)}
-  .verdict.r{border-color:rgba(255,77,94,.65);background:rgba(70,10,18,.3)}
+  .verdict.r{border-color:rgba(255,81,71,.6);background:rgba(70,10,18,.3)}
   .chk{display:flex;gap:9px;font-size:13.5px;line-height:1.5;padding:7px 0;border-bottom:1px solid var(--line)}
   .chk:last-child{border-bottom:0}
   .chk .ic{flex:0 0 20px;text-align:center}
@@ -210,10 +272,11 @@
   /* positions */
   #portBody{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:9px}
   #portBody>p{grid-column:1/-1;margin:0}
-  .posrow{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#070d20;font-size:14px;line-height:1.6}
+  .posrow{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--inset);font-size:14px;line-height:1.6}
   .disclaimer{margin:26px auto 6px;padding:12px 16px;font-size:12px;line-height:1.55;color:#8a97a5;
-    text-align:center;border-top:1px solid #2a3440;max-width:1180px}
+    text-align:center;border-top:1px solid #2a3440;max-width:1460px}
   .txresult{margin-top:12px;font-size:14px;line-height:1.6}
+  .viewsec{margin-top:0}
 </style>
 
 </head>
@@ -225,13 +288,14 @@
   <header class="topbar">
     <div class="brand"><span class="eagle">🦅</span><span class="wm">GARUDA</span><span class="dx">DEX</span></div>
     <nav class="tb-nav">
-      <a href="#marketsCard">Markets</a>
-      <a href="#tradeCard">Swap</a>
-      <a href="#portCard">Positions</a>
-      <a href="#shieldCard">🛡️ Shield</a>
+      <button type="button" id="navMarket" class="on">Market</button>
+      <button type="button" id="navSwap">Swap</button>
+      <button type="button" id="navPositions">Positions</button>
     </nav>
+    <div class="tb-search"><span>🔍</span><input type="text" id="poolSearch" placeholder="Search pools / tokens" autocomplete="off"></div>
     <div class="tb-right">
       <span class="netpill">Terra Classic</span>
+      <span class="balpill" id="balPill"></span>
       <div class="tb-wallet">
         <div id="walletList"><p class="note">Loading the wallet list…</p></div>
         <div class="connbox" id="connBox">
@@ -273,16 +337,109 @@
     </ul>
   </div>
 
-  <div class="stage">
+  <!-- ================= MARKET VIEW ================= -->
+  <section class="viewsec" id="viewMarket">
 
-  <div class="card" id="tradeCard">
-    <div class="tabs">
+    <div class="mkt-head" id="pairPanel">
+      <div class="ph-id">
+        <span class="glyphs" id="ppGlyphs"><i style="background:#3a4a3a">?</i><i style="background:#2a3a2a">?</i></span>
+        <div>
+          <div><span class="ph-name" id="ppName">Pick a market to trade</span><span id="ppBadge"></span></div>
+          <div class="ph-sub">Garuda pool · AMM · Terra Classic — pool and LP addresses are in the markets table below</div>
+        </div>
+      </div>
+      <div class="ph-price">
+        <div class="pl2">Spot price</div>
+        <div><span class="pv" id="ppPrice">—</span><span class="badge g" id="ppChg" style="display:none"></span></div>
+        <div class="ph-sub" id="ppChgLbl"></div>
+      </div>
+      <div class="ph-stats">
+        <div class="ph-stat"><div class="k">Liquidity (pooled)</div>
+          <div class="v" id="ppRes1">—</div><div class="v" id="ppRes2" style="margin-top:0">—</div></div>
+        <div class="ph-stat"><div class="k">24h volume</div>
+          <div class="v" id="ppVol">—</div><div class="n" id="ppVolNote"></div></div>
+        <div class="ph-stat"><div class="k">Pool</div>
+          <div class="v mono" id="ppPool" style="font-size:11.5px;font-weight:400">—</div></div>
+        <div class="ph-stat"><div class="k">LP token</div>
+          <div class="v mono" id="ppLp" style="font-size:11.5px;font-weight:400">—</div></div>
+      </div>
+    </div>
+
+    <div class="mkt-grid">
+      <div class="card" id="chartCard">
+        <div class="chead"><h3>Chart</h3><span class="meta" id="chartMeta">On-chain swap prices — loading…</span></div>
+        <canvas id="chartCv" style="display:none"></canvas>
+        <div class="chartmsg" id="chartMsg">Loading this pool's on-chain trade history…</div>
+      </div>
+      <div class="card" id="tradesCard">
+        <div class="chead"><h3>Recent trades</h3><span class="meta">on-chain · via FCD</span></div>
+        <div id="tradeFeed"><p class="note">Loading recent trades…</p></div>
+      </div>
+      <div id="tradeSlotMkt"></div>
+    </div>
+
+    <div class="card" id="marketsCard" style="margin-top:14px">
+      <h2>Markets — live on-chain</h2>
+      <p class="note" style="margin-top:0">Every Garuda pair contract found on-chain, read live. The badge is
+        Garuda Shield's pool verdict: <span class="badge g">VERIFIED CODE</span> means the contract code and admin
+        match the verified record right now. Tap a market to load it into the trade panel.</p>
+      <div class="mhead"><span>Pool</span><span>Price</span><span>Liquidity</span><span>Shield</span><span></span></div>
+      <div id="poolList"><p class="note">Reading the pools from the chain…</p></div>
+      <p class="small dim" id="poolCount" style="margin-top:10px"></p>
+    </div>
+  </section>
+
+  <!-- ================= SWAP VIEW ================= -->
+  <section class="viewsec" id="viewSwap" style="display:none">
+    <div class="swapwrap" id="tradeSlotSwap"></div>
+  </section>
+
+  <!-- ================= POSITIONS VIEW ================= -->
+  <section class="viewsec" id="viewPositions" style="display:none">
+    <div class="card" id="portCard" style="margin-top:14px">
+      <h2>My positions</h2>
+      <p class="note" style="margin-top:0">Your balances of the pool tokens and your LP positions,
+        read live from the chain. Connect a wallet to load this.</p>
+      <div id="portBody"><p class="note">Not connected yet.</p></div>
+    </div>
+
+    <div class="card" id="shieldCard" style="margin-top:14px">
+      <h2>🛡️ How Garuda Shield decides</h2>
+      <p class="small" style="line-height:1.65">Shield is an automated security engine — a fixed set of on-chain
+        checks that run in your browser before a trade can be signed. It is not a person and it does not guess:
+        every line in its verdict comes from a check that just ran against the live chain.</p>
+      <ul class="tight small" style="line-height:1.65;padding-left:20px">
+        <li><b>Pool code &amp; admin</b> — the pair contract's code and admin must match the verified record.
+          Any change = the pool is blocked. (The October drains began with contract code changes.)</li>
+        <li><b>Token admin &amp; minter</b> — whether the token's admin can still change its contract, and
+          whether new tokens can still be minted. Shown plainly, either way.</li>
+        <li><b>Sell test</b> — the pool is asked to price a sale of the token you would receive, before you buy.
+          If the sell side fails, the trade is blocked.</li>
+        <li><b>Price impact</b> — how much your own trade moves the price. Big moves are flagged loudly.</li>
+        <li><b>Your permissions</b> — when your wallet is connected, Shield lists permissions (authz grants)
+          your wallet has given away. A grant with no expiry is flagged red.</li>
+      </ul>
+      <p class="small dim">What Shield cannot do: it cannot undo or reverse a trade that has already settled on-chain —
+        no tool can, on any non-custodial pool. If a pool ever trips the wire, the response is to alert the operator,
+        banner the pool here, and trace any moved funds to the exchanges. That is why the checks run <i>before</i> you sign.</p>
+    </div>
+  </section>
+
+  <!-- ================= TRADE CARD (moves between Market and Swap views) ================= -->
+  <div class="card inmkt" id="tradeCard">
+    <div class="tabs3">
       <button type="button" id="tabSwap" class="on">Swap</button>
-      <button type="button" id="tabLiq">Liquidity</button>
+      <button type="button" id="tabProvide">Provide</button>
+      <button type="button" id="tabWithdraw">Withdraw</button>
     </div>
 
     <div id="swapPane">
-      <p class="pooline">Pool: <b id="swapPoolName">— pick a market below —</b></p>
+      <select class="pairsel" id="pairSelect" aria-label="Choose a pool"></select>
+      <p class="pooline">Pool: <b id="swapPoolName">— pick a market —</b></p>
+      <div class="bsseg" id="bsSeg">
+        <button type="button" id="bsBuy" class="buy">Buy</button>
+        <button type="button" id="bsSell" class="sell">Sell</button>
+      </div>
       <div class="seg">
         <button type="button" id="dirA">—</button>
         <button type="button" id="dirB">—</button>
@@ -301,7 +458,7 @@
           <button type="button" class="chip" data-pct="100">MAX</button>
         </div>
       </div>
-      <div class="flipwrap"><div class="flipline"></div><button type="button" id="flipBtn" aria-label="Flip direction">⇅</button></div>
+      <div class="flipwrap"><div class="flipline"></div><button type="button" id="flipBtn" aria-label="Flip direction">=</button><div class="flipline"></div></div>
       <div class="panel">
         <span class="pl">To</span>
         <div class="prow">
@@ -312,6 +469,7 @@
       </div>
       <div class="rateline" id="rateLine"></div>
       <div class="quote" id="quoteBox" style="display:none"></div>
+      <div class="feesline" id="feeLine"></div>
       <div class="sliprow">
         <span class="sl">Slippage</span>
         <button type="button" class="slipchip" data-slip="0.5">0.5%</button>
@@ -329,85 +487,32 @@
       <div class="txresult" id="swapResult"></div>
     </div>
 
-    <div id="liqPane" style="display:none">
-      <p class="pooline">Pool: <b id="liqPoolName">— pick a market below —</b></p>
+    <div id="addPane" style="display:none">
+      <p class="pooline">Pool: <b id="liqPoolName">— pick a market —</b></p>
       <div id="liqPos" class="quote" style="display:none"></div>
-      <div class="liqgrid">
-        <div class="liqcol">
-          <h3>Add liquidity</h3>
-          <label class="fl" for="addAmt">Amount of <span id="addSym1">asset 1</span></label>
-          <input type="text" id="addAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
-          <div class="quote" id="addQuote" style="display:none"></div>
-          <button type="button" class="bigbtn" id="addBtn" disabled>Add liquidity</button>
-          <div class="txresult" id="addResult"></div>
-        </div>
-        <div class="liqcol">
-          <h3>Remove liquidity</h3>
-          <label class="fl" for="rmAmt">LP tokens to burn</label>
-          <input type="text" id="rmAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
-          <div class="bal" id="rmBal"></div>
-          <div class="quote" id="rmQuote" style="display:none"></div>
-          <button type="button" class="bigbtn pink" id="rmBtn" disabled>Remove liquidity</button>
-          <div class="txresult" id="rmResult"></div>
-        </div>
+      <div class="liqcol">
+        <h3>Add liquidity</h3>
+        <label class="fl" for="addAmt">Amount of <span id="addSym1">asset 1</span></label>
+        <input type="text" id="addAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
+        <div class="quote" id="addQuote" style="display:none"></div>
+        <button type="button" class="bigbtn" id="addBtn" disabled>Add liquidity</button>
+        <div class="txresult" id="addResult"></div>
+      </div>
+    </div>
+
+    <div id="rmPane" style="display:none">
+      <p class="pooline">Pool: <b id="liqPoolName2">— pick a market —</b></p>
+      <div class="liqcol">
+        <h3>Remove liquidity</h3>
+        <label class="fl" for="rmAmt">LP tokens to burn</label>
+        <input type="text" id="rmAmt" inputmode="decimal" placeholder="0.0" autocomplete="off">
+        <div class="bal" id="rmBal"></div>
+        <div class="quote" id="rmQuote" style="display:none"></div>
+        <button type="button" class="bigbtn pink" id="rmBtn" disabled>Remove liquidity</button>
+        <div class="txresult" id="rmResult"></div>
       </div>
     </div>
   </div>
-
-  <div class="card" id="pairPanel">
-    <div class="pp-head">
-      <span class="pp-name" id="ppName">Pick a market to trade</span>
-      <span class="chainpill">Terra Classic</span>
-      <span id="ppBadge"></span>
-    </div>
-    <div class="pp-price" id="ppPrice">—</div>
-    <div class="pp-stats">
-      <div class="pp-stat"><div class="k">Pooled</div><div class="v" id="ppRes1">—</div></div>
-      <div class="pp-stat"><div class="k">Pooled</div><div class="v" id="ppRes2">—</div></div>
-      <div class="pp-stat"><div class="k">Pool</div><div class="v mono" id="ppPool">—</div></div>
-      <div class="pp-stat"><div class="k">LP token</div><div class="v mono" id="ppLp">—</div></div>
-    </div>
-  </div>
-
-  <div class="card" id="marketsCard">
-    <h2>📊 Markets — live on-chain</h2>
-    <p class="note" style="margin-top:0">Every Garuda pair contract found on-chain, read live. The badge is
-      Garuda Shield's pool verdict: <span class="badge g">VERIFIED CODE</span> means the contract code and admin
-      match the verified record right now. Tap a market to load it into the trade card.</p>
-    <div class="mhead"><span>Pair</span><span>Price</span><span>Reserves</span></div>
-    <div id="poolList"><p class="note">Reading the pools from the chain…</p></div>
-    <p class="small dim" id="poolCount" style="margin-top:10px"></p>
-  </div>
-
-  <div class="card" id="portCard">
-    <h2>💼 My positions</h2>
-    <p class="note" style="margin-top:0">Your balances of the pool tokens and your LP positions,
-      read live from the chain. Connect a wallet to load this.</p>
-    <div id="portBody"><p class="note">Not connected yet.</p></div>
-  </div>
-
-  <div class="card" id="shieldCard">
-    <h2>🛡️ How Garuda Shield decides</h2>
-    <p class="small" style="line-height:1.65">Shield is an automated security engine — a fixed set of on-chain
-      checks that run in your browser before a trade can be signed. It is not a person and it does not guess:
-      every line in its verdict comes from a check that just ran against the live chain.</p>
-    <ul class="tight small" style="line-height:1.65;padding-left:20px">
-      <li><b>Pool code &amp; admin</b> — the pair contract's code and admin must match the verified record.
-        Any change = the pool is blocked. (The October drains began with contract code changes.)</li>
-      <li><b>Token admin &amp; minter</b> — whether the token's admin can still change its contract, and
-        whether new tokens can still be minted. Shown plainly, either way.</li>
-      <li><b>Sell test</b> — the pool is asked to price a sale of the token you would receive, before you buy.
-        If the sell side fails, the trade is blocked.</li>
-      <li><b>Price impact</b> — how much your own trade moves the price. Big moves are flagged loudly.</li>
-      <li><b>Your permissions</b> — when your wallet is connected, Shield lists permissions (authz grants)
-        your wallet has given away. A grant with no expiry is flagged red.</li>
-    </ul>
-    <p class="small dim">What Shield cannot do: it cannot undo or reverse a trade that has already settled on-chain —
-      no tool can, on any non-custodial pool. If a pool ever trips the wire, the response is to alert the operator,
-      banner the pool here, and trace any moved funds to the exchanges. That is why the checks run <i>before</i> you sign.</p>
-  </div>
-
-  </div><!-- /stage -->
 
 </div>
 
@@ -454,18 +559,29 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
      each CW20 side (spender = pair), then pair
      {"provide_liquidity":{"asset1_amount":X,"asset2_amount":Y,
      "min_liquidity":L}} + the native side attached as funds.
-   - WITHDRAW (real tx BBDD49AA… line, gas-proven): 
+   - WITHDRAW (real tx BBDD49AA… line, gas-proven):
      increase_allowance on the LP token (spender = pair), then
      pair {"withdraw_liquidity":{"lp_amount":N,"min_asset1":A,
      "min_asset2":B}}.
+   - HISTORY (FCD, verified live 2026-11-01): GET
+     terra-classic-fcd.publicnode.com/v1/txs?account=<pair>
+     &limit=100[&offset=<next>] -> {next, txs:[{txhash,
+     timestamp, logs:[{events:[{type:'wasm', attributes}]}]}]};
+     a swap is a wasm event with _contract_address = the pair
+     and action = 'swap', carrying offer_asset/offer_amount/
+     return_asset/return_amount/sender. Chart, recent trades
+     and the 24h stats are built ONLY from those events —
+     nothing is interpolated or invented.
    ============================================================ */
 (function(){
   'use strict';
   var LCD = 'https://terra-classic-lcd.publicnode.com';
+  var FCD = 'https://terra-classic-fcd.publicnode.com';
   var FINDER = 'https://finder.terraclassic.community/mainnet';
   var FACTORY = 'terra1ypwj6sw25g0qcykv7mzmcvsndvx56r3yrgkaw3fds7yzwl7fwwcsnxkeh7';
   var PAIR_CODE = '10907';
   var BURN = 'terra1sk06e3dyexuq4shw77x3dsv480xv42mq7982q7';
+  var FRG_ANCHOR = 'terra1aw97xvkkg8snucj5nukhmkgg78e86xuvlp4z262txdkxc8rtzd3sa6g3sj';
   var FEE = { /* gas units -> uluna at 28.325 (the proven fixed-fee pattern) */
     swapNative: { gas: 600000,  amount: '16995000' },
     swapCw20:   { gas: 900000,  amount: '25492500' },
@@ -508,11 +624,26 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     el.textContent += (el.textContent ? '\n' : '') + '[' + t + '] ' + line;
     el.scrollTop = el.scrollHeight;
   }
+  function shortAddr(a){ return a && a.length > 16 ? a.slice(0, 10) + '…' + a.slice(-6) : a; }
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtDT(ms){
+    var d = new Date(ms);
+    return MONTHS[d.getMonth()] + ' ' + d.getDate() + ' · ' +
+      ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+  function fmtD(ms){
+    var d = new Date(ms);
+    return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
 
   /* ---------- chain reads ---------- */
   function lcd(path){
     return fetch(LCD + path).then(function(r){
       if (!r.ok) throw new Error('LCD ' + r.status); return r.json(); });
+  }
+  function fcd(path){
+    return fetch(FCD + path).then(function(r){
+      if (!r.ok) throw new Error('FCD ' + r.status); return r.json(); });
   }
   function smart(contract, obj){
     var q = btoa(JSON.stringify(obj));
@@ -544,12 +675,12 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
   var pairs = CENSUS.pairs.map(function(p, i){
     return { i: i, addr: p.pair, lp: p.liquidity_token, sides: p.sides,
              live: null, info: null, blocked: false, blockReason: '',
-             pos: null, tokChecks: {} };
+             pos: null, tokChecks: {}, trades: null, tradesErr: false, fetched: 0 };
   });
   var byPair = {}; pairs.forEach(function(p){ byPair[p.addr] = p; });
   var state = { connected: null, connectedPretty: '', balances: {},
                 sel: null, dir: 0, quote: null, checks: null, sending: false,
-                grants: null, liqTimer: null };
+                grants: null, liqTimer: null, view: 'market', search: '' };
 
   /* sides: {kind:'native',denom,symbol,decimals,amount?} |
             {kind:'cw20',contract,symbol,name,decimals,amount?} */
@@ -558,6 +689,15 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
   function sideKey(s){ return s.kind === 'native' ? 'n:' + s.denom : 'c:' + s.contract; }
   function assetOf(s){ return s.kind === 'native' ? { native: s.denom } : { cw20: s.contract }; }
   function pairName(p){ return sideSym(p.sides[0]) + ' / ' + sideSym(p.sides[1]); }
+  function glyphColor(sym){
+    var h = 0; sym = String(sym || '?');
+    for (var i = 0; i < sym.length; i++) h = (h * 31 + sym.charCodeAt(i)) % 360;
+    return 'hsl(' + (95 + (h % 130)) + ',62%,52%)';
+  }
+  function glyphsHTML(p, cls){
+    return '<i style="background:' + glyphColor(sideSym(p.sides[0])) + '">' + esc(sideSym(p.sides[0]).charAt(0)) + '</i>' +
+           '<i style="background:' + glyphColor(sideSym(p.sides[1])) + '">' + esc(sideSym(p.sides[1]).charAt(0)) + '</i>';
+  }
 
   /* ---------- window.EXIT bridge for the wallet engine ---------- */
   window.EXIT = { state: state };
@@ -581,9 +721,37 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     if (window.EXIT.disconnectWallet) window.EXIT.disconnectWallet();
     state.connected = null; state.balances = {}; state.grants = null;
     $('connBox').classList.remove('show');
+    $('balPill').classList.remove('show');
     $('grantBanner').classList.remove('show'); $('grantBanner').innerHTML = '';
     renderSwapBal(); renderPortfolio();
   });
+
+  /* ---------- views + nav ---------- */
+  function showView(v){
+    state.view = v;
+    $('viewMarket').style.display = v === 'market' ? '' : 'none';
+    $('viewSwap').style.display = v === 'swap' ? '' : 'none';
+    $('viewPositions').style.display = v === 'positions' ? '' : 'none';
+    $('navMarket').classList.toggle('on', v === 'market');
+    $('navSwap').classList.toggle('on', v === 'swap');
+    $('navPositions').classList.toggle('on', v === 'positions');
+    var card = $('tradeCard');
+    if (v === 'swap'){ $('tradeSlotSwap').appendChild(card); card.classList.add('inswap'); card.classList.remove('inmkt'); }
+    else { $('tradeSlotMkt').appendChild(card); card.classList.add('inmkt'); card.classList.remove('inswap'); }
+    if (v === 'market' && state.sel && state.sel.trades) drawChart(state.sel);
+    if (v === 'positions') renderPortfolio();
+    window.scrollTo(0, 0);
+  }
+  $('navMarket').addEventListener('click', function(){ showView('market'); });
+  $('navSwap').addEventListener('click', function(){ showView('swap'); });
+  $('navPositions').addEventListener('click', function(){ showView('positions'); });
+  $('poolSearch').addEventListener('input', function(){
+    state.search = $('poolSearch').value.trim().toLowerCase();
+    if (state.search && state.view !== 'market') showView('market');
+    renderPools();
+  });
+  /* trade card starts in the market slot */
+  $('tradeSlotMkt').appendChild($('tradeCard'));
 
   /* ---------- pools: live integrity + reserves ---------- */
   function loadPools(){
@@ -600,10 +768,15 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
           p.sides[0].amount = p.live.reserve1; p.sides[1].amount = p.live.reserve2;
           renderPools();
         });
-    }).then(function(){ renderPools(); $('poolCount').textContent =
-      pairs.length + ' Garuda pairs in the verified census · ' +
-      pairs.filter(function(p){ return !p.blocked; }).length + ' trading · ' +
-      pairs.filter(function(p){ return p.blocked; }).length + ' blocked by Shield right now. Reserves and integrity are re-read live on every load.'; });
+    }).then(function(){
+      renderPools();
+      $('poolCount').textContent =
+        pairs.length + ' Garuda pairs in the verified census · ' +
+        pairs.filter(function(p){ return !p.blocked; }).length + ' trading · ' +
+        pairs.filter(function(p){ return p.blocked; }).length + ' blocked by Shield right now. Reserves and integrity are re-read live on every load.';
+      var first = byPair[FRG_ANCHOR] || pairs[0];
+      if (first) selectPair(first);
+    });
   }
   function spotLine(p){
     var r1 = bi(p.sides[0].amount), r2 = bi(p.sides[1].amount);
@@ -617,6 +790,41 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     if (p.blocked) return '<span class="badge r">⛔ BLOCKED</span>';
     return '<span class="badge g">🛡️ VERIFIED CODE</span>';
   }
+  function pairMatches(p){
+    if (!state.search) return true;
+    var hay = (pairName(p) + ' ' + sideSym(p.sides[0]) + ' ' + sideSym(p.sides[1]) + ' ' + p.addr).toLowerCase();
+    return hay.indexOf(state.search) > -1;
+  }
+  function renderPools(){
+    var el = $('poolList'); el.innerHTML = '';
+    var shown = 0;
+    pairs.forEach(function(p){
+      if (!pairMatches(p)) return;
+      shown++;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pool' + (state.sel === p ? ' sel' : '') + (p.blocked ? ' blocked' : '');
+      var res = p.live
+        ? fmt(p.sides[0].amount, sideDec(p.sides[0])) + ' ' + esc(sideSym(p.sides[0])) + '<br>' +
+          fmt(p.sides[1].amount, sideDec(p.sides[1])) + ' ' + esc(sideSym(p.sides[1]))
+        : 'reading…';
+      if (p.blocked && p.blockReason) res += '<br><span style="color:#ff8b84">⛔ ' + esc(p.blockReason) + '</span>';
+      b.innerHTML = '<span class="mcell"><span class="gly">' + glyphsHTML(p) + '</span><span class="nm">' + esc(pairName(p)) + '</span>' +
+        '<span class="rs mono">' + esc(p.addr) + '</span></span>' +
+        '<span class="mcell price">' + (p.live && spotLine(p) ? esc(spotLine(p)) : '—') + '</span>' +
+        '<span class="mcell res">' + res + '</span>' +
+        '<span class="mcell shcell">' + poolBadge(p) + '</span>' +
+        '<span class="tradepill">' + (p.blocked ? 'Blocked' : 'Trade →') + '</span>';
+      b.addEventListener('click', function(){
+        if (p.blocked){ wlog('That pool is blocked by Shield: ' + p.blockReason); return; }
+        selectPair(p);
+        window.scrollTo(0, 0);
+      });
+      el.appendChild(b);
+    });
+    if (!shown) el.innerHTML = '<p class="note">No pools match that search.</p>';
+    syncPairPanel();
+  }
   function syncPairPanel(){
     var p = state.sel;
     if (!p){
@@ -627,46 +835,40 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       $('ppPool').textContent = '—'; $('ppLp').textContent = '—';
       return;
     }
+    $('ppGlyphs').innerHTML = glyphsHTML(p);
     $('ppName').textContent = pairName(p);
     $('ppBadge').innerHTML = poolBadge(p);
-    $('ppPrice').textContent = p.live && spotLine(p) ? spotLine(p) : 'reading the pool…';
+    $('ppPrice').textContent = p.live && spotLine(p) ? spotLine(p).replace('1 ' + sideSym(p.sides[0]) + ' ≈ ', '') : 'reading…';
     $('ppRes1').textContent = p.live ? fmt(p.sides[0].amount, sideDec(p.sides[0])) + ' ' + sideSym(p.sides[0]) : '—';
     $('ppRes2').textContent = p.live ? fmt(p.sides[1].amount, sideDec(p.sides[1])) + ' ' + sideSym(p.sides[1]) : '—';
     $('ppPool').innerHTML = '<a href="' + finderAddr(p.addr) + '" target="_blank" rel="noopener">' + esc(p.addr) + '</a>';
     $('ppLp').innerHTML = '<a href="' + finderAddr(p.lp) + '" target="_blank" rel="noopener">' + esc(p.lp) + '</a>';
   }
-  function renderPools(){
-    var el = $('poolList'); el.innerHTML = '';
-    pairs.forEach(function(p){
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'pool' + (state.sel === p ? ' sel' : '') + (p.blocked ? ' blocked' : '');
-      var res = p.live
-        ? fmt(p.sides[0].amount, sideDec(p.sides[0])) + ' ' + esc(sideSym(p.sides[0])) + '<br>' +
-          fmt(p.sides[1].amount, sideDec(p.sides[1])) + ' ' + esc(sideSym(p.sides[1]))
-        : 'reading…';
-      if (p.blocked && p.blockReason) res += '<br><span style="color:#ff8b96">⛔ ' + esc(p.blockReason) + '</span>';
-      b.innerHTML = '<span class="mcell"><span class="nm">' + esc(pairName(p)) + '</span>' + poolBadge(p) +
-        '<span class="rs mono">' + esc(p.addr) + '</span></span>' +
-        '<span class="mcell price">' + (p.live && spotLine(p) ? esc(spotLine(p)) : '—') + '</span>' +
-        '<span class="mcell res">' + res + '</span>';
-      b.addEventListener('click', function(){
-        if (p.blocked){ wlog('That pool is blocked by Shield: ' + p.blockReason); return; }
-        selectPair(p);
-      });
-      el.appendChild(b);
-    });
-    syncPairPanel();
-  }
   function selectPair(p){
     state.sel = p; state.dir = 0; state.quote = null; state.checks = null;
     $('swapPoolName').textContent = pairName(p) + ' — ' + p.addr;
     $('liqPoolName').textContent = pairName(p) + ' — ' + p.addr;
+    $('liqPoolName2').textContent = pairName(p) + ' — ' + p.addr;
+    $('pairSelect').value = p.addr;
     $('dirA').textContent = sideSym(p.sides[0]) + ' → ' + sideSym(p.sides[1]);
     $('dirB').textContent = sideSym(p.sides[1]) + ' → ' + sideSym(p.sides[0]);
     $('addSym1').textContent = sideSym(p.sides[0]);
     renderPools(); renderDir(); refreshQuote(); refreshLiq();
+    loadMarketData(p);
   }
+  /* pair selector (swap card header) */
+  (function(){
+    var sel = $('pairSelect');
+    pairs.forEach(function(p){
+      var o = document.createElement('option');
+      o.value = p.addr; o.textContent = pairName(p);
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', function(){
+      var p = byPair[sel.value];
+      if (p) selectPair(p);
+    });
+  })();
   function renderDir(){
     $('dirA').classList.toggle('on', state.dir === 0);
     $('dirB').classList.toggle('on', state.dir === 1);
@@ -674,10 +876,20 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     if (p){
       $('payTok').textContent = sideSym(p.sides[state.dir]) + ' ▾';
       $('recvTok').textContent = sideSym(p.sides[1 - state.dir]) + ' ▾';
+      $('bsBuy').textContent = 'Buy ' + sideSym(p.sides[0]);
+      $('bsSell').textContent = 'Sell ' + sideSym(p.sides[0]);
+      $('bsBuy').classList.toggle('on', state.dir === 1);
+      $('bsBuy').classList.toggle('buy', true);
+      $('bsSell').classList.toggle('on', state.dir === 0);
+      $('bsSell').classList.toggle('sell', true);
+      var btn = $('swapBtn');
+      if (btn) btn.classList.toggle('sell', state.view === 'market' && state.dir === 0);
     }
   }
   $('dirA').addEventListener('click', function(){ state.dir = 0; renderDir(); refreshQuote(); });
   $('dirB').addEventListener('click', function(){ state.dir = 1; renderDir(); refreshQuote(); });
+  $('bsBuy').addEventListener('click', function(){ state.dir = 1; renderDir(); refreshQuote(); });
+  $('bsSell').addEventListener('click', function(){ state.dir = 0; renderDir(); refreshQuote(); });
   function flipDir(){ if (!state.sel) return; (state.dir === 0 ? $('dirB') : $('dirA')).click(); }
   $('flipBtn').addEventListener('click', flipDir);
   $('payTok').addEventListener('click', flipDir);
@@ -698,12 +910,18 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       refreshQuote();
     });
   });
-  $('tabSwap').addEventListener('click', function(){
-    $('tabSwap').classList.add('on'); $('tabLiq').classList.remove('on');
-    $('swapPane').style.display = ''; $('liqPane').style.display = 'none'; });
-  $('tabLiq').addEventListener('click', function(){
-    $('tabLiq').classList.add('on'); $('tabSwap').classList.remove('on');
-    $('liqPane').style.display = ''; $('swapPane').style.display = 'none'; refreshLiq(); });
+  function setTab(which){
+    $('tabSwap').classList.toggle('on', which === 'swap');
+    $('tabProvide').classList.toggle('on', which === 'provide');
+    $('tabWithdraw').classList.toggle('on', which === 'withdraw');
+    $('swapPane').style.display = which === 'swap' ? '' : 'none';
+    $('addPane').style.display = which === 'provide' ? '' : 'none';
+    $('rmPane').style.display = which === 'withdraw' ? '' : 'none';
+    if (which !== 'swap') refreshLiq();
+  }
+  $('tabSwap').addEventListener('click', function(){ setTab('swap'); });
+  $('tabProvide').addEventListener('click', function(){ setTab('provide'); });
+  $('tabWithdraw').addEventListener('click', function(){ setTab('withdraw'); });
 
   /* ---------- balances ---------- */
   function loadWalletBits(){
@@ -727,11 +945,16 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
   }
   function balOf(s){ var v = state.balances[sideKey(s)]; return v == null ? null : v; }
   function renderSwapBal(){
+    var pill = $('balPill');
+    if (state.connected && state.balances['n:uluna'] != null){
+      pill.textContent = fmt(state.balances['n:uluna'], 6) + ' LUNC';
+      pill.classList.add('show');
+    } else pill.classList.remove('show');
     var p = state.sel; if (!p) { $('swapBal').textContent = ''; $('recvBal').textContent = ''; return; }
     var offer = p.sides[state.dir];
     var b = balOf(offer);
     $('swapBal').innerHTML = state.connected
-      ? 'Your balance: ' + (b == null ? '…' : fmt(b, sideDec(offer)) + ' ' + esc(sideSym(offer))) +
+      ? 'Balance: ' + (b == null ? '…' : fmt(b, sideDec(offer)) + ' ' + esc(sideSym(offer))) +
         ' &nbsp;<button type="button" id="maxBtn">MAX</button>'
       : 'Connect a wallet to see your balance.';
     var mb = $('maxBtn');
@@ -739,9 +962,220 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       if (b != null){ $('swapAmt').value = fmt(b, sideDec(offer)).replace(/,/g, ''); refreshQuote(); } });
     var askS = p.sides[1 - state.dir], ab = balOf(askS);
     $('recvBal').textContent = state.connected
-      ? 'Your balance: ' + (ab == null ? '…' : fmt(ab, sideDec(askS)) + ' ' + sideSym(askS))
+      ? 'Balance: ' + (ab == null ? '…' : fmt(ab, sideDec(askS)) + ' ' + sideSym(askS))
       : '';
   }
+
+  /* ---------- market data: real swap history via FCD ---------- */
+  function assetKeyOf(a){
+    if (!a) return null;
+    if (a.native) return 'n:' + a.native;
+    if (a.cw20) return 'c:' + a.cw20;
+    return null;
+  }
+  function parseTrades(p, txs){
+    var out = [];
+    txs.forEach(function(t){
+      if (!t || !Array.isArray(t.logs)) return;
+      var ts = Date.parse(t.timestamp || '');
+      if (!(ts > 0)) return;
+      t.logs.forEach(function(lg){
+        if (!lg || !Array.isArray(lg.events)) return;
+        lg.events.forEach(function(ev){
+          if (ev.type !== 'wasm') return;
+          var at = {};
+          (ev.attributes || []).forEach(function(a){ at[a.key] = a.value; });
+          if (at._contract_address !== p.addr || at.action !== 'swap') return;
+          var offerA, retA;
+          try { offerA = JSON.parse(at.offer_asset); retA = JSON.parse(at.return_asset); }
+          catch (e) { return; }
+          var oi = p.sides.findIndex(function(s){ return sideKey(s) === assetKeyOf(offerA); });
+          var ri = p.sides.findIndex(function(s){ return sideKey(s) === assetKeyOf(retA); });
+          if (oi < 0 || ri < 0 || oi === ri) return;
+          var oAmt = bi(at.offer_amount), rAmt = bi(at.return_amount);
+          if (oAmt <= 0n || rAmt <= 0n) return;
+          var bAmt = oi === 0 ? oAmt : rAmt;       /* base  = sides[0] */
+          var qAmt = oi === 0 ? rAmt : oAmt;       /* quote = sides[1] */
+          var d0 = sideDec(p.sides[0]), d1 = sideDec(p.sides[1]);
+          var price = (Number(qAmt) / Math.pow(10, d1)) / (Number(bAmt) / Math.pow(10, d0));
+          if (!(price > 0)) return;
+          out.push({ ts: ts, hash: t.txhash, trader: at.sender || '',
+                     side: oi === 0 ? 'sell' : 'buy',
+                     oSym: sideSym(p.sides[oi]), oAmt: oAmt, oDec: sideDec(p.sides[oi]),
+                     rSym: sideSym(p.sides[ri]), rAmt: rAmt, rDec: sideDec(p.sides[ri]),
+                     qAmt: qAmt, price: price });
+        });
+      });
+    });
+    out.sort(function(a, b){ return b.ts - a.ts; });
+    return out;
+  }
+  var mktSeq = 0;
+  function loadMarketData(p, force){
+    if (state.sel !== p) return;
+    if (p.trades && !force){ renderMarketData(p); return; }
+    var seq = ++mktSeq;
+    $('chartMsg').style.display = '';
+    $('chartMsg').textContent = 'Loading this pool\'s on-chain trade history…';
+    $('chartCv').style.display = 'none';
+    $('tradeFeed').innerHTML = '<p class="note">Loading recent trades…</p>';
+    $('ppVol').textContent = '…'; $('ppVolNote').textContent = '';
+    $('ppChg').style.display = 'none'; $('ppChgLbl').textContent = '';
+    var base = '/v1/txs?account=' + p.addr + '&limit=100';
+    fcd(base).then(function(d1){
+      var txs = (d1 && d1.txs) || [];
+      if (d1 && d1.next && txs.length){
+        return fcd(base + '&offset=' + d1.next)
+          .then(function(d2){ return txs.concat((d2 && d2.txs) || []); },
+                function(){ return txs; });
+      }
+      return txs;
+    }).then(function(txs){
+      if (seq !== mktSeq || state.sel !== p) return;
+      p.fetched = txs.length;
+      p.trades = parseTrades(p, txs);
+      renderMarketData(p);
+    }).catch(function(){
+      if (seq !== mktSeq || state.sel !== p) return;
+      p.tradesErr = true;
+      $('chartMsg').textContent = 'Trade history is not answering right now (FCD) — the live pool quotes and Shield checks are unaffected.';
+      $('tradeFeed').innerHTML = '<p class="note">Recent trades are not answering right now (FCD).</p>';
+      $('ppVol').textContent = '—';
+    });
+  }
+  function renderMarketData(p){
+    if (state.sel !== p) return;
+    var trades = p.trades || [];
+    /* --- 24h stats, labeled with their real window --- */
+    var now = Date.now(), cut = now - 24 * 3600 * 1000;
+    var qd = sideDec(p.sides[1]), qSym = sideSym(p.sides[1]);
+    var vol = 0n, n24 = 0;
+    trades.forEach(function(t){ if (t.ts >= cut){ vol += t.qAmt; n24++; } });
+    if (trades.length){
+      var oldest = trades[trades.length - 1].ts;
+      var fullDay = oldest <= cut;
+      $('ppVol').textContent = fmt(vol.toString(), qd) + ' ' + qSym;
+      $('ppVolNote').textContent = fullDay
+        ? 'last 24h · from ' + n24 + ' on-chain trades (FCD)'
+        : 'since ' + fmtD(oldest) + ' · from ' + n24 + ' on-chain trades (FCD) — fetched history is shorter than 24h of trades';
+      var last = trades[0].price, ref = null, refLbl = '24h change';
+      for (var i = 0; i < trades.length; i++){ if (trades[i].ts <= cut){ ref = trades[i]; break; } }
+      if (!ref && trades.length > 1){ ref = trades[trades.length - 1]; refLbl = 'change since ' + fmtDT(ref.ts); }
+      var chg = $('ppChg');
+      if (ref && ref.price > 0 && ref !== trades[0]){
+        var pct = (last - ref.price) / ref.price * 100;
+        chg.style.display = '';
+        chg.className = 'badge ' + (pct >= 0 ? 'g' : 'r');
+        chg.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+        $('ppChgLbl').textContent = refLbl + ' · from on-chain trades';
+      } else {
+        chg.style.display = 'none';
+        $('ppChgLbl').textContent = trades.length ? 'not enough spaced trades yet for a change figure' : '';
+      }
+    } else {
+      $('ppVol').textContent = '0 ' + qSym;
+      $('ppVolNote').textContent = 'no swaps found in the fetched history';
+      $('ppChg').style.display = 'none'; $('ppChgLbl').textContent = '';
+    }
+    renderFeed(p);
+    drawChart(p);
+  }
+  function renderFeed(p){
+    var el = $('tradeFeed');
+    var trades = (p.trades || []).slice(0, 14);
+    if (!trades.length){
+      el.innerHTML = '<p class="note">No swaps found in this pool\'s recent on-chain history (last ' +
+        p.fetched + ' txs checked via FCD).</p>';
+      return;
+    }
+    el.innerHTML = trades.map(function(t){
+      return '<div class="trow"><span class="tt">' + esc(fmtDT(t.ts)) + '</span>' +
+        '<span class="side ' + t.side + '">' + (t.side === 'buy' ? 'BUY' : 'SELL') + '</span>' +
+        '<span class="ta">' + fmt(t.oAmt.toString(), t.oDec) + ' ' + esc(t.oSym) + ' → ' +
+          fmt(t.rAmt.toString(), t.rDec) + ' ' + esc(t.rSym) + '</span>' +
+        '<span class="tx2"><span>trader <a href="' + finderAddr(t.trader) + '" target="_blank" rel="noopener" title="' +
+          esc(t.trader) + '">' + esc(shortAddr(t.trader)) + '</a></span>' +
+        '<a href="' + finderTx(t.hash) + '" target="_blank" rel="noopener">tx ↗</a></span></div>';
+    }).join('');
+  }
+  /* --- candlesticks from the real trades (buckets with no trades are gaps) --- */
+  function drawChart(p){
+    var cv = $('chartCv'), msg = $('chartMsg');
+    var trades = (p.trades || []).slice().sort(function(a, b){ return a.ts - b.ts; });
+    if (trades.length < 2){
+      cv.style.display = 'none'; msg.style.display = '';
+      msg.textContent = trades.length === 1
+        ? 'Only one swap found in this pool\'s fetched history — not enough to draw a chart. The trade is listed on the right.'
+        : 'No swaps found in this pool\'s fetched on-chain history (last ' + p.fetched + ' txs checked via FCD) — nothing to chart.';
+      $('chartMeta').textContent = 'On-chain swap prices · source: FCD';
+      return;
+    }
+    var span = trades[trades.length - 1].ts - trades[0].ts;
+    var ladder = [300, 900, 3600, 14400, 86400, 604800];
+    var iv = ladder[ladder.length - 1], buckets = null;
+    for (var li = 0; li < ladder.length; li++){
+      var ivMs = ladder[li] * 1000;
+      var map = {};
+      trades.forEach(function(t){
+        var k = Math.floor(t.ts / ivMs);
+        var b = map[k] || (map[k] = { t: k * ivMs, o: t.price, h: t.price, l: t.price, c: t.price, v: 0 });
+        b.h = Math.max(b.h, t.price); b.l = Math.min(b.l, t.price); b.c = t.price; b.v += Number(t.qAmt);
+      });
+      var keys = Object.keys(map).map(Number).sort(function(a, b){ return a - b; });
+      buckets = keys.map(function(k){ return map[k]; });
+      iv = ladder[li];
+      if (buckets.length <= 40) break;
+    }
+    var ivLbl = iv < 3600 ? (iv / 60) + 'm' : iv < 86400 ? (iv / 3600) + 'h' : iv < 604800 ? (iv / 86400) + 'd' : '1w';
+    $('chartMeta').textContent = ivLbl + ' candles · ' + fmtD(trades[0].ts) + ' – ' + fmtD(trades[trades.length - 1].ts) +
+      ' · ' + trades.length + ' on-chain trades · gaps mean no trades · source: FCD';
+    msg.style.display = 'none'; cv.style.display = '';
+    var dpr = window.devicePixelRatio || 1;
+    var W = cv.clientWidth, H = cv.clientHeight;
+    if (!W){ return; }
+    cv.width = W * dpr; cv.height = H * dpr;
+    var ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, W, H);
+    var hi = -Infinity, lo = Infinity, vmax = 0;
+    buckets.forEach(function(b){ hi = Math.max(hi, b.h); lo = Math.min(lo, b.l); vmax = Math.max(vmax, b.v); });
+    if (hi === lo){ hi *= 1.001; lo *= 0.999; }
+    var pad = (hi - lo) * 0.08; hi += pad; lo -= pad;
+    var plotW = W - 64, plotH = H - 26, volH = plotH * 0.16, priceH = plotH - volH - 6;
+    function Y(v){ return 4 + (hi - v) / (hi - lo) * priceH; }
+    ctx.font = '10px ui-monospace, monospace';
+    /* gridlines + price labels */
+    ctx.strokeStyle = 'rgba(120,160,120,.14)'; ctx.fillStyle = '#7d8ea3'; ctx.lineWidth = 1;
+    for (var g = 0; g <= 4; g++){
+      var v = lo + (hi - lo) * g / 4, y = Y(v);
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(plotW, y); ctx.stroke();
+      ctx.fillText(v.toPrecision(4), plotW + 6, y + 3);
+    }
+    var n = buckets.length, slot = plotW / n, bw = Math.max(2, Math.min(14, slot * 0.62));
+    buckets.forEach(function(b, i){
+      var x = slot * i + slot / 2, up = b.c >= b.o;
+      var col = up ? '#00e801' : '#ff5147';
+      ctx.strokeStyle = col; ctx.fillStyle = col;
+      ctx.beginPath(); ctx.moveTo(x, Y(b.h)); ctx.lineTo(x, Y(b.l)); ctx.stroke();
+      var yO = Y(b.o), yC = Y(b.c);
+      ctx.fillRect(x - bw / 2, Math.min(yO, yC), bw, Math.max(1.5, Math.abs(yC - yO)));
+      if (vmax > 0){
+        var vh = b.v / vmax * volH;
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(x - bw / 2, 4 + priceH + 6 + (volH - vh), bw, vh);
+        ctx.globalAlpha = 1;
+      }
+      if (i === 0 || i === n - 1 || (n > 6 && i === Math.floor(n / 2))){
+        ctx.fillStyle = '#7d8ea3';
+        var lbl = iv >= 86400 ? fmtD(b.t) : fmtDT(b.t);
+        ctx.fillText(lbl, Math.max(0, Math.min(x - 20, plotW - 62)), H - 8);
+      }
+    });
+  }
+  var rzTimer = null;
+  window.addEventListener('resize', function(){
+    clearTimeout(rzTimer);
+    rzTimer = setTimeout(function(){ if (state.sel && state.sel.trades && state.view === 'market') drawChart(state.sel); }, 250);
+  });
 
   /* ---------- Garuda Shield ---------- */
   function tokenCheck(addr){
@@ -798,10 +1232,20 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       });
       return checks;
     }).then(function(){
-      /* sell test — price the way back with what you would receive */
+      /* sell test — price the way back with what you would receive.
+         With a live quote, test at the full receive size. With no quote
+         yet, probe with 0.1% of the pool's receive-side reserve (a
+         1-micro probe rounds to zero on any healthy pool and would
+         false-flag it — the probe size is the only change; the rule —
+         the pool must price the way back or the trade is blocked — is
+         unchanged). */
       var offer = p.sides[state.dir], ask = p.sides[1 - state.dir];
       var testAmt = null;
       if (state.quote && bi(state.quote.return_amount) > 0n) testAmt = state.quote.return_amount;
+      else {
+        try { var ra = bi(ask.amount || '0') / 1000n; testAmt = (ra > 0n ? ra : 1n).toString(); }
+        catch (e) { testAmt = '1'; }
+      }
       return smart(p.addr, { simulate_swap: { offer_asset: assetOf(ask), offer_amount: testAmt || '1' } })
         .then(function(r){
           if (r && bi(r.return_amount) > 0n) checks.push({ sev: 'g', t: 'Sell test passed',
@@ -870,17 +1314,19 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
   function refreshQuote(){
     var p = state.sel, seq = ++quoteSeq;
     var btn = $('swapBtn');
-    if (!p){ $('quoteBox').style.display = 'none'; return; }
+    if (!p){ $('quoteBox').style.display = 'none'; $('feeLine').textContent = ''; return; }
     renderSwapBal();
     var offer = p.sides[state.dir], ask = p.sides[1 - state.dir];
     var amt = parseAmt($('swapAmt').value, sideDec(offer));
     if (!amt || amt <= 0n){
       state.quote = null; $('quoteBox').style.display = 'none';
-      $('recvAmt').value = ''; $('rateLine').textContent = '';
+      $('recvAmt').value = ''; $('rateLine').textContent = ''; $('feeLine').textContent = '';
       runShield().then(function(res){ if (seq === quoteSeq) renderShield(res); });
       btn.disabled = true; btn.textContent = 'Swap';
       return;
     }
+    $('feeLine').textContent = 'Est. network fee ≈ ' + fmt((offer.kind === 'native' ? FEE.swapNative : FEE.swapCw20).amount, 6) +
+      ' LUNC (fixed fee set by this page) · the pool fee is inside the quote';
     smart(p.addr, { simulate_swap: { offer_asset: assetOf(offer), offer_amount: amt.toString() } })
       .then(function(r){
         if (seq !== quoteSeq) return;
@@ -899,9 +1345,9 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
           : '';
         $('quoteBox').style.display = '';
         $('quoteBox').innerHTML =
-          '<div class="row"><span>You receive (pool quote)</span><span>' + fmt(r.return_amount, sideDec(ask)) + ' ' + esc(sideSym(ask)) + '</span></div>' +
+          '<div class="row"><span>Will Get (pool quote)</span><span>' + fmt(r.return_amount, sideDec(ask)) + ' ' + esc(sideSym(ask)) + '</span></div>' +
           '<div class="row"><span>Pool fee</span><span>' + fmt(r.commission_amount, sideDec(offer)) + ' ' + esc(sideSym(offer)) + '</span></div>' +
-          '<div class="row"><span>Price impact</span><span style="color:' + (imp > 15 ? '#ff8b96' : imp > 5 ? '#ffb74d' : '#3dff8e') + '">' + imp.toFixed(2) + '%</span></div>' +
+          '<div class="row"><span>Price impact</span><span style="color:' + (imp > 15 ? '#ff8b84' : imp > 5 ? '#ffb74d' : '#00e801') + '">' + imp.toFixed(2) + '%</span></div>' +
           '<div class="row"><span>Minimum you will accept</span><span>' + fmt(minRecv.toString(), sideDec(ask)) + ' ' + esc(sideSym(ask)) + '</span></div>' +
           taxNote +
           '<div class="small dim" style="margin-top:6px">Quoted by the pool contract itself just now — not estimated by this page.</div>';
@@ -912,7 +1358,7 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
         state.quote = null;
         $('recvAmt').value = ''; $('rateLine').textContent = '';
         $('quoteBox').style.display = '';
-        $('quoteBox').innerHTML = '<span style="color:#ff8b96">The pool refused this quote — the amount may be too large for the pool, or the pool is not answering.</span>';
+        $('quoteBox').innerHTML = '<span style="color:#ff8b84">The pool refused this quote — the amount may be too large for the pool, or the pool is not answering.</span>';
         runShield().then(function(res){ if (seq === quoteSeq) renderShield(res); });
       });
   }
@@ -923,11 +1369,13 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     clearTimeout(quoteTimer); quoteTimer = setTimeout(refreshQuote, 450); });
   function armSwap(){
     var btn = $('swapBtn'), p = state.sel;
+    renderDir();
     if (!p || !state.quote || !state.checks){ btn.disabled = true; return; }
     if (state.checks.hardBlock){ btn.disabled = true; btn.textContent = '⛔ Blocked by Shield'; return; }
     if (!state.connected){ btn.disabled = true; btn.textContent = 'Connect a wallet to swap'; return; }
     btn.disabled = false;
-    btn.textContent = 'Swap ' + sideSym(p.sides[state.dir]) + ' → ' + sideSym(p.sides[1 - state.dir]);
+    btn.textContent = (state.dir === 1 ? 'Buy ' : 'Sell ') + sideSym(p.sides[0]) +
+      ' — swap ' + sideSym(p.sides[state.dir]) + ' → ' + sideSym(p.sides[1 - state.dir]);
   }
   $('swapBtn').addEventListener('click', function(){
     var p = state.sel; if (!p || state.sending) return;
@@ -952,7 +1400,8 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
     }
     doSend('swap', msgs, fee, $('swapResult'), function(){
       return smart(p.addr, { pool: {} }).then(function(pl){
-        p.live = pl; p.sides[0].amount = pl.reserve1; p.sides[1].amount = pl.reserve2; renderPools(); });
+        p.live = pl; p.sides[0].amount = pl.reserve1; p.sides[1].amount = pl.reserve2;
+        renderPools(); loadMarketData(p, true); });
     });
   });
 
@@ -972,7 +1421,7 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
       })
       .catch(function(e){
         state.sending = false;
-        resEl.innerHTML = '<span style="color:#ff8b96">⚠️ ' + esc(e && e.message ? e.message : e) + '</span>';
+        resEl.innerHTML = '<span style="color:#ff8b84">⚠️ ' + esc(e && e.message ? e.message : e) + '</span>';
       });
   }
   function pollTx(hash){

@@ -42,6 +42,17 @@
   .stamp b{color:var(--cyan)}
   .ghostbtn{background:transparent;border:1px solid var(--line2);color:var(--cyan);border-radius:9px;
     font:inherit;font-size:13.5px;font-weight:700;padding:8px 14px;cursor:pointer}
+  .fixbtn{display:block;width:100%;padding:12px;margin:10px 0 4px;font-size:14.5px;font-weight:800;letter-spacing:.4px;
+    color:#06121f;background:linear-gradient(180deg,#7dd3fc,#0284c7);border:1px solid #38bdf8;border-radius:12px;
+    cursor:pointer;font-family:inherit}
+  .steps{display:none;margin-top:10px;background:#070d20;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .steps.open{display:block}
+  .codeblk{display:block;background:#04060e;border:1px solid var(--line2);border-radius:8px;padding:10px 12px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.55;
+    white-space:pre-wrap;word-break:break-all;overflow-x:auto;margin:8px 0;color:#bfe3ff;text-align:left}
+  .kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+  .kv:last-child{border-bottom:0}
+  .kv .k{color:var(--dim)} .kv .v{font-weight:700;text-align:right}
   .disclaimer{margin:26px auto 6px;padding:12px 16px;font-size:12px;line-height:1.55;color:#8a97a5;
     text-align:center;border-top:1px solid #2a3440;max-width:760px}
 </style>
@@ -92,13 +103,37 @@
 
     <button type="button" disabled style="display:block;width:100%;padding:15px;margin:14px 0 4px;font-size:16.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#d4881e,#8f5a0c);border:1px solid #ffb35e;border-radius:12px;opacity:.6;cursor:not-allowed">⏸ PAUSE TRADING</button>
     <p class="small dim" style="margin-top:0">Freezes swaps on the pool instantly. Funds stay in the contracts — trading just stops while things get checked.</p>
+    <button type="button" class="fixbtn" data-toggle="revPause">🔍 REVIEW — WHAT THIS SENDS, EXACTLY</button>
+    <div class="steps" id="revPause">
+      <p class="small" style="line-height:1.65;margin-top:0"><b>Full explanation:</b> in the 2.0 contract design this control sends exactly ONE execute message to the pool contract, signed by the owner. It flips the pool's paused flag: swaps stop, funds do not move, and unpausing is the same message in reverse (<span class="mono">{"unpause":{}}</span>). The 2.0 contracts are not deployed yet — this is the exact message from the shipped design spec, published here so the owner can review it before the contracts ever go live. Nothing on today's pools accepts this message.</p>
+      <pre class="codeblk">{"pause":{}}</pre>
+      <div class="kv"><span class="k">Who signs</span><span class="v">The contract owner only</span></div>
+      <div class="kv"><span class="k">Recall window</span><span class="v">None — pause is instant and reversible</span></div>
+      <p class="small dim" style="line-height:1.65">⚠️ <b>No keys here:</b> this page holds NO keys and executes NOTHING on-chain. The code above is what the owner/DAO signs with their own wallet; nothing here signs or sends.</p>
+    </div>
 
     <button type="button" disabled style="display:block;width:100%;padding:15px;margin:12px 0 4px;font-size:16.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#d42a1e,#8f130c);border:1px solid #ff6b5e;border-radius:12px;opacity:.6;cursor:not-allowed">🛑 EMERGENCY RECALL</button>
     <div style="font-size:11.5px;font-weight:700;letter-spacing:.4px;color:#ff9d94;text-align:center;margin:2px 0 4px">Contract-held funds only — never a settled wallet balance.</div>
     <p class="small dim" style="margin-top:0">Sweeps the funds held inside the contracts to the pre-set safe wallet and shuts the pool down until it has been analyzed.</p>
+    <button type="button" class="fixbtn" data-toggle="revRecall">🔍 REVIEW — WHAT THIS SENDS, EXACTLY</button>
+    <div class="steps" id="revRecall">
+      <p class="small" style="line-height:1.65;margin-top:0"><b>Full explanation:</b> in the 2.0 contract design this control sends exactly ONE execute message, signed by the owner. The contract then transfers everything IT holds to the pre-set safe wallet fixed in the contract and locks itself until the owner re-opens it after analysis. It can only ever touch funds held inside the contract — a settled trade sits in the buyer's own wallet and is beyond this message, and beyond anyone's reach. The 2.0 contracts are not deployed yet — this is the exact message from the shipped design spec, published for review before they ever go live.</p>
+      <pre class="codeblk">{"emergency_recall":{}}</pre>
+      <div class="kv"><span class="k">Who signs</span><span class="v">The contract owner only</span></div>
+      <div class="kv"><span class="k">Destination</span><span class="v">The safe wallet fixed in the contract (changing it takes a 7-day window)</span></div>
+      <p class="small dim" style="line-height:1.65">⚠️ <b>No keys here:</b> this page holds NO keys and executes NOTHING on-chain. The code above is what the owner/DAO signs with their own wallet; nothing here signs or sends.</p>
+    </div>
 
     <button type="button" disabled style="display:block;width:100%;padding:15px;margin:12px 0 4px;font-size:16.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#2a5f8f,#173d5e);border:1px solid #5e9bd4;border-radius:12px;opacity:.6;cursor:not-allowed">↩️ CANCEL PENDING ACTION</button>
     <p class="small dim" style="margin-top:0">Kills a scheduled dangerous action — a contract migration or an admin change — while it sits in its recall window.</p>
+    <button type="button" class="fixbtn" data-toggle="revCancel">🔍 REVIEW — WHAT THIS SENDS, EXACTLY</button>
+    <div class="steps" id="revCancel">
+      <p class="small" style="line-height:1.65;margin-top:0"><b>Full explanation:</b> dangerous actions in the 2.0 design (migrations, admin changes, treasury sweeps) never execute immediately — they are scheduled, shown in Pending Actions with an id and a countdown (24 hours standard, 7 days critical), and this control cancels one by id before its window closes. After the window the action executes and cancel no longer applies. The message names exactly one action id — the id shown in Pending Actions is the id you put in the message; check it digit for digit before signing. The 2.0 contracts are not deployed yet — this is the exact message from the shipped design spec, published for review.</p>
+      <pre class="codeblk">{"cancel_pending_action":{"action_id":"THE_ID_SHOWN_IN_PENDING_ACTIONS"}}</pre>
+      <div class="kv"><span class="k">Who signs</span><span class="v">The contract owner only</span></div>
+      <div class="kv"><span class="k">Recall window</span><span class="v">24 hours standard · 7 days critical</span></div>
+      <p class="small dim" style="line-height:1.65">⚠️ <b>No keys here:</b> this page holds NO keys and executes NOTHING on-chain. The code above is what the owner/DAO signs with their own wallet; nothing here signs or sends.</p>
+    </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px">
       <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px">
@@ -123,6 +158,59 @@
       on Garuda's current pools, which is why the board above still watches the old way. In the live system every
       control is owner-only and takes the owner's own signature. Settled trades in user wallets stay final — recall
       protects funds held inside the contracts.</p>
+  </div>
+
+  <div class="card">
+    <h2>🔧 Repair packets — for today's pools, review before signing</h2>
+    <p class="small" style="line-height:1.65;margin-top:0">The control room above ships with the future 2.0 contracts. For Garuda's <b>current</b> contracts, these are the real fixes — each one shown in full underneath its button: the explanation, the details, and the exact code. Pressing is never blind, and nothing here signs: every packet ends in the owner/DAO's own wallet.</p>
+
+    <h2 style="font-size:15.5px;margin:16px 0 4px">Fix 1 — Revoke the deployer's migration grant</h2>
+    <p class="small" style="line-height:1.65">A standing no-expiry authz grant lets the deployer wallet migrate contracts in the granter's name — the open door left from the old ops setup. Only the GRANTER's key can revoke it; the revoke names the grantee and the grant's exact permission type, and takes effect the moment it confirms.</p>
+    <div class="kv"><span class="k">Granter (signs)</span><span class="v mono"><a href="https://finder.terraclassic.community/mainnet/address/terra18kdk2kf8uvzs5gghky23hv4q7wdnk0ff2k83wt" target="_blank" rel="noopener">terra18kdk2kf8uvzs5gghky23hv4q7wdnk0ff2k83wt</a></span></div>
+    <div class="kv"><span class="k">Grantee</span><span class="v mono"><a href="https://finder.terraclassic.community/mainnet/address/terra10jwx5kv59ytapg2v7t6wgvjpm0smyq3ezywx7j" target="_blank" rel="noopener">terra10jwx5kv59ytapg2v7t6wgvjpm0smyq3ezywx7j</a></span></div>
+    <button type="button" class="fixbtn" data-toggle="packRevoke">🔍 REVIEW THE FIX — FULL DETAILS &amp; EXACT CODE</button>
+    <div class="steps" id="packRevoke">
+      <pre class="codeblk">{
+  "@type": "/cosmos.authz.v1beta1.MsgRevoke",
+  "granter": "terra18kdk2kf8uvzs5gghky23hv4q7wdnk0ff2k83wt",
+  "grantee": "terra10jwx5kv59ytapg2v7t6wgvjpm0smyq3ezywx7j",
+  "msg_type_url": "/terra.wasm.v1beta1.MsgMigrateContract"
+}</pre>
+      <pre class="codeblk">terrad tx authz revoke terra10jwx5kv59ytapg2v7t6wgvjpm0smyq3ezywx7j /terra.wasm.v1beta1.MsgMigrateContract --from terra18kdk2kf8uvzs5gghky23hv4q7wdnk0ff2k83wt</pre>
+      <p class="small dim" style="line-height:1.65">The type URL above is the standing grant's own — it is a migration grant. Confirm it matches the grant shown on the granter's explorer page before signing. ⚠️ <b>No keys here:</b> this page holds NO keys and executes NOTHING on-chain. The code above is what the owner/DAO signs with their own wallet; nothing here signs or sends.</p>
+    </div>
+
+    <h2 style="font-size:15.5px;margin:18px 0 4px">Fix 2 — Re-admin a contract to the team DAO</h2>
+    <p class="small" style="line-height:1.65">The admin is the only address that can migrate a contract. If an old ops key can still reach a contract, its admin should move to the team DAO. Only the CURRENT admin can send this; afterwards the old key holds no power over the contract.</p>
+    <div class="kv"><span class="k">New admin (the DAO)</span><span class="v mono"><a href="https://finder.terraclassic.community/mainnet/address/terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c" target="_blank" rel="noopener">terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c</a></span></div>
+    <button type="button" class="fixbtn" data-toggle="packReadmin">🔍 REVIEW THE FIX — FULL DETAILS &amp; EXACT CODE</button>
+    <div class="steps" id="packReadmin">
+      <pre class="codeblk">{
+  "@type": "/terra.wasm.v1beta1.MsgUpdateAdmin",
+  "sender": "THE_CONTRACTS_CURRENT_ADMIN",
+  "new_admin": "terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c",
+  "contract": "THE_CONTRACT_ADDRESS"
+}</pre>
+      <pre class="codeblk">terrad tx wasm update-admin THE_CONTRACT_ADDRESS terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c --from THE_CONTRACTS_CURRENT_ADMIN</pre>
+      <p class="small dim" style="line-height:1.65">Fill in the contract and its current admin from the alert that sent you here, and check both against the contract's explorer page before signing. ⚠️ <b>No keys here:</b> this page holds NO keys and executes NOTHING on-chain. The code above is what the owner/DAO signs with their own wallet; nothing here signs or sends.</p>
+    </div>
+
+    <h2 style="font-size:15.5px;margin:18px 0 4px">Fix 3 — Migrate a pool back to the clean code (10920)</h2>
+    <p class="small" style="line-height:1.65">If a pool's code was changed, the restore is a migration back to the original staking code 10920 by the contract's admin — for Garuda pools, the team DAO. A restore counts only when the migration transaction's sender IS the DAO; a code change from any other sender is an attack move, not a restore. Inside the DAO this message is wrapped in a DAO proposal in the DAO's own proposal UI — the message below is the verbatim payload it carries.</p>
+    <div class="kv"><span class="k">Target code</span><span class="v">10920 (original staking code)</span></div>
+    <div class="kv"><span class="k">Admin / signer</span><span class="v mono"><a href="https://finder.terraclassic.community/mainnet/address/terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c" target="_blank" rel="noopener">terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c</a></span></div>
+    <button type="button" class="fixbtn" data-toggle="packMigrate">🔍 REVIEW THE FIX — FULL DETAILS &amp; EXACT CODE</button>
+    <div class="steps" id="packMigrate">
+      <pre class="codeblk">{
+  "@type": "/terra.wasm.v1beta1.MsgMigrateContract",
+  "sender": "terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c",
+  "contract": "THE_POOL_CONTRACT_ADDRESS",
+  "code_id": "10920",
+  "msg": {}
+}</pre>
+      <pre class="codeblk">terrad tx wasm migrate THE_POOL_CONTRACT_ADDRESS 10920 '{}' --from terra1vkeh3xev92g8j76vxucnkq8jpujdveyklnyj82nlcvuaxqrus7mq9eyv3c</pre>
+      <p class="small dim" style="line-height:1.65">Stakers can exit any pool meanwhile via the exit pages, and pool owners can cut APR to 0 — those pages show their own messages in the wallet before signing. ⚠️ <b>No keys here:</b> this page holds NO keys and executes NOTHING on-chain. The code above is what the owner/DAO signs with their own wallet; nothing here signs or sends.</p>
+    </div>
   </div>
 
   <div class="card">
@@ -443,6 +531,16 @@ var CENSUS = {"pairs":[{"pair":"terra1n5zqejrguru8zv0evme34neajjxh9gz3877quyyj8a
   document.addEventListener('visibilitychange', function(){
     if (document.hidden) stopTimers();
     else { checkIntegrity(); rotateTrades(); startTimers(); }
+  });
+
+  /* Review-before-press toggles (Nov 2, 2026): every fix/review
+     button opens its full explanation + exact code directly
+     underneath itself. Pure display — these panels sign nothing. */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-toggle]'), function(b){
+    b.addEventListener('click', function(){
+      var el = document.getElementById(b.getAttribute('data-toggle'));
+      if (el) el.className = 'steps' + (el.className.indexOf('open') >= 0 ? '' : ' open');
+    });
   });
 
   checkIntegrity();

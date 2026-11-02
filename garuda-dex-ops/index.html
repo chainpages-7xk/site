@@ -83,21 +83,44 @@
   </div>
 
   <div class="card" style="border-color:#7a1f1f">
-    <h2>🛑 Emergency Stop &amp; Recall — built into the 2.0 contracts</h2>
+    <h2>🎛️ The 2.0 Control Room — Emergency Stop &amp; Recall <span style="font-size:11px;font-weight:800;letter-spacing:1px;color:#ffd35e;border:1px solid #ffd35e;border-radius:20px;padding:2px 9px;vertical-align:middle">DEMO</span></h2>
     <p class="small" style="line-height:1.65;margin-top:0">This board watches Garuda's <i>current</i> pools — and those
-      contracts have no brake: when a key was compromised in October, nothing could stop a drain in progress. The
-      <b>new 2.0 contracts</b> add the missing piece, a recall switch held by the owner alone:</p>
-    <ul class="small" style="line-height:1.65;padding-left:20px;margin:8px 0">
-      <li><b>One tap pauses trading</b> on the pool.</li>
-      <li><b>Funds held inside the contracts sweep to a pre-set safe wallet</b>, out of harm's way.</li>
-      <li><b>Recall windows on dangerous changes</b> — migrations and admin changes wait <b>24 hours</b> (standard)
-        or <b>7 days</b> (critical), with <b>alerts when one is scheduled and again before the window closes</b>.</li>
-    </ul>
-    <button type="button" disabled style="display:block;width:100%;padding:16px;margin:12px 0 6px;font-size:17px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#d42a1e,#8f130c);border:1px solid #ff6b5e;border-radius:12px;opacity:.55;cursor:not-allowed">🛑 EMERGENCY STOP &amp; RECALL</button>
-    <p class="small dim"><b>Demonstration only — this button does nothing on this page</b>, and the pools on this
-      board do not carry this protection. Emergency Stop &amp; Recall ships with the new 2.0 contracts; in the live
-      system the control is owner-only and takes the owner's own signature. Settled trades in user wallets stay
-      final — recall protects funds held inside the contracts.</p>
+      contracts have no brake: when a key was compromised in October, nothing could stop a drain in progress. Below is
+      the control room that ships with the <b>new 2.0 contracts</b> — the three controls the owner holds, shown as
+      they will appear:</p>
+
+    <button type="button" disabled style="display:block;width:100%;padding:15px;margin:14px 0 4px;font-size:16.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#d4881e,#8f5a0c);border:1px solid #ffb35e;border-radius:12px;opacity:.6;cursor:not-allowed">⏸ PAUSE TRADING</button>
+    <p class="small dim" style="margin-top:0">Freezes swaps on the pool instantly. Funds stay in the contracts — trading just stops while things get checked.</p>
+
+    <button type="button" disabled style="display:block;width:100%;padding:15px;margin:12px 0 4px;font-size:16.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#d42a1e,#8f130c);border:1px solid #ff6b5e;border-radius:12px;opacity:.6;cursor:not-allowed">🛑 EMERGENCY RECALL</button>
+    <p class="small dim" style="margin-top:0">Sweeps the funds held inside the contracts to the pre-set safe wallet and shuts the pool down until it has been analyzed.</p>
+
+    <button type="button" disabled style="display:block;width:100%;padding:15px;margin:12px 0 4px;font-size:16.5px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#2a5f8f,#173d5e);border:1px solid #5e9bd4;border-radius:12px;opacity:.6;cursor:not-allowed">↩️ CANCEL PENDING ACTION</button>
+    <p class="small dim" style="margin-top:0">Kills a scheduled dangerous action — a contract migration or an admin change — while it sits in its recall window.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px">
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px">
+        <div style="font-size:11px;letter-spacing:1px;opacity:.65">RECALL WINDOWS</div>
+        <div style="font-size:13.5px;margin-top:4px;line-height:1.5"><b>24 hours</b> standard · <b>7 days</b> critical</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px">
+        <div style="font-size:11px;letter-spacing:1px;opacity:.65">RESCUE DESTINATION</div>
+        <div style="font-size:13.5px;margin-top:4px;line-height:1.5">Owner-set safe wallet, fixed in the contracts — changing it takes a 7-day window</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px">
+        <div style="font-size:11px;letter-spacing:1px;opacity:.65">ALERTS</div>
+        <div style="font-size:13.5px;margin-top:4px;line-height:1.5">🟢 ON — owner + operator are pinged when a dangerous action is scheduled, and again before its window closes</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:10px">
+        <div style="font-size:11px;letter-spacing:1px;opacity:.65">PENDING ACTIONS</div>
+        <div style="font-size:13.5px;margin-top:4px;line-height:1.5">Anything scheduled shows here with its countdown — cancellable until the window closes</div>
+      </div>
+    </div>
+
+    <p class="small dim"><b>Demonstration only.</b> These controls ship with the new 2.0 contracts — they cannot act
+      on Garuda's current pools, which is why the board above still watches the old way. In the live system every
+      control is owner-only and takes the owner's own signature. Settled trades in user wallets stay final — recall
+      protects funds held inside the contracts.</p>
   </div>
 
   <div class="card">

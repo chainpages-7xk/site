@@ -47,6 +47,10 @@
     border-radius:12px;color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     font-size:19px;letter-spacing:.12em;text-transform:uppercase;padding:12px 14px;margin:4px 0 6px}
   #kbInput.bad{border-color:var(--red)}
+  #dInput{width:100%;min-height:84px;background:var(--card2);border:1px solid var(--line2);
+    border-radius:12px;color:var(--txt);font:inherit;font-size:15.5px;line-height:1.5;
+    padding:12px 14px;margin:4px 0 6px;resize:vertical}
+  #dInput.bad{border-color:var(--red)}
   .review{background:var(--card2);border:1px solid var(--line2);border-radius:12px;
     padding:12px 13px;margin-top:14px}
   .review h3{font-size:14.5px;margin:0 0 8px}
@@ -138,6 +142,47 @@
     <div class="errbox" id="errBox"></div>
     <div class="donebox" id="doneBox"></div>
     <div class="result" id="resBox"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>Change validator description</h2>
+    <p class="note" style="margin-top:0">Update the <b>Details</b> text on the validator. Everything
+    else in the description — moniker, logo identity, website, security contact — is re-sent from
+    the live chain read <b>exactly as it is now</b>; only the details below go out changed.</p>
+    <div class="lbl">Details (on chain now)</div>
+    <div class="addr" id="dCurDetails">reading…</div>
+    <div class="lbl">New details</div>
+    <textarea id="dInput" maxlength="300" autocomplete="off" spellcheck="false">Fresh start under our own roof. By the LUNC Dev Studio team.</textarea>
+    <div class="note" id="dHint">Review the panel below, then tap the button.</div>
+
+    <button type="button" class="bigbtn" id="dSignBtn" disabled>Update description (sign in wallet)</button>
+
+    <div class="review" id="dReviewPanel">
+      <h3>🔍 Review before you press</h3>
+      <div class="lbl">What WILL change</div>
+      <ul>
+        <li>Details: <span class="mono" id="dRvFrom">reading…</span> → <span class="mono" id="dRvTo">…</span></li>
+      </ul>
+      <div class="lbl">What will NOT change</div>
+      <ul>
+        <li>Moniker stays exactly: <span class="mono" id="dRvMoniker">reading…</span></li>
+        <li>Keybase identity stays: <span class="mono" id="dRvIdentity">reading…</span></li>
+        <li>Website stays: <span class="mono" id="dRvWebsite">reading…</span></li>
+        <li>Security contact stays: <span class="mono" id="dRvContact">reading…</span></li>
+        <li>Commission stays <b>2.5%</b> — the message carries <span class="mono">commission_rate: null</span>, so the chain leaves it untouched. Same for min self-delegation (10 LUNC).</li>
+        <li>Fee: <b>5.665 LUNC</b> (fixed gas 200,000 — never "auto"), paid by the operator wallet.</li>
+      </ul>
+      <div class="lbl">The exact message you will be asked to sign</div>
+      <pre class="json" id="dRvJson">{ reading the current validator from the chain… }</pre>
+      <p class="note" style="margin:6px 0 0">In the signed transaction, <span class="mono">null</span> fields are left
+      out entirely — that is how the chain knows to leave them unchanged. Before your wallet is
+      even asked to sign, this page re-reads the validator from the chain and <b>blocks</b> the
+      send if anything differs from what you reviewed here.</p>
+    </div>
+
+    <div class="errbox" id="dErrBox"></div>
+    <div class="donebox" id="dDoneBox"></div>
+    <div class="result" id="dResBox"></div>
   </div>
 
   <footer>
@@ -397,6 +442,7 @@
     var pct = snapshot.commissionRate ? (parseFloat(snapshot.commissionRate) * 100) : NaN;
     $('curCommission').textContent = isNaN(pct) ? snapshot.commissionRate : (pct + '% (rate ' + snapshot.commissionRate + ')');
     renderReview();
+    renderDetailsCard();
   }
   function renderReview(){
     if (!snapshot) return;
@@ -604,6 +650,251 @@
     })();
   }
 
+  /* ============================================================
+     Card 3 — Change validator description (details only).
+     Same triple protection as the logo card:
+       Layer 1 — the message bytes are produced by the SAME
+         QA-verified protobuf builders above; only the desc
+         object handed to them carries the edited details, and
+         the identity argument is the live identity verbatim, so
+         every other description field is encoded byte-for-byte
+         as read from the chain (trailing-space moniker included).
+       Layer 2 — PRE-SIGN GUARD (guardCheckDetailsEdit): the send
+         is blocked unless the message is exactly one
+         MsgEditValidator on THIS validator, signed by the
+         operator, with moniker/identity/website/security_contact
+         identical to the live read, details equal to the
+         reviewed new value, and commission/min-self-delegation
+         omitted.
+       Layer 3 — POST-BROADCAST PROOF: success is declared only
+         when a fresh chain read shows the new details on chain.
+     ============================================================ */
+  var dSending = false;
+  var dSnapshotBeforeRefresh = null;
+
+  function descWithDetails(desc, details){
+    return {
+      moniker: desc.moniker,
+      identity: desc.identity,
+      website: desc.website,
+      security_contact: desc.security_contact,
+      details: details
+    };
+  }
+  function buildMsgJsonDetails(desc, details){
+    return buildMsgJson(descWithDetails(desc, details), desc.identity);
+  }
+  function buildBodyBytesDetails(desc, details){
+    return buildBodyBytes(descWithDetails(desc, details), desc.identity);
+  }
+  window.__buildMsgJsonDetails = buildMsgJsonDetails;
+  window.__buildBodyBytesDetails = buildBodyBytesDetails;
+  window.__descWithDetails = descWithDetails;
+
+  var GUARD_TEXT_DETAILS = 'Blocked: this transaction is not the expected description-update action.';
+  function guardBlockedDetails(reason){
+    var b = document.getElementById('guardBanner');
+    if (!b){
+      b = document.createElement('div');
+      b.id = 'guardBanner';
+      b.setAttribute('style', 'background:#b00020;color:#fff;padding:14px 16px;margin:12px 0;border-radius:8px;font-weight:700;font-size:16px;position:relative;z-index:60;');
+      document.body.insertBefore(b, document.body.firstChild);
+    }
+    b.textContent = '⛔ ' + GUARD_TEXT_DETAILS + ' (' + reason + ') Nothing was sent.';
+    b.style.display = 'block';
+    if (b.scrollIntoView) b.scrollIntoView();
+    var err = new Error(GUARD_TEXT_DETAILS + ' (' + reason + ')');
+    err.guardBlocked = true;
+    throw err;
+  }
+  function guardCheckDetailsEdit(o){
+    if (!o || o.typeUrl !== TYPE_URL) guardBlockedDetails('the message type is not MsgEditValidator');
+    if (o.validatorAddress !== VALOPER) guardBlockedDetails('the message targets a different validator');
+    if (o.signer !== OPERATOR) guardBlockedDetails('the signer is not the validator operator wallet');
+    if (typeof o.details !== 'string' || o.details.length < 1 || o.details.length > 256)
+      guardBlockedDetails('the new details are empty or longer than 256 characters');
+    if (o.commissionRate !== null || o.minSelfDelegation !== null)
+      guardBlockedDetails('commission or min self-delegation would change');
+    var cur = o.currentDescription, msg = o.msgDescription;
+    if (!cur || !msg) guardBlockedDetails('the current description could not be verified');
+    ['moniker', 'identity', 'website', 'security_contact'].forEach(function(k){
+      if (msg[k] !== cur[k]) guardBlockedDetails('the ' + k + ' would change');
+    });
+    if (msg.details !== o.details) guardBlockedDetails('the details in the message differ from the reviewed value');
+    return true;
+  }
+  window.__guardCheckDetailsEdit = guardCheckDetailsEdit;
+
+  function detailsInput(){
+    return ($('dInput').value || '').trim();
+  }
+  function renderDetailsCard(){
+    if (!snapshot) return;
+    var d = snapshot.description;
+    $('dCurDetails').textContent = d.details;
+    var nv = detailsInput();
+    $('dRvFrom').textContent = d.details;
+    $('dRvTo').textContent = nv || '…';
+    $('dRvMoniker').textContent = '"' + d.moniker + '"';
+    $('dRvIdentity').textContent = d.identity ? d.identity : '(empty — no logo set)';
+    $('dRvWebsite').textContent = d.website;
+    $('dRvContact').textContent = d.security_contact;
+    var shown = buildMsgJsonDetails(d, nv || '…');
+    $('dRvJson').textContent = JSON.stringify(shown, null, 2);
+    var ok = nv.length >= 1 && nv.length <= 256;
+    $('dSignBtn').disabled = !(ok && !dSending);
+    var hint = $('dHint');
+    if (!nv) hint.textContent = 'Type the new details to arm the button.';
+    else if (nv.length > 256) hint.textContent = 'Too long — details can be at most 256 characters.';
+    else if (nv === d.details) hint.textContent = 'This matches what is on chain now — signing would change nothing.';
+    else hint.textContent = '✓ Review the panel below, then tap the button.';
+    $('dInput').classList.toggle('bad', nv.length > 256);
+  }
+  function dShowErr(html){
+    var b = $('dErrBox');
+    b.innerHTML = html;
+    b.classList.add('show');
+  }
+  function dClearErr(){ var b = $('dErrBox'); b.innerHTML = ''; b.classList.remove('show'); }
+  function dKeplrMissing(){
+    dShowErr('<b>No Keplr found in this browser.</b> Nothing was sent. ' +
+      'Open this page inside the <b>Keplr app\'s browser</b> on your phone (with the operator ' +
+      'wallet selected), or in a desktop browser with the Keplr extension. ' +
+      'LUNCDash can\'t inject a signer into a web page, so it can\'t be used here.');
+  }
+
+  function doSetDetails(){
+    if (dSending) return;
+    dClearErr();
+    $('dDoneBox').classList.remove('show');
+    $('dResBox').innerHTML = '';
+    var details = detailsInput();
+    if (!details || details.length > 256){
+      dShowErr('The new details must be between 1 and 256 characters. Check the text and try again.');
+      return;
+    }
+    if (!snapshot){
+      dShowErr('The validator state has not loaded yet — tap “Re-read from chain” first.');
+      return;
+    }
+    dSending = true; renderDetailsCard();
+    $('dSignBtn').textContent = 'Working…';
+    var res = $('dResBox');
+
+    /* freshness: re-read, compare against the reviewed snapshot */
+    loadValidator(true).then(function(fresh){
+      var reviewed = dSnapshotBeforeRefresh;
+      if (!reviewed || JSON.stringify(fresh.description) !== JSON.stringify(reviewed.description)){
+        snapshot = fresh; renderSnapshot();
+        throw new Error('The on-chain validator description changed since this page loaded — the review panel has been updated with the new values. Check it and tap again. Nothing was sent.');
+      }
+      if (fresh.description.details === details){
+        $('dDoneBox').innerHTML = '✓ <b>Already set.</b> The details on chain already read exactly this — nothing to sign.';
+        $('dDoneBox').classList.add('show');
+        dSending = false; $('dSignBtn').textContent = 'Update description (sign in wallet)'; renderDetailsCard();
+        return null;
+      }
+      /* Layer 2 — pre-sign guard, before the wallet is touched */
+      var msgJson = buildMsgJsonDetails(fresh.description, details);
+      guardCheckDetailsEdit({
+        typeUrl: TYPE_URL,
+        validatorAddress: VALOPER,
+        signer: OPERATOR,
+        details: details,
+        commissionRate: msgJson.commission_rate,
+        minSelfDelegation: msgJson.min_self_delegation,
+        currentDescription: fresh.description,
+        msgDescription: msgJson.description
+      });
+      if (!window.keplr){ dKeplrMissing(); throw DONE_QUIET; }
+      res.innerHTML = '<div>Connecting to Keplr… approve the connection in your wallet if asked.</div>';
+      return enableKeplr()
+        .then(function(){ return window.keplr.getKey(CHAIN_ID); })
+        .then(function(key){
+          var signer = key && key.bech32Address;
+          if (signer !== OPERATOR){
+            throw new Error('The connected wallet is ' + (signer || 'unknown') +
+              ' — this page needs the validator operator wallet ' + OPERATOR +
+              '. Switch wallets in Keplr and tap again. Nothing was sent.');
+          }
+          res.innerHTML = '<div>Reading your account from the chain…</div>';
+          return readAccount().then(function(acct){
+            var pubB64 = (acct.pub_key && acct.pub_key.key) ||
+              (key.pubKey ? bytesToB64(key.pubKey) : null);
+            if (!pubB64) throw new Error('could not get the operator public key — nothing was sent');
+            var bodyBytes = buildBodyBytesDetails(fresh.description, details);
+            var authBytes = buildAuthInfoBytes(pubB64, acct.sequence || '0');
+            /* the exact bytes about to be signed, kept for QA/inspection */
+            window.__lastDetailsTxPreview = {
+              msgJson: msgJson, feeUluna: FEE_AMOUNT, gas: GAS_LIMIT,
+              bodyBytesB64: bytesToB64(bodyBytes), authInfoBytesB64: bytesToB64(authBytes)
+            };
+            res.innerHTML = '<div>Waiting for your signature in Keplr… check the transaction ' +
+              'in the wallet before approving: it must be an <b>Edit Validator</b> on ' +
+              '<span class="mono">' + VALOPER + '</span> changing only the details to ' +
+              '“' + escapeHtml(details) + '”.</div>';
+            return window.keplr.signDirect(CHAIN_ID, signer, {
+              bodyBytes: bodyBytes,
+              authInfoBytes: authBytes,
+              chainId: CHAIN_ID,
+              accountNumber: String(acct.account_number)
+            }).then(function(signed){
+              var raw = buildTxRawBytes(signed.signed.bodyBytes, signed.signed.authInfoBytes, signed.signature.signature);
+              res.innerHTML = '<div>Signed. Broadcasting…</div>';
+              return fetchJson(LCD + '/cosmos/tx/v1beta1/txs', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ tx_bytes: bytesToB64(raw), mode: 'BROADCAST_MODE_SYNC' })
+              });
+            });
+          });
+        })
+        .then(function(resp){
+          var tr = resp && resp.tx_response;
+          if (!tr || !tr.txhash) throw new Error('the chain did not return a transaction hash — check Keplr before retrying');
+          if (typeof tr.code === 'number' && tr.code !== 0)
+            throw new Error('the chain rejected the transaction (code ' + tr.code + (tr.raw_log ? ': ' + String(tr.raw_log).slice(0, 160) : '') + ')');
+          onBroadcastDetails(tr.txhash, details);
+        });
+    }).catch(function(e){
+      if (e === DONE_QUIET) { /* message already shown */ }
+      else {
+        try { console.error('set details failed', e); } catch (x) {}
+        if (!(e && e.guardBlocked)) dShowErr(escapeHtml(plainError(e)));
+      }
+    }).then(function(){
+      dSending = false;
+      $('dSignBtn').textContent = 'Update description (sign in wallet)';
+      renderDetailsCard();
+    });
+  }
+
+  /* ---------------- Layer 3 (card 3): post-broadcast proof ---------------- */
+  function onBroadcastDetails(hash, details){
+    var res = $('dResBox');
+    res.innerHTML = '<div>✅ <b>Transaction sent.</b><br>Tx hash: <span class="mono">' + hash + '</span><br>' +
+      '<a href="' + FINDER + '/tx/' + hash + '" target="_blank" rel="noopener">View the transaction on Finder ↗</a></div>' +
+      '<div class="note" style="margin-top:8px">Confirming on chain…</div>';
+    var tries = 0;
+    (function poll(){
+      tries++;
+      readValidator().then(function(now){
+        if (now.description.details === details){
+          snapshot = now; renderSnapshot();
+          res.innerHTML += '<div class="proof">✓ <b>Verified on chain: the validator details now read</b> ' +
+            '“' + escapeHtml(details) + '”.</div>';
+        } else if (tries < 15){
+          setTimeout(poll, 4000);
+        } else {
+          res.innerHTML += '<div class="proof">The transaction is on chain (see the Finder link above) ' +
+            'but this page\'s chain read has not caught up yet. Tap “Re-read from chain” in a few seconds.</div>';
+        }
+      }).catch(function(){
+        if (tries < 15) setTimeout(poll, 4000);
+      });
+    })();
+  }
+
   /* ---------------- wiring ---------------- */
   $('kbInput').addEventListener('input', renderReview);
   $('recheckBtn').addEventListener('click', function(){ loadValidator(false); });
@@ -615,6 +906,11 @@
     window.addEventListener('keplr_keystorechange', function(){
       $('rlog').textContent = 'Wallet changed in Keplr — the page checks the signer again when you tap.';
     });
+  $('dInput').addEventListener('input', renderDetailsCard);
+  $('dSignBtn').addEventListener('click', function(){
+    dSnapshotBeforeRefresh = snapshot;
+    doSetDetails();
+  });
   loadValidator(false);
 })();
 </script>

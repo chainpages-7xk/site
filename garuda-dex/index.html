@@ -356,6 +356,14 @@
   .wmob-badge{font-size:10.5px;font-weight:800;border:1px solid #8a6d2f;color:#ffe1a8;border-radius:999px;padding:2px 7px;white-space:nowrap}
 </style>
 
+<style>
+#dexPairBox{flex-wrap:wrap}
+#dexPairBox .lbl{flex:1 1 100%}
+#walletPairActs{flex:1 1 100%;justify-content:center}
+#walletPairOpen{white-space:nowrap;flex:0 0 auto}
+#walletPairCopy{white-space:nowrap;flex:0 0 auto}
+#walletPairQr{flex:0 0 auto}
+</style>
 </head>
 <body>
 <div class="previewbanner" data-i18n="banner">PREVIEW — demonstration only. Wallet connection is disabled on this page.</div>
@@ -5463,6 +5471,11 @@ function gdLuncDashConnect(){
     return wc.createSession().then(() => {
       if (!wc.uri) throw new Error('no-uri');
       showDashPairBox(wc.uri);
+      setTimeout(() => {
+        if (!resolved && !wc.connected && document.visibilityState === 'visible'){
+          try { window.location.href = gdLuncDashOpenHref(wc.uri); } catch (e) {}
+        }
+      }, 450);
       watchdog = setTimeout(() => {
         if (!resolved && !wc.connected && Date.now() - pageShownAt > 2500 && document.visibilityState === 'visible')
           log('LUNCDash did not open — it may not be installed. Get it from the Play Store, or scan the code / copy the link above into the app.');

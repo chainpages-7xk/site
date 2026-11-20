@@ -363,6 +363,17 @@
 #walletPairOpen{white-space:nowrap;flex:0 0 auto}
 #walletPairCopy{white-space:nowrap;flex:0 0 auto}
 #walletPairQr{flex:0 0 auto}
+.sliprow{flex-wrap:nowrap}
+.sliprow .sl{flex:0 0 auto}
+.sliprow .slipchip{padding-left:9px;padding-right:9px}
+.sliprow #slipIn{flex:0 1 58px;min-width:0;height:40px}
+#dexToolbar .wbtn{min-height:42px}
+#payTok,#recvTok{min-height:42px}
+#flipBtn{width:42px;height:42px;min-width:42px;min-height:42px}
+[data-i18n="recall_scope"]{text-wrap:balance}
+#wlog{font-size:13px}
+#dexReviewOpenDash{display:inline-block;border-radius:9px;padding:10px 16px;font-weight:800;border:1px solid #22314d;background:#274b3a;color:#d9ffee;text-decoration:none}
+#dexReviewOpenDash[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -1771,7 +1782,7 @@ function langLabel(c){ for (var i = 0; i < LANGS.length; i++) if (LANGS[i][0] ==
   /* ---------- send + confirm ---------- */
   function dexReviewShow(msgs, fee, onGo, onCancel){
     var modal = $('dexReview'), box = $('dexReviewMsgs'), feeEl = $('dexReviewFee');
-    if (!modal || !box){ onGo(); return; }
+    if (!modal || !box){ onGo({ error: function(){}, success: function(){} }); return; }
     $('dexReviewTitle').textContent = T('review_title');
     $('dexReviewNote').textContent = T('waiting_sign');
     $('dexReviewGo').textContent = T('review_confirm');
@@ -1782,22 +1793,70 @@ function langLabel(c){ for (var i = 0; i < LANGS.length; i++) if (LANGS[i][0] ==
         esc(JSON.stringify(full, null, 2)) + '</pre></div>';
     }).join('');
     feeEl.innerHTML = '<div class="row"><span>' + esc(T('review_fee')) + '</span><span>' +
-      fmt(fee.amount, 6) + ' LUNC · gas ' + group(String(fee.gas)) + '</span></div>';
-    modal.hidden = false;
+      fmt(fee.amount, 6) + ' LUNC \u00b7 gas ' + group(String(fee.gas)) + '</span></div>';
     var go = $('dexReviewGo'), cx = $('dexReviewCancel'), bk = $('dexReviewBk');
+    var errEl = $('dexReviewErr'), openDash = $('dexReviewOpenDash');
+    if (errEl){ errEl.hidden = true; errEl.textContent = ''; }
+    /* The modal stays in charge of the whole send now: it does NOT
+       close on the Sign tap. Waiting, errors and retry all live here.
+       Before this, the modal closed instantly and the only feedback
+       went to a result line down the page, so a wallet that never
+       answered left the user staring at "waiting" (2026-11-19). */
+    var dashAddr = (window.__dexDash && window.__dexDash.addr && state.connected &&
+      window.__dexDash.addr === state.connected) ? window.__dexDash.addr : '';
+    if (openDash) openDash.hidden = !dashAddr;
+    go.disabled = false; cx.disabled = false;
+    modal.hidden = false;
+    var waiting = false;
     function close(){ modal.hidden = true; go.onclick = null; cx.onclick = null; if (bk) bk.onclick = null; }
-    go.onclick = function(){ close(); onGo(); };
+    var api = {
+      error: function(msg){
+        waiting = false;
+        go.disabled = false; cx.disabled = false;
+        if (errEl){ errEl.hidden = false; errEl.textContent = '\u26d4 ' + msg; }
+      },
+      success: function(){ close(); }
+    };
+    go.onclick = function(){
+      if (waiting) return;
+      waiting = true;
+      go.disabled = true;
+      if (errEl){ errEl.hidden = true; errEl.textContent = ''; }
+      $('dexReviewNote').textContent = T('waiting_sign');
+      onGo(api);
+    };
     cx.onclick = function(){ close(); onCancel(); };
     if (bk) bk.onclick = function(){ close(); onCancel(); };
+    /* LUNCDash pre-flight: the sign path needs the account's public
+       key from the chain, and a receive-only address has none yet --
+       the sign would only fail AFTER the tap. Check when the review
+       opens and say it here, before the tap, with Sign disabled. */
+    if (dashAddr){
+      lcd('/cosmos/auth/v1beta1/accounts/' + dashAddr).then(function(j){
+        var pk = j && j.account && j.account.pub_key;
+        if ((!pk || !pk.key) && !waiting && !modal.hidden){
+          if (errEl){ errEl.hidden = false; errEl.textContent = '\u26d4 your address has no public key on chain yet \u2014 make any transaction in LUNCDash once, then try again'; }
+          go.disabled = true;
+        }
+      }).catch(function(){ /* a failed check blocks nothing -- the sign attempt surfaces its own error */ });
+    }
   }
   function doSend(kind, msgs, fee, resEl, after){
     if (state.sending) return;
     if (!state.connected){ resEl.textContent = T('connect_first'); return; }
     if (!window.EXIT || typeof window.EXIT.sendExecute !== 'function'){
       resEl.textContent = T('engine_loading'); return; }
-    dexReviewShow(msgs, fee, function(){
+    dexReviewShow(msgs, fee, function(api){
       state.sending = true;
       resEl.textContent = T('waiting_sign');
+      var stale = false;
+      var timer = setTimeout(function(){
+        stale = true;
+        state.sending = false;
+        var msg = 'the wallet did not answer in time \u2014 nothing was broadcast by this page. If a request is still waiting in your wallet app, you can approve or reject it there \u2014 check before you retry.';
+        api.error(msg);
+        resEl.textContent = '\u26d4 ' + msg;
+      }, 150000);
       window.EXIT.sendExecute({ sender: state.connected, msgs: msgs, fee: fee })
         .then(function(hash){
           resEl.innerHTML = esc(T('sent_ok')) + ' <a href="' + finderTx(hash) +
@@ -1805,9 +1864,10 @@ function langLabel(c){ for (var i = 0; i < LANGS.length; i++) if (LANGS[i][0] ==
           return pollTx(hash).then(function(ok){ return { hash: hash, ok: ok }; });
         })
         .then(function(r){
+          clearTimeout(timer);
           state.sending = false;
           if (r.ok){
-            resEl.innerHTML = '✅ ' + esc(T('sent_ok')) + ' <a href="' + finderTx(r.hash) +
+            resEl.innerHTML = '\u2705 ' + esc(T('sent_ok')) + ' <a href="' + finderTx(r.hash) +
               '" target="_blank" rel="noopener">' + esc(T('view_on_finder')) + '</a>';
             if (after) after();
             loadWalletBits();
@@ -1816,10 +1876,14 @@ function langLabel(c){ for (var i = 0; i < LANGS.length; i++) if (LANGS[i][0] ==
               '" target="_blank" rel="noopener">' + esc(T('view_on_finder')) + '</a><br><span class="small">' +
               esc(T('sent_unconfirmed')) + '</span>';
           }
+          if (!stale) api.success();
         })
         .catch(function(e){
+          clearTimeout(timer);
           state.sending = false;
-          resEl.textContent = '⛔ ' + (e && e.message ? e.message : String(e));
+          var msg = (e && e.message ? e.message : String(e));
+          resEl.textContent = '\u26d4 ' + msg;
+          if (!stale) api.error(msg);
         });
     }, function(){ resEl.textContent = T('review_cancelled'); });
   }
@@ -2049,8 +2113,10 @@ function langLabel(c){ for (var i = 0; i < LANGS.length; i++) if (LANGS[i][0] ==
     <p class="small" id="dexReviewNote"></p>
     <div id="dexReviewMsgs"></div>
     <div class="quote" id="dexReviewFee" style="margin-top:10px"></div>
+    <p class="small" id="dexReviewErr" hidden style="color:#ff9d94;font-weight:700;margin-top:10px"></p>
     <div class="mrow">
       <button type="button" id="dexReviewGo" class="primary"></button>
+      <a id="dexReviewOpenDash" href="luncdash://" data-dexi18n="pair_open_luncdash" hidden>&#128640; Open LUNCDash</a>
       <button type="button" id="dexReviewCancel"></button>
     </div>
   </div>
@@ -5360,6 +5426,20 @@ function gdLuncDashOpenHref(uri){
     return 'intent://wallet_connect?' + payload + '#Intent;scheme=luncdash;package=com.luncdash.wallet;end;';
   return 'luncdash://wallet_connect?' + payload;
 }
+/* Plain app open for a pending SIGN request: there is no pairing
+   payload -- the request itself waits inside the app on the live
+   session. Android gets the package-pinned intent form, like the
+   pairing open; everywhere else the app's own scheme. */
+function gdDashOpenAppHref(){
+  if (gdIsMobileUA && /Android/i.test(navigator.userAgent || ''))
+    return 'intent://wallet_connect#Intent;scheme=luncdash;package=com.luncdash.wallet;end;';
+  return 'luncdash://';
+}
+/* Bounded wait: a promise that never settles becomes a plain-words
+   error the caller can show, instead of an endless spinner. */
+function gdWithTimeout(p, ms, msg){
+  return Promise.race([p, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error(msg)); }, ms); })]);
+}
 function gdDashRenderQr(uri){
   const cv = $('walletPairQr'); if (!cv) return;
   try {
@@ -5538,20 +5618,30 @@ window.__dexDashSign = async function(sender, objs, feeObj, memo){
   if (typeof wc.sendCustomRequest !== 'function') throw new Error('this LUNCDash build cannot sign from a web page yet');
   const kit = await loadKit();
   let pubkeyBytes = null;
+  let pkTimedOut = false;
   try {
     /* NB: the page's own LCD var is function-scoped in another
-       script — not reachable from this module; use our own. */
-    const r = await fetch('https://terra-classic-lcd.publicnode.com/cosmos/auth/v1beta1/accounts/' + sender);
+       script -- not reachable from this module; use our own. */
+    const r = await gdWithTimeout(fetch('https://terra-classic-lcd.publicnode.com/cosmos/auth/v1beta1/accounts/' + sender), 15000, 'lcd-timeout');
     const j = await r.json();
     const pk = j && j.account && j.account.pub_key;
     if (pk && pk.key) pubkeyBytes = Uint8Array.from(atob(pk.key), c => c.charCodeAt(0));
-  } catch (e) {}
+  } catch (e) { if (e && e.message === 'lcd-timeout') pkTimedOut = true; }
+  if (pkTimedOut) throw new Error('could not reach the chain to check your account \u2014 check your connection and try again');
   if (!pubkeyBytes) throw new Error('your address has no public key on chain yet — make any transaction in LUNCDash once, then try again');
   const dashSigner = {
     getAccounts: async () => [{ address: sender, algo: 'secp256k1', pubkey: pubkeyBytes }],
     signAmino: async (signerAddress, signDoc) => {
       if (signerAddress !== sender) throw new Error('signer mismatch');
-      const res = await wc.sendCustomRequest({ method: 'terra_signAmino', params: [sender, signDoc] });
+      const reqP = wc.sendCustomRequest({ method: 'terra_signAmino', params: [sender, signDoc] });
+      /* Hand the phone to the wallet app -- the request waits inside
+         it for approval. Without this, the request sits unseen in the
+         app while the user stares at the browser, and the wait below
+         hangs (2026-11-19: two sign attempts, the request never
+         reached the wallet's screen, nothing broadcast). */
+      if (gdIsMobileUA){ try { window.location.href = gdDashOpenAppHref(); } catch (e) {} }
+      const res = await gdWithTimeout(reqP, 120000,
+        'LUNCDash did not answer \u2014 the request may still be waiting in the app. Open LUNCDash, approve or reject it there, then try again.');
       const signed = res && (res.signed || res);
       const signature = res && res.signature;
       if (!signed || !signature || !signature.signature) throw new Error('LUNCDash did not return a signature');

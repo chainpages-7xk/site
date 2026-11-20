@@ -389,7 +389,7 @@
   <div class="tb-wallet" id="dexToolbar">
     <div id="walletList"><p class="note" data-dexi18n="wallet_loading">Loading the wallet list…</p></div>
     <div class="connbox" id="dexConnBox"><span class="lbl" data-dexi18n="conn_wallet_lbl">Connected wallet</span><span class="addr"><a id="dexConnAddr" href="#" target="_blank" rel="noopener"></a></span><button type="button" class="ghostbtn" id="dexDisc" data-dexi18n="disconnect_word">Disconnect</button></div>
-    <div class="connbox" id="dexPairBox"><span class="lbl" data-dexi18n="pair_lbl">Pairing link ready</span><span data-dexi18n="pair_note">Approve the connection in your wallet app. If nothing opened, tap the link:</span><a class="ghostbtn" id="dexPairLink" href="#" data-dexi18n="open_wallet_app">open wallet app ↗</a><canvas id="walletPairQr" width="180" height="180" style="display:none;margin:8px auto 2px;background:#fff;border-radius:8px"></canvas><div id="walletPairActs" style="display:none;gap:7px;justify-content:center;margin-top:7px;flex-wrap:wrap"><a id="walletPairOpen" href="#" data-dexi18n="pair_open_luncdash" style="text-decoration:none;display:inline-block;cursor:pointer;padding:10px 18px;border-radius:10px;background:#274b3a;color:#d9ffee;font-weight:700">🚀 Open LUNCDash</a><button class="ghostbtn" id="walletPairCopy" type="button" data-dexi18n="pair_copy_link">📋 Copy link</button></div></div>
+    <div class="connbox" id="dexPairBox"><span class="lbl" data-dexi18n="pair_lbl">Pairing link ready</span><span data-dexi18n="pair_note">Approve the connection in your wallet app. If nothing opened, tap the link:</span><a class="ghostbtn" id="dexPairLink" href="#" style="white-space:nowrap" data-dexi18n="open_wallet_app">open wallet app ↗</a><canvas id="walletPairQr" width="180" height="180" style="display:none;margin:8px auto 2px;background:#fff;border-radius:8px"></canvas><div id="walletPairActs" style="display:none;gap:7px;justify-content:center;margin-top:7px;flex-wrap:wrap"><a id="walletPairOpen" href="#" data-dexi18n="pair_open_luncdash" style="text-decoration:none;display:inline-block;cursor:pointer;padding:10px 18px;border-radius:10px;background:#274b3a;color:#d9ffee;font-weight:700">🚀 Open LUNCDash</a><button class="ghostbtn" id="walletPairCopy" type="button" data-dexi18n="pair_copy_link">📋 Copy link</button></div></div>
     <div class="gstat" id="dexGuardStat"></div>
   </div>
 
@@ -5347,7 +5347,7 @@ const gdIsMobileUA = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')
 let gdDashBusy = false;
 function dexDashValidAddr(a){ return /^terra1[02-9ac-hj-np-z]{38}$/.test(a || ''); }
 function gdLuncDashOpenHref(uri){
-  const payload = 'payload%3D' + encodeURIComponent(uri);
+  const payload = encodeURIComponent('payload=' + encodeURIComponent(uri));
   if (gdIsMobileUA && /Android/i.test(navigator.userAgent || ''))
     return 'intent://wallet_connect?' + payload + '#Intent;scheme=luncdash;package=com.luncdash.wallet;end;';
   return 'luncdash://wallet_connect?' + payload;
